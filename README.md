@@ -9,10 +9,10 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?logo=jupyter&logoColor=white)](https://jupyter.org/)
 [![Data: yfinance](https://img.shields.io/badge/data-yfinance-brightgreen?logo=yahoo&logoColor=white)](https://pypi.org/project/yfinance/)
-[![Assets: 10](https://img.shields.io/badge/assets-10%20tickers-blueviolet)](https://github.com/abdallah-bodzz/2026_hormuz_analysis)
-[![Event Windows: 3](https://img.shields.io/badge/event%20windows-3%20phases-orange)](https://github.com/abdallah-bodzz/2026_hormuz_analysis)
-[![Cutoff: Apr 2026](https://img.shields.io/badge/data%20cutoff-Apr%2030%202026-red)](https://github.com/abdallah-bodzz/2026_hormuz_analysis)
-[![Status: Static Snapshot](https://img.shields.io/badge/status-static%20snapshot-lightgrey)](https://github.com/abdallah-bodzz/2026_hormuz_analysis)
+[![Assets: 10](https://img.shields.io/badge/assets-10%20tickers-blueviolet)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Event Windows: 3](https://img.shields.io/badge/event%20windows-3%20phases-orange)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Cutoff: Apr 2026](https://img.shields.io/badge/data%20cutoff-Apr%2030%202026-red)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Status: Static Snapshot](https://img.shields.io/badge/status-static%20snapshot-lightgrey)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
 
 ---
 
@@ -126,8 +126,8 @@ This one is uncomfortable. Energy equities are supposed to benefit when oil rise
 
 ```bash
 # Clone
-git clone https://github.com/abdallah-bodzz/2026_hormuz_analysis.git
-cd 2026_hormuz_analysis
+git clone https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis.git
+cd 2026-hormuz-blockade-analysis
 
 # Install
 pip install -r requirements.txt
@@ -200,7 +200,7 @@ These aren't boilerplate — they affect how specific numbers should be read.
 ## File Structure
 
 ```
-2026_hormuz_analysis/
+2026-hormuz-blockade-analysis/
 │
 ├── notebooks/
 │   └── 01_hormuz_analysis_notebook.ipynb   ← start here
@@ -240,7 +240,7 @@ These aren't boilerplate — they affect how specific numbers should be read.
   note      = {Quantitative event study. Data cutoff: April 30, 2026.
                Static snapshot — not updated for post-cutoff developments.},
   publisher = {GitHub},
-  url       = {https://github.com/abdallah-bodzz/2026_hormuz_analysis}
+  url       = {https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis}
 }
 ```
 
