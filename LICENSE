@@ -1,0 +1,77 @@
+# License
+
+**MIT License with Attribution & Research Citation**
+
+Copyright © 2026 Abdallah A. Khames (BODZZ). All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+---
+
+## Conditions
+
+### 1. Attribution
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+### 2. Research Citation
+If this work or derivatives thereof are used in academic research, publications,
+or commercial products, appropriate citation to the original repository is
+requested:
+
+> Khames, A. A. (2026). *Hormuz 2026: When Oil Decoupled from Everything*.
+> Quantitative Event Study of the 47-Day Strait of Hormuz Blockade.
+> https://github.com/abdallah-bodzz/2026_hormuz_analysis
+
+### 3. No Misrepresentation
+You may not use the author's name, organization name (BODZZ), or repository URL
+to endorse or promote products derived from this software without specific
+prior written permission.
+
+---
+
+## Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+### Important Notice for Financial Use
+
+This repository contains **historical analysis and backtested illustrations only**.
+
+- **Not investment advice:** Nothing herein constitutes a recommendation to buy,
+  sell, or hold any security, derivative, or commodity.
+- **Past performance is not indicative of future results:** The analysis describes
+  a single historical event (the 2026 Strait of Hormuz closure). Different
+  conditions may produce different outcomes.
+- **Pre-cost and hypothetical performance:** All pair trade returns (e.g., Long WTI /
+  Short XOM) assume zero transaction costs, no borrow fees, and no slippage.
+  Real-world execution would produce materially lower results.
+- **Use at your own risk:** Any reliance on this software for financial decisions
+  is solely at your own risk.
+
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+---
+
+## Summary (Plain English)
+
+| You can... | You cannot... | You must... |
+|------------|---------------|--------------|
+| Use the code freely | Claim it as your own | Keep the copyright notice |
+| Modify and adapt | Use for investment advice without caveat | Cite the repository in research |
+| Include in commercial products | Remove the financial disclaimer | Acknowledge pre-cost/hypothetical nature |
+| Share and redistribute | Misrepresent the author or organization | Use at your own risk |
+
+---
+
+**Abdallah A. Khames · BODZZ · May 2026**

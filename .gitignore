@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+.env
+.venv
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+# *.ipynb~
+*.ipynb_checkpoints/
+
+# Data files (large, avoid committing)
+# data/raw/*.parquet
+# data/processed/
+# *.parquet
+# light files, no problem
+
+# Outputs (optional — commit charts but ignore generated tables? your call)
+# outputs/*.csv
+# outputs/*.png
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Local config (if any)
+config_local.py
+.secrets

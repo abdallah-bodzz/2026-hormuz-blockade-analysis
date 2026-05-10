@@ -1,0 +1,11 @@
+,window,asset,actual_ret_%,expected_ret_%,abnormal_ret_%,beta,beta_se,beta_low_flag,alpha_daily,r2,n_days,nonlinear_caveat
+0,shock,WTI,32.94,12.07,20.86,-0.031,0.4753,True,0.3795,0.0,32,Near-zero beta: abnormal ~= actual return (market model adds little here).
+1,reopen,WTI,27.47,3.03,24.43,-0.031,0.4753,True,0.3795,0.0,8,Near-zero beta: abnormal ~= actual return (market model adds little here).
+2,shock,GOLD,-9.61,15.4,-25.02,0.295,0.5844,False,0.46,0.007,32,Beta assumed constant; may overstate shock specificity during large moves.
+3,reopen,GOLD,-6.43,3.72,-10.15,0.295,0.5844,False,0.46,0.007,8,Beta assumed constant; may overstate shock specificity during large moves.
+4,shock,XOM,-1.45,17.15,-18.6,-0.022,0.4112,True,0.5375,0.0,32,Near-zero beta: abnormal ~= actual return (market model adds little here).
+5,reopen,XOM,5.62,4.3,1.32,-0.022,0.4112,True,0.5375,0.0,8,Near-zero beta: abnormal ~= actual return (market model adds little here).
+6,shock,CVX,-0.76,11.92,-12.69,0.023,0.3089,True,0.3708,0.0,32,Near-zero beta: abnormal ~= actual return (market model adds little here).
+7,reopen,CVX,4.47,2.97,1.5,0.023,0.3089,True,0.3708,0.0,8,Near-zero beta: abnormal ~= actual return (market model adds little here).
+8,shock,JETS,-3.86,2.99,-6.85,1.559,0.3823,False,-0.0197,0.31,32,Beta assumed constant; may overstate shock specificity during large moves.
+9,reopen,JETS,-10.71,0.06,-10.77,1.559,0.3823,False,-0.0197,0.31,8,Beta assumed constant; may overstate shock specificity during large moves.

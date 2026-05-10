@@ -1,0 +1,16 @@
+,window,pair,correlation
+0,pre_event,WTI / SP500,0.002
+1,pre_event,GOLD / SP500,0.099
+2,pre_event,WTI / GOLD,0.317
+3,pre_event,DXY / WTI,-0.245
+4,pre_event,DXY / SP500,0.022
+5,shock,WTI / SP500,-0.581
+6,shock,GOLD / SP500,0.317
+7,shock,WTI / GOLD,-0.214
+8,shock,DXY / WTI,0.599
+9,shock,DXY / SP500,-0.592
+10,reopen,WTI / SP500,-0.735
+11,reopen,GOLD / SP500,0.94
+12,reopen,WTI / GOLD,-0.755
+13,reopen,DXY / WTI,0.508
+14,reopen,DXY / SP500,-0.575

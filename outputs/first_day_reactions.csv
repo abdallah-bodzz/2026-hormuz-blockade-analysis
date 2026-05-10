@@ -1,0 +1,21 @@
+,event,event_date,actual_trading_date,asset,day1_return_%
+0,Op. Epic Fury (Feb 28),2026-02-28,2026-03-02,WTI,6.28
+1,Op. Epic Fury (Feb 28),2026-02-28,2026-03-02,SP500,0.04
+2,Op. Epic Fury (Feb 28),2026-02-28,2026-03-02,GOLD,1.22
+3,Op. Epic Fury (Feb 28),2026-02-28,2026-03-02,XOM,1.13
+4,Op. Epic Fury (Feb 28),2026-02-28,2026-03-02,JETS,-2.64
+5,Ceasefire (Apr 7),2026-04-07,2026-04-07,WTI,0.48
+6,Ceasefire (Apr 7),2026-04-07,2026-04-07,SP500,0.08
+7,Ceasefire (Apr 7),2026-04-07,2026-04-07,GOLD,0.01
+8,Ceasefire (Apr 7),2026-04-07,2026-04-07,XOM,0.33
+9,Ceasefire (Apr 7),2026-04-07,2026-04-07,JETS,-0.8
+10,Lebanon CF (Apr 16),2026-04-16,2026-04-16,WTI,3.72
+11,Lebanon CF (Apr 16),2026-04-16,2026-04-16,SP500,0.26
+12,Lebanon CF (Apr 16),2026-04-16,2026-04-16,GOLD,-0.3
+13,Lebanon CF (Apr 16),2026-04-16,2026-04-16,XOM,1.99
+14,Lebanon CF (Apr 16),2026-04-16,2026-04-16,JETS,-1.44
+15,Hormuz Open (Apr 17),2026-04-17,2026-04-17,WTI,-11.45
+16,Hormuz Open (Apr 17),2026-04-17,2026-04-17,SP500,1.2
+17,Hormuz Open (Apr 17),2026-04-17,2026-04-17,GOLD,1.51
+18,Hormuz Open (Apr 17),2026-04-17,2026-04-17,XOM,-3.65
+19,Hormuz Open (Apr 17),2026-04-17,2026-04-17,JETS,4.84

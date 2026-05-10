@@ -1,0 +1,7 @@
+,window,index,cum_return_%,max_dd_%,fx_caveat
+0,shock,SP500,2.32,-7.82,Local-currency return. No FX adjustment applied.
+1,shock,DAX,-1.96,-9.49,Local-currency return. No FX adjustment applied.
+2,shock,NKY,2.52,-12.05,Local-currency return. No FX adjustment applied.
+3,reopen,SP500,0.14,-0.87,Local-currency return. No FX adjustment applied.
+4,reopen,DAX,-3.03,-3.03,Local-currency return. No FX adjustment applied.
+5,reopen,NKY,2.47,-1.02,Local-currency return. No FX adjustment applied.

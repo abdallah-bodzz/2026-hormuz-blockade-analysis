@@ -1,0 +1,12 @@
+,lag,correlation,is_peak
+0,-5,-0.227,False
+1,-4,-0.276,False
+2,-3,0.049,False
+3,-2,0.137,False
+4,-1,0.011,False
+5,0,-0.453,True
+6,1,-0.054,False
+7,2,0.239,False
+8,3,-0.009,False
+9,4,-0.114,False
+10,5,-0.16,False
