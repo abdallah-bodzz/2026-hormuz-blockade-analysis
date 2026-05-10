@@ -9,7 +9,7 @@ authors:
     email: "xabdllahxabdllahx@gmail.com"
     orcid: ""
     website: "https://github.com/abdallah-bodzz"
-repository-code: "https://github.com/abdallah-bodzz/2026_hormuz_analysis"
+repository-code: "https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis"
 abstract: "Quantitative event study of the 47-day Strait of Hormuz blockade (Feb 28 – Apr 17, 2026). Analyzes cross-asset shock transmission across 10 global assets using OLS market model, rolling betas, volatility regime detection, and DXY decomposition. Key finding: physical oil decoupled from energy equities during the acute supply shock. WTI returned +32.9% while XOM fell -1.5% in the same 33-day window."
 keywords:
   - event study
