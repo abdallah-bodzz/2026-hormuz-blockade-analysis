@@ -36,6 +36,12 @@
 
 ---
 
+> **Notice:** An interactive HTML dashboard of this analysis is available at:
+> https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/
+> The dashboard includes all charts, KPI metrics, phase timeline, pair trade breakdown, correlation tables, and downloadable CSVs.
+
+---
+
 ## The Setup: Why the Strait Mattered
 
 The Strait of Hormuz is 33 kilometers wide at its narrowest point. Every day before February 28, roughly 21 million barrels of oil passed through it — about 20% of global seaborne supply. Saudi Arabia, Iraq, Kuwait, the UAE, Iran itself. All of it funnels through that gap between Oman and Iran before reaching the world.

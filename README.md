@@ -13,6 +13,13 @@
 [![Event Windows: 3](https://img.shields.io/badge/event%20windows-3%20phases-orange)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
 [![Cutoff: Apr 2026](https://img.shields.io/badge/data%20cutoff-Apr%2030%202026-red)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
 [![Status: Static Snapshot](https://img.shields.io/badge/status-static%20snapshot-lightgrey)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Live Demo](https://img.shields.io/badge/Live-Dashboard-1abc9c?logo=githubpages&logoColor=white)](https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/)
+
+---
+
+> **Notice:** An interactive HTML dashboard of this analysis is available at:
+> https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/
+> The dashboard includes all charts, KPI metrics, phase timeline, pair trade breakdown, correlation tables, and downloadable CSVs.
 
 ---
 
