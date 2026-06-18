@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hormuz 2026 — When Oil Decoupled from Everything</title>
-  <meta name="description" content="A quantitative event study of the 47-day Strait of Hormuz blockade. Physical oil decoupled. Energy stocks fell while crude rallied. Gold failed. Here is the data." />
-  <meta property="og:title" content="Hormuz 2026 — When Oil Decoupled from Everything" />
-  <meta property="og:description" content="Quantitative event study: WTI +86.5%, Gold −9.6%, Long WTI/Short XOM +34.4% in 33 days." />
+  <title>Hormuz 2026 — Update 2: When Diplomacy Decoupled from Supply</title>
+  <meta name="description" content="113-day quantitative event study of the Strait of Hormuz crisis. Update 2: 16 assets, 5 windows, the May Paradox — diplomacy overrode physical scarcity." />
+  <meta property="og:title" content="Hormuz 2026 Update 2 — When Diplomacy Decoupled from Supply" />
+  <meta property="og:description" content="The May Paradox: WTI −20% while the strait stayed at 2% capacity. Forward expectations overrode physical reality. 16 assets, 5 phases, 113 days." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/" />
-  <meta property="og:image" content="outputs/01_normalised_prices.png" />
+  <meta property="og:image" content="outputs/update_2/charts/21_five_window_full_timeline.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Hormuz 2026 — When Oil Decoupled from Everything" />
-  <meta name="twitter:description" content="Quantitative event study: WTI +86.5%, Gold −9.6%, Long WTI/Short XOM +34.4% in 33 days." />
-  <meta name="twitter:image" content="outputs/01_normalised_prices.png" />
+  <meta name="twitter:title" content="Hormuz 2026 Update 2 — When Diplomacy Decoupled from Supply" />
+  <meta name="twitter:description" content="The May Paradox: WTI −20% while the strait stayed at 2% capacity. 16 assets, 5 phases, 113 days." />
+  <meta name="twitter:image" content="outputs/update_2/charts/21_five_window_full_timeline.png" />
 
-  <!-- Fonts: Cabinet Grotesk (headlines) + Outfit (body) + DM Mono (data) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <!-- Cabinet Grotesk via Fontshare CDN -->
   <link rel="preconnect" href="https://api.fontshare.com" />
   <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap" rel="stylesheet" />
 
   <style>
     /* ===================================================================
-       DESIGN SYSTEM
-       Color strategy: COMMITTED — oil-red carries ~40% of visual surface
+       DESIGN SYSTEM — Update 2 additions clearly marked
+       Color strategy: COMMITTED — oil-red + amber for correction phase
        Theme: dark navy base, analyst-in-dim-room scene
     =================================================================== */
     :root {
@@ -48,9 +46,21 @@
       --gold:        oklch(72% 0.10 85);
       --gold-dim:    oklch(62% 0.08 85);
 
-      /* Teal — positive data only */
+      /* Teal — positive data / reopen */
       --teal:        oklch(65% 0.12 175);
       --teal-dim:    oklch(52% 0.10 175);
+
+      /* Amber — correction window / May Paradox (NEW U2) */
+      --amber:       oklch(68% 0.14 70);
+      --amber-dim:   oklch(55% 0.11 70);
+      --amber-bg:    oklch(14% 0.04 70);
+      --amber-border:oklch(32% 0.09 70);
+
+      /* Steel blue — diplomacy phase (NEW U2) */
+      --steel:       oklch(55% 0.10 240);
+      --steel-dim:   oklch(44% 0.08 240);
+      --steel-bg:    oklch(13% 0.03 240);
+      --steel-border:oklch(28% 0.07 240);
 
       /* Text hierarchy */
       --t1:          oklch(96% 0.006 240);
@@ -90,7 +100,6 @@
       overflow-x: hidden;
     }
 
-    /* Skip to content */
     .skip-link {
       position: fixed;
       top: -100%;
@@ -105,7 +114,6 @@
     }
     .skip-link:focus { top: 1rem; }
 
-    /* Noise texture — fixed, pointer-events-none, never on scroll container */
     body::before {
       content: '';
       position: fixed;
@@ -115,9 +123,6 @@
       z-index: 0;
     }
 
-    /* =====================================================================
-       SCROLLBAR
-    ===================================================================== */
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--navy-2); }
     ::-webkit-scrollbar-thumb { background: var(--red-dim); border-radius: 3px; }
@@ -145,16 +150,57 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      background: oklch(9% 0.015 240 / 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--b1);
+    }
+
+    .nav-main-row {
       height: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 2rem;
-      background: oklch(9% 0.015 240 / 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--b1);
     }
+
+    /* UPDATE 2 VERSION BANNER */
+    .nav-version-bar {
+      background: oklch(14% 0.04 27 / 0.9);
+      border-top: 1px solid var(--red-border);
+      padding: 0.28rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .version-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .version-tag .vtag-pill {
+      background: var(--red);
+      color: oklch(99% 0.006 27);
+      padding: 0.12rem 0.55rem;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+    }
+
+    .version-tag .vtag-text { color: var(--red-2); }
+    .version-tag .vtag-sep { color: var(--t4); }
+    .version-tag .vtag-date { color: var(--t3); }
+    .version-tag .vtag-note { color: var(--t4); font-style: italic; }
 
     .nav-brand {
       font-family: var(--font-mono);
@@ -196,10 +242,7 @@
     .nav-links a:active { transform: scale(0.97); }
     .nav-links a.active { color: var(--red-2); }
 
-    .nav-cta {
-      display: flex;
-      gap: 0.4rem;
-    }
+    .nav-cta { display: flex; gap: 0.4rem; }
 
     #hamburger {
       display: none;
@@ -210,11 +253,10 @@
       color: var(--t2);
     }
 
-    /* Mobile menu */
     #mobile-menu {
       display: none;
       position: fixed;
-      top: 52px; left: 0; right: 0;
+      top: 80px; left: 0; right: 0;
       background: oklch(10% 0.016 240 / 0.97);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--b1);
@@ -256,10 +298,7 @@
     .btn:active { transform: scale(0.97); }
     .btn:focus-visible { outline: 2px solid var(--red-2); outline-offset: 2px; }
 
-    .btn-primary {
-      background: var(--red);
-      color: oklch(99% 0.006 27);
-    }
+    .btn-primary { background: var(--red); color: oklch(99% 0.006 27); }
     .btn-primary:hover { background: var(--red-2); box-shadow: 0 0 0 1px var(--red-border), 0 4px 20px oklch(42% 0.18 27 / 0.25); }
 
     .btn-secondary {
@@ -275,6 +314,13 @@
       color: var(--gold);
     }
     .btn-gold:hover { background: oklch(72% 0.10 85 / 0.08); box-shadow: 0 0 0 1px oklch(72% 0.10 85 / 0.3); }
+
+    .btn-amber {
+      background: transparent;
+      border: 1px solid var(--amber-border);
+      color: var(--amber);
+    }
+    .btn-amber:hover { background: var(--amber-bg); }
 
     .btn-nav-ghost {
       font-size: 0.72rem;
@@ -293,22 +339,21 @@
     .btn-nav-ghost:active { transform: scale(0.97); }
 
     /* =====================================================================
-       HERO — Asymmetric 60/40 split, no centered text
-    =================================================================== */
+       HERO
+    ===================================================================== */
     #hero {
       position: relative;
       min-height: 100dvh;
       display: grid;
       grid-template-columns: 60fr 40fr;
       align-items: center;
-      padding: 6rem 2rem 5rem;
+      padding: 7.5rem 2rem 5rem;
       max-width: 1280px;
       margin: 0 auto;
       gap: 4rem;
       overflow: hidden;
     }
 
-    /* SVG grid background — only transform, no background-image repaint */
     .hero-grid-svg {
       position: absolute;
       inset: 0;
@@ -327,7 +372,6 @@
       transform-origin: center center;
     }
 
-    /* Glow orbs */
     .hero-glow-a {
       position: absolute;
       top: 15%; right: 10%;
@@ -343,7 +387,7 @@
       bottom: 5%; left: 0%;
       width: 360px; height: 360px;
       border-radius: 50%;
-      background: radial-gradient(circle, oklch(72% 0.10 85 / 0.07) 0%, transparent 65%);
+      background: radial-gradient(circle, oklch(68% 0.14 70 / 0.07) 0%, transparent 65%);
       pointer-events: none;
       animation: breathe 13s ease-in-out infinite reverse;
     }
@@ -372,11 +416,36 @@
       background: var(--red);
     }
 
+    .hero-update-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: oklch(42% 0.18 27 / 0.15);
+      border: 1px solid var(--red-border);
+      border-radius: 20px;
+      padding: 0.18rem 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--red-2);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.05s var(--ease-out-strong) forwards;
+    }
+
+    .hero-update-badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: breathe 2s ease-in-out infinite;
+    }
+
     .hero-title {
       font-family: var(--font-head);
-      font-size: clamp(2.6rem, 5.5vw, 5.2rem);
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
       font-weight: 800;
-      line-height: 1.03;
+      line-height: 1.04;
       letter-spacing: -0.03em;
       color: var(--t1);
       margin-bottom: 0.75rem;
@@ -384,11 +453,11 @@
       animation: fadeUp 0.75s 0.22s var(--ease-out-strong) forwards;
     }
 
-    .hero-title .accent-red { color: var(--red-2); }
-    .hero-title .accent-gold { color: var(--gold); }
+    .hero-title .accent-red   { color: var(--red-2); }
+    .hero-title .accent-amber { color: var(--amber); }
 
     .hero-deck {
-      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      font-size: clamp(0.95rem, 1.5vw, 1.1rem);
       color: var(--t2);
       max-width: 62ch;
       line-height: 1.7;
@@ -398,10 +467,11 @@
     }
 
     .hero-deck strong { color: var(--t1); }
-    .hero-deck .num-red { color: var(--red-2); font-family: var(--font-mono); font-weight: 500; }
-    .hero-deck .num-teal { color: var(--teal); font-family: var(--font-mono); font-weight: 500; }
-    .hero-deck .num-gold { color: var(--gold); font-family: var(--font-mono); font-weight: 500; }
-    .hero-deck .num-neg { color: oklch(52% 0.20 27); font-family: var(--font-mono); font-weight: 500; }
+    .hero-deck .num-red   { color: var(--red-2); font-family: var(--font-mono); font-weight: 500; }
+    .hero-deck .num-teal  { color: var(--teal); font-family: var(--font-mono); font-weight: 500; }
+    .hero-deck .num-gold  { color: var(--gold); font-family: var(--font-mono); font-weight: 500; }
+    .hero-deck .num-amber { color: var(--amber); font-family: var(--font-mono); font-weight: 500; }
+    .hero-deck .num-neg   { color: oklch(52% 0.20 27); font-family: var(--font-mono); font-weight: 500; }
 
     .hero-meta {
       display: flex;
@@ -437,14 +507,12 @@
       animation: fadeUp 0.75s 0.58s var(--ease-out-strong) forwards;
     }
 
-    /* Magnetic CTA — JS-powered */
     #magnetic-cta {
       position: relative;
       transition: transform 0.3s var(--ease-out-strong);
       will-change: transform;
     }
 
-    /* Hero visual panel */
     .hero-visual {
       position: relative;
       z-index: 1;
@@ -452,7 +520,6 @@
       animation: fadeIn 1s 0.5s ease forwards;
     }
 
-    /* Strait of Hormuz SVG map — stylized schematic */
     .strait-map {
       width: 100%;
       max-width: 360px;
@@ -460,10 +527,9 @@
       display: block;
     }
 
-    /* Inline KPI cluster under the map */
     .hero-kpi-row {
       display: grid;
-      grid-template-columns: 1fr 1px 1fr 1px 1fr;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr;
       gap: 0;
       border: 1px solid var(--b-red);
       border-radius: 6px;
@@ -472,9 +538,7 @@
       background: var(--red-bg);
     }
 
-    .hero-kpi-divider {
-      background: var(--b-red);
-    }
+    .hero-kpi-divider { background: var(--b-red); }
 
     .hero-kpi-cell {
       padding: 0.9rem 1rem;
@@ -484,8 +548,8 @@
 
     .hero-kpi-label {
       font-family: var(--font-mono);
-      font-size: 0.58rem;
-      letter-spacing: 0.15em;
+      font-size: 0.55rem;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
       color: var(--t4);
       margin-bottom: 0.3rem;
@@ -493,29 +557,26 @@
 
     .hero-kpi-val {
       font-family: var(--font-head);
-      font-size: 1.55rem;
+      font-size: 1.35rem;
       font-weight: 800;
       line-height: 1;
       letter-spacing: -0.02em;
     }
 
     .hero-kpi-sub {
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       color: var(--t4);
       margin-top: 0.2rem;
     }
 
-    .kv-red { color: var(--red-2); }
-    .kv-teal { color: var(--teal); }
-    .kv-neg { color: oklch(52% 0.20 27); }
-    .kv-gold { color: var(--gold); }
+    .kv-red   { color: var(--red-2); }
+    .kv-teal  { color: var(--teal); }
+    .kv-neg   { color: oklch(52% 0.20 27); }
+    .kv-gold  { color: var(--gold); }
+    .kv-amber { color: var(--amber); }
 
-    /* Pulse on WTI/Gold ratio KPI */
-    .pulse-anim {
-      animation: kpiPulse 4s ease-in-out infinite;
-    }
+    .pulse-anim { animation: kpiPulse 4s ease-in-out infinite; }
 
-    /* Scroll hint */
     .scroll-hint {
       position: absolute;
       bottom: 2rem;
@@ -565,7 +626,7 @@
       border-radius: 50%;
       background: var(--b2);
       cursor: pointer;
-      transition: background 200ms ease-out, transform 200ms ease-out, width 200ms ease-out;
+      transition: background 200ms ease-out, transform 200ms ease-out;
       border: none;
       padding: 0;
     }
@@ -671,8 +732,26 @@
       color: var(--t1);
     }
 
+    /* Update 2 section header variant */
+    .section-u2-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: oklch(42% 0.18 27 / 0.12);
+      border: 1px solid var(--red-border);
+      border-radius: 20px;
+      padding: 0.15rem 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red-2);
+      margin-top: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+
     /* =====================================================================
-       CONTEXT STRIP (above timeline)
+       CONTEXT STRIP
     ===================================================================== */
     .context-strip {
       border-top: 1px solid var(--b-red);
@@ -690,11 +769,7 @@
       align-items: center;
     }
 
-    .context-fact {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-    }
+    .context-fact { display: flex; flex-direction: column; gap: 0.2rem; }
 
     .context-fact-label {
       font-family: var(--font-mono);
@@ -713,13 +788,14 @@
     }
 
     /* =====================================================================
-       TIMELINE — Asymmetric 2fr 1fr 1fr
+       TIMELINE — 5-phase grid (NEW U2)
     ===================================================================== */
     #timeline { padding: 5.5rem 0; }
 
-    .timeline-grid {
+    /* 5-phase grid: pre(2fr), shock(1fr), reopen(1fr), correction(1fr), diplomacy(1fr) */
+    .timeline-grid-5 {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
       gap: 1px;
       background: var(--b1);
       border: 1px solid var(--b1);
@@ -729,176 +805,209 @@
 
     .phase-block {
       background: var(--navy-2);
-      padding: 2rem 1.75rem;
+      padding: 1.75rem 1.5rem;
       position: relative;
       transition: background 220ms ease-out;
     }
 
     .phase-block:hover { background: var(--navy-3); }
 
-    /* Red top border on Shock phase */
     .phase-block.shock {
       background: oklch(12% 0.03 27);
       border-top: 2px solid var(--red);
     }
-
     .phase-block.shock:hover { background: oklch(14% 0.04 27); }
+
+    .phase-block.reopen {
+      background: oklch(11% 0.022 175);
+      border-top: 2px solid var(--teal);
+    }
+    .phase-block.reopen:hover { background: oklch(13% 0.028 175); }
+
+    /* Correction — amber accent, subtle glow */
+    .phase-block.correction {
+      background: oklch(11% 0.03 70);
+      border-top: 2px solid var(--amber);
+      box-shadow: inset 0 0 40px oklch(68% 0.14 70 / 0.04);
+    }
+    .phase-block.correction:hover { background: oklch(13% 0.036 70); }
+
+    .phase-block.diplomacy {
+      background: oklch(11% 0.025 240);
+      border-top: 2px solid var(--steel);
+    }
+    .phase-block.diplomacy:hover { background: oklch(13% 0.03 240); }
 
     .phase-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
       font-family: var(--font-mono);
-      font-size: 0.56rem;
-      letter-spacing: 0.16em;
+      font-size: 0.54rem;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 0.22rem 0.65rem;
+      padding: 0.2rem 0.6rem;
       border-radius: 20px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
     }
 
-    .phase-badge.pre   { background: oklch(22% 0.01 240 / 0.6); color: var(--t3); border: 1px solid var(--b1); }
-    .phase-badge.shock { background: oklch(42% 0.18 27 / 0.18); color: var(--red-2); border: 1px solid var(--red-border); }
-    .phase-badge.open  { background: oklch(65% 0.12 175 / 0.12); color: var(--teal); border: 1px solid oklch(65% 0.12 175 / 0.3); }
+    .phase-badge.pre        { background: oklch(22% 0.01 240 / 0.6); color: var(--t3); border: 1px solid var(--b1); }
+    .phase-badge.shock      { background: oklch(42% 0.18 27 / 0.18); color: var(--red-2); border: 1px solid var(--red-border); }
+    .phase-badge.open       { background: oklch(65% 0.12 175 / 0.12); color: var(--teal); border: 1px solid oklch(65% 0.12 175 / 0.3); }
+    .phase-badge.correction { background: oklch(68% 0.14 70 / 0.14); color: var(--amber); border: 1px solid var(--amber-border); }
+    .phase-badge.diplomacy  { background: oklch(55% 0.10 240 / 0.14); color: var(--steel); border: 1px solid var(--steel-border); }
 
     .phase-dates {
       font-family: var(--font-mono);
-      font-size: 0.66rem;
+      font-size: 0.62rem;
       color: var(--t4);
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.55rem;
     }
 
     .phase-title {
       font-family: var(--font-head);
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: -0.015em;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
       color: var(--t1);
     }
 
     .phase-desc {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--t3);
       line-height: 1.6;
     }
 
     .phase-stat {
-      margin-top: 1.25rem;
-      padding-top: 1rem;
+      margin-top: 1.1rem;
+      padding-top: 0.85rem;
       border-top: 1px solid var(--b1);
       font-family: var(--font-mono);
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--t4);
       line-height: 1.8;
     }
 
     .phase-stat .pval { color: var(--teal); }
     .phase-stat .nval { color: var(--red-2); }
+    .phase-stat .aval { color: var(--amber); }
+    .phase-stat .sval { color: var(--steel); }
 
     /* =====================================================================
-       FINDINGS — Asymmetric: first item 2fr, rest 1fr
+       FINDINGS
     ===================================================================== */
-    #findings { padding: 5.5rem 0; }
-
     .findings-wrap {
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      grid-template-rows: auto auto auto;
+      grid-template-columns: 3fr 2fr;
       gap: 0;
     }
 
-    /* Each finding is a borderless block with top separator */
     .finding-item {
-      padding: 2rem 2rem 2rem 0;
-      border-top: 1px solid var(--b1);
-      position: relative;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--b1);
     }
 
-    /* Red left indicator — thin 2px full border on left, not a side-stripe accent hack */
-    .finding-item::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 2rem; bottom: 2rem;
-      width: 2px;
-      background: var(--red-dim);
-      border-radius: 1px;
-      opacity: 0;
-      transition: opacity 220ms ease-out;
-    }
-
-    .finding-item:hover::before { opacity: 1; }
-
-    /* First item spans both columns for visual asymmetry */
     .finding-item:first-child {
       grid-column: 1 / -1;
-      padding: 2.5rem 0;
-      border-top: 2px solid var(--red);
+      padding-bottom: 2.5rem;
     }
 
-    .finding-item:first-child::before { display: none; }
+    .finding-item.right-col {
+      padding-left: 2rem;
+      border-left: 1px solid var(--b1);
+    }
 
     .finding-num {
       font-family: var(--font-mono);
       font-size: 0.6rem;
       letter-spacing: 0.16em;
-      color: var(--red-2);
       text-transform: uppercase;
-      margin-bottom: 0.6rem;
+      color: var(--red-2);
+      margin-bottom: 0.55rem;
     }
+
+    .finding-num.u2-num { color: var(--amber); }
 
     .finding-title {
       font-family: var(--font-head);
-      font-size: 1.3rem;
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem);
       font-weight: 700;
       letter-spacing: -0.015em;
       color: var(--t1);
-      margin-bottom: 0.75rem;
-      line-height: 1.25;
-    }
-
-    .finding-item:first-child .finding-title {
-      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      margin-bottom: 0.85rem;
+      line-height: 1.2;
     }
 
     .finding-body {
       font-size: 0.88rem;
       color: var(--t3);
-      line-height: 1.65;
-      max-width: 62ch;
+      line-height: 1.7;
+      max-width: 68ch;
     }
 
     .finding-sparkline {
-      margin-top: 0.85rem;
+      margin-top: 1.1rem;
+      overflow: hidden;
     }
 
-    .finding-sparkline svg {
-      display: block;
-      overflow: visible;
+    /* Caveat tooltip pill inline in findings */
+    .caveat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: oklch(68% 0.14 70 / 0.1);
+      border: 1px solid var(--amber-border);
+      border-radius: 4px;
+      padding: 0.2rem 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-top: 0.65rem;
+      cursor: default;
     }
 
-    /* Right-column findings get lighter padding */
-    .finding-item.right-col {
-      padding-left: 1.75rem;
-      border-left: 1px solid var(--b1);
+    /* Update 2 findings section divider */
+    .findings-u2-divider {
+      grid-column: 1 / -1;
+      border-top: 1px solid oklch(42% 0.18 27 / 0.25);
+      padding-top: 2.5rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
-    .finding-item.right-col::before { left: 0; }
+    .findings-u2-divider-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red-2);
+      white-space: nowrap;
+    }
+
+    .findings-u2-divider-line {
+      flex: 1;
+      height: 1px;
+      background: oklch(42% 0.18 27 / 0.2);
+    }
 
     /* Fragmentation box */
     .fragmentation-box {
-      margin-top: 2.5rem;
-      border-top: 1px solid var(--b1);
-      padding-top: 2rem;
       grid-column: 1 / -1;
+      margin-top: 1rem;
+      padding: 1.5rem 0 0;
     }
 
     .frag-label {
       font-family: var(--font-mono);
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       letter-spacing: 0.16em;
-      color: var(--t4);
       text-transform: uppercase;
+      color: var(--t4);
       margin-bottom: 1.25rem;
     }
 
@@ -934,13 +1043,10 @@
       margin-bottom: 0.3rem;
     }
 
-    .frag-cell-desc {
-      font-size: 0.78rem;
-      color: var(--t3);
-    }
+    .frag-cell-desc { font-size: 0.78rem; color: var(--t3); }
 
     /* =====================================================================
-       CHARTS SECTION
+       CHARTS
     ===================================================================== */
     #charts { padding: 5.5rem 0; }
 
@@ -954,10 +1060,10 @@
 
     .tab-btn {
       font-family: var(--font-mono);
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 0.65rem 1.1rem;
+      padding: 0.65rem 1rem;
       border: none;
       background: transparent;
       color: var(--t3);
@@ -966,10 +1072,13 @@
       margin-bottom: -1px;
       transition: color 180ms ease-out, border-color 180ms ease-out;
       touch-action: manipulation;
+      white-space: nowrap;
     }
 
     .tab-btn:hover { color: var(--t2); }
     .tab-btn.active { color: var(--red-2); border-bottom-color: var(--red); }
+    .tab-btn.tab-u2 { }
+    .tab-btn.tab-u2.active { color: var(--amber); border-bottom-color: var(--amber); }
     .tab-btn:active { transform: scale(0.97); }
 
     .tab-panel { display: none; }
@@ -1005,7 +1114,7 @@
 
     .chart-thumb-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1px;
       background: var(--b1);
       border: 1px solid var(--b1);
@@ -1028,23 +1137,29 @@
 
     .chart-thumb img {
       width: 100%;
-      height: 160px;
+      height: 140px;
       object-fit: cover;
       display: block;
       transition: transform 300ms var(--ease-out-quart);
     }
 
     .chart-thumb-label {
-      padding: 0.6rem 0.85rem;
+      padding: 0.55rem 0.85rem;
       font-family: var(--font-mono);
-      font-size: 0.58rem;
+      font-size: 0.55rem;
       letter-spacing: 0.1em;
       color: var(--t4);
       text-transform: uppercase;
     }
 
+    /* U2 chart thumb badge */
+    .chart-thumb-u2 .chart-thumb-label::before {
+      content: 'U2 · ';
+      color: var(--amber);
+    }
+
     /* =====================================================================
-       PAIR TRADE — Liquid glass card
+       PAIR TRADE
     ===================================================================== */
     #trade { padding: 5.5rem 0; }
 
@@ -1057,7 +1172,6 @@
       overflow: hidden;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      /* Liquid glass: inner refraction border + shadow */
       box-shadow:
         inset 0 1px 0 oklch(100% 0 0 / 0.06),
         inset 0 -1px 0 oklch(0% 0 0 / 0.15),
@@ -1072,7 +1186,7 @@
       margin-bottom: 0.85rem;
     }
 
-    .trade-header .long { color: var(--teal); }
+    .trade-header .long  { color: var(--teal); }
     .trade-header .short { color: var(--red-2); }
 
     .trade-desc {
@@ -1085,7 +1199,7 @@
 
     .trade-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(5, 1fr);
       gap: 1px;
       background: var(--b1);
       border: 1px solid var(--b1);
@@ -1096,7 +1210,7 @@
 
     .trade-phase {
       background: var(--navy-3);
-      padding: 1.25rem;
+      padding: 1.1rem;
     }
 
     .trade-phase.active {
@@ -1104,22 +1218,28 @@
       border-top: 2px solid var(--teal);
     }
 
+    .trade-phase.correction-exit {
+      background: oklch(11% 0.03 70);
+      border-top: 2px solid var(--amber);
+    }
+
     .trade-phase-label {
       font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
+      font-size: 0.57rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--t4);
       margin-bottom: 0.85rem;
     }
 
     .trade-phase.active .trade-phase-label { color: var(--teal); }
+    .trade-phase.correction-exit .trade-phase-label { color: var(--amber); }
 
     .trade-row {
       display: flex;
       justify-content: space-between;
       font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       padding: 0.2rem 0;
       color: var(--t3);
     }
@@ -1128,8 +1248,8 @@
       display: flex;
       justify-content: space-between;
       font-family: var(--font-mono);
-      font-size: 0.82rem;
-      padding-top: 0.65rem;
+      font-size: 0.78rem;
+      padding-top: 0.6rem;
       margin-top: 0.5rem;
       border-top: 1px solid var(--b1);
       color: var(--t3);
@@ -1137,11 +1257,7 @@
 
     .trade-result { font-weight: 500; }
 
-    /* Hover-to-reveal P&L detail — clip-path reveal */
-    .trade-reveal-wrap {
-      position: relative;
-      overflow: hidden;
-    }
+    .trade-reveal-wrap { position: relative; overflow: hidden; }
 
     .trade-reveal-content {
       clip-path: inset(0 100% 0 0);
@@ -1153,7 +1269,6 @@
       clip-path: inset(0 0% 0 0);
     }
 
-    /* Fast exit */
     .trade-phase.active .trade-reveal-content {
       transition: clip-path 150ms ease-out;
     }
@@ -1168,6 +1283,31 @@
     }
 
     .trade-caveat strong { color: var(--t2); }
+
+    /* Mandate exit note */
+    .trade-exit-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: oklch(11% 0.03 70);
+      border: 1px solid var(--amber-border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--t3);
+      line-height: 1.6;
+    }
+
+    .trade-exit-note-icon {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      white-space: nowrap;
+      padding-top: 0.15rem;
+    }
 
     /* =====================================================================
        CORRELATION SECTION
@@ -1209,24 +1349,22 @@
       margin-bottom: 1rem;
     }
 
-    .corr-chip.key   { background: oklch(42% 0.18 27 / 0.15); color: var(--red-2); border: 1px solid var(--red-border); }
-    .corr-chip.sup   { background: oklch(65% 0.12 175 / 0.12); color: var(--teal); border: 1px solid oklch(65% 0.12 175 / 0.3); }
-    .corr-chip.broken{ background: oklch(72% 0.10 85 / 0.1); color: var(--gold); border: 1px solid oklch(72% 0.10 85 / 0.3); }
+    .corr-chip.key    { background: oklch(42% 0.18 27 / 0.15); color: var(--red-2); border: 1px solid var(--red-border); }
+    .corr-chip.sup    { background: oklch(65% 0.12 175 / 0.12); color: var(--teal); border: 1px solid oklch(65% 0.12 175 / 0.3); }
+    .corr-chip.broken { background: oklch(72% 0.10 85 / 0.1); color: var(--gold); border: 1px solid oklch(72% 0.10 85 / 0.3); }
 
     .corr-val-row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 0.5rem;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.4rem;
     }
 
-    .corr-val {
-      text-align: center;
-    }
+    .corr-val { text-align: center; }
 
     .corr-phase-lbl {
       font-family: var(--font-mono);
-      font-size: 0.54rem;
-      letter-spacing: 0.1em;
+      font-size: 0.5rem;
+      letter-spacing: 0.08em;
       color: var(--t4);
       text-transform: uppercase;
       margin-bottom: 0.25rem;
@@ -1234,7 +1372,7 @@
 
     .corr-num {
       font-family: var(--font-mono);
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-weight: 500;
     }
 
@@ -1243,13 +1381,12 @@
     ===================================================================== */
     #mandates { padding: 5.5rem 0; }
 
-    .mandate-list {
-      border-top: 1px solid var(--b1);
-    }
+    .mandate-list { border-top: 1px solid var(--b1); }
 
-    .mandate-item {
-      border-bottom: 1px solid var(--b1);
-    }
+    .mandate-item { border-bottom: 1px solid var(--b1); }
+
+    /* Update 2 mandates get amber accent */
+    .mandate-item.u2 { border-bottom-color: oklch(42% 0.18 27 / 0.3); }
 
     .mandate-toggle {
       width: 100%;
@@ -1277,6 +1414,8 @@
       letter-spacing: 0.08em;
     }
 
+    .mandate-item.u2 .mandate-n { color: var(--amber); }
+
     .mandate-title {
       font-size: 0.9rem;
       font-weight: 500;
@@ -1301,7 +1440,7 @@
     }
 
     .mandate-item.open .mandate-body {
-      max-height: 300px;
+      max-height: 400px;
       padding: 0 0 1.25rem 3.5rem;
     }
 
@@ -1311,14 +1450,29 @@
       line-height: 1.7;
     }
 
+    .mandate-u2-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: oklch(68% 0.14 70 / 0.1);
+      border: 1px solid var(--amber-border);
+      border-radius: 20px;
+      padding: 0.12rem 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.5rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber-dim);
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
     /* =====================================================================
        DATA TABLES
     ===================================================================== */
     #data { padding: 5.5rem 0; }
 
-    .table-wrap {
-      margin-bottom: 2rem;
-    }
+    .table-wrap { margin-bottom: 2rem; }
 
     .table-head-row {
       display: flex;
@@ -1367,14 +1521,15 @@
     }
 
     tr:last-child td { border-bottom: none; }
-
     tr.hl-row { background: oklch(16% 0.03 27 / 0.3); }
     tr.hl-row td { color: var(--t1); }
+    tr.u2-row td:first-child { border-left: 2px solid oklch(68% 0.14 70 / 0.4); }
 
     .td-mono { font-family: var(--font-mono); }
     .td-pos  { color: var(--teal); }
     .td-neg  { color: var(--red-2); }
     .td-gold { color: var(--gold); font-weight: 600; font-size: 0.95rem; }
+    .td-amber{ color: var(--amber); }
 
     .asset-dot {
       display: inline-block;
@@ -1390,8 +1545,11 @@
     .dot-xom  { background: oklch(52% 0.10 240); }
     .dot-cvx  { background: oklch(45% 0.09 210); }
     .dot-jets { background: oklch(58% 0.08 270); }
+    .dot-ita  { background: oklch(55% 0.12 290); }
+    .dot-bwet { background: oklch(62% 0.11 200); }
+    .dot-tlt  { background: oklch(50% 0.08 160); }
+    .dot-xle  { background: oklch(48% 0.09 260); }
 
-    /* Download strip */
     .csv-strip {
       display: flex;
       flex-wrap: wrap;
@@ -1408,12 +1566,22 @@
       margin-bottom: 0.3rem;
     }
 
+    .csv-section-label {
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--t4);
+      margin-top: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
     /* =====================================================================
        LIMITATIONS
     ===================================================================== */
     #limitations { padding: 5.5rem 0; }
 
-    /* Definition list — not cards */
     .limit-dl {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1439,6 +1607,8 @@
       color: var(--red-2);
       margin-bottom: 0.5rem;
     }
+
+    .limit-term.u2-term { color: var(--amber); }
 
     .limit-def {
       font-size: 0.85rem;
@@ -1616,10 +1786,7 @@
       transition: opacity 0.65s var(--ease-out-quart), transform 0.65s var(--ease-out-quart);
     }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     /* =====================================================================
        KEYFRAMES
@@ -1655,7 +1822,7 @@
     }
 
     /* =====================================================================
-       PREFERS REDUCED MOTION — disables all non-essential animation
+       PREFERS REDUCED MOTION
     ===================================================================== */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -1664,24 +1831,13 @@
         transition-duration: 0.001ms !important;
       }
 
-      .hero-eyebrow,
-      .hero-title,
-      .hero-deck,
-      .hero-meta,
-      .hero-actions,
-      .hero-visual,
-      .scroll-hint {
-        opacity: 1;
-        animation: none;
-        transform: none;
+      .hero-eyebrow, .hero-update-badge,
+      .hero-title, .hero-deck, .hero-meta,
+      .hero-actions, .hero-visual, .scroll-hint {
+        opacity: 1; animation: none; transform: none;
       }
 
-      .reveal {
-        opacity: 1;
-        transform: none;
-        transition: none;
-      }
-
+      .reveal { opacity: 1; transform: none; transition: none; }
       .hero-grid-lines { animation: none; }
       .hero-glow-a, .hero-glow-b { animation: none; }
       .nav-brand-dot { animation: none; }
@@ -1690,79 +1846,75 @@
     }
 
     /* =====================================================================
-       HOVER — gated for touch devices
+       HOVER — gated for touch
     ===================================================================== */
     @media (hover: none) {
       .chart-thumb:hover img { transform: none; }
       .phase-block:hover { background: var(--navy-2); }
       .phase-block.shock:hover { background: oklch(12% 0.03 27); }
+      .phase-block.correction:hover { background: oklch(11% 0.03 70); }
+      .phase-block.diplomacy:hover { background: oklch(11% 0.025 240); }
     }
 
     /* =====================================================================
        RESPONSIVE
     ===================================================================== */
+    @media (max-width: 1100px) {
+      .timeline-grid-5 { grid-template-columns: 1fr 1fr 1fr; }
+      .timeline-grid-5 .phase-block:nth-child(1) { grid-column: 1 / -1; }
+
+      .trade-grid { grid-template-columns: repeat(3, 1fr); }
+
+      .corr-val-row { grid-template-columns: repeat(3, 1fr); }
+    }
+
     @media (max-width: 1024px) {
       #hero {
         grid-template-columns: 1fr;
-        padding-top: 7rem;
+        padding-top: 8.5rem;
         padding-bottom: 4rem;
         min-height: auto;
       }
 
       .hero-visual { display: none; }
-
-      .timeline-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .findings-wrap {
-        grid-template-columns: 1fr;
-      }
-
+      .findings-wrap { grid-template-columns: 1fr; }
       .finding-item:first-child { grid-column: 1; }
       .finding-item.right-col { padding-left: 0; border-left: none; border-top: 1px solid var(--b1); }
-
+      .findings-u2-divider { padding-top: 2rem; }
       .corr-grid { grid-template-columns: 1fr; }
-
       .frag-grid { grid-template-columns: 1fr; }
-
       .limit-dl { grid-template-columns: 1fr; }
       .limit-entry:nth-child(even) { padding-left: 0; border-left: none; }
-
       .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
-
       .cta-row { grid-template-columns: 1fr; }
-
       #toc-nav { display: none; }
     }
 
     @media (max-width: 768px) {
       .container { padding: 0 1.25rem; }
-
       .section-pad { padding: 3.5rem 0; }
-
       h2.section-title { font-size: 1.6rem; }
-
       .hero-kpi-row { grid-template-columns: 1fr 1px 1fr; }
-      .hero-kpi-row .hero-kpi-cell:last-child { grid-column: 1 / -1; border-top: 1px solid var(--b-red); }
-
-      .trade-grid { grid-template-columns: 1fr; }
-
+      .hero-kpi-row .hero-kpi-cell:nth-child(5),
+      .hero-kpi-row .hero-kpi-cell:nth-child(7) { grid-column: 1 / -1; border-top: 1px solid var(--b-red); }
+      .hero-kpi-row .hero-kpi-divider:nth-child(4),
+      .hero-kpi-row .hero-kpi-divider:nth-child(6) { display: none; }
+      .trade-grid { grid-template-columns: 1fr 1fr; }
       .context-strip-inner { gap: 1.25rem 2rem; }
-
       .nav-links { display: none; }
       #hamburger { display: flex; }
-
       .cta-buttons { flex-direction: row; flex-wrap: wrap; }
+      .timeline-grid-5 { grid-template-columns: 1fr 1fr; }
+      .timeline-grid-5 .phase-block:nth-child(1) { grid-column: 1 / -1; }
+      .nav-version-bar { padding: 0.28rem 1.25rem; gap: 1rem; }
     }
 
-    @media (max-width: 480px) {
-      .hero-kpi-row {
-        grid-template-columns: 1fr;
-      }
-
+    @media (max-width: 560px) {
+      .timeline-grid-5 { grid-template-columns: 1fr; }
+      .timeline-grid-5 .phase-block:nth-child(1) { grid-column: 1; }
+      .trade-grid { grid-template-columns: 1fr; }
+      .hero-kpi-row { grid-template-columns: 1fr; }
       .hero-kpi-divider { display: none; }
-
       .hero-kpi-cell:last-child { grid-column: 1; }
     }
   </style>
@@ -1771,38 +1923,48 @@
   <a href="#main-content" class="skip-link">Skip to content</a>
   <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
 
-  <!-- ===================================================================
-       LIGHTBOX
-  =================================================================== -->
+  <!-- LIGHTBOX -->
   <div id="lightbox" role="dialog" aria-modal="true" aria-label="Chart viewer">
     <button id="lightbox-close" aria-label="Close chart viewer">&#x2715;</button>
     <img id="lightbox-img" src="" alt="" />
   </div>
 
-  <!-- ===================================================================
-       TOP NAV
-  =================================================================== -->
+  <!-- TOP NAV -->
   <nav id="topnav" aria-label="Site navigation">
-    <a href="#hero" class="nav-brand">
-      <span class="nav-brand-dot" aria-hidden="true"></span>
-      Hormuz&nbsp;2026
-    </a>
+    <div class="nav-main-row">
+      <a href="#hero" class="nav-brand">
+        <span class="nav-brand-dot" aria-hidden="true"></span>
+        Hormuz&nbsp;2026
+      </a>
 
-    <ul class="nav-links" role="list">
-      <li><a href="#timeline">Timeline</a></li>
-      <li><a href="#findings">Findings</a></li>
-      <li><a href="#charts">Charts</a></li>
-      <li><a href="#trade">Trade</a></li>
-      <li><a href="#correlation">Correlations</a></li>
-      <li><a href="#mandates">Mandates</a></li>
-      <li><a href="#data">Data</a></li>
-    </ul>
+      <ul class="nav-links" role="list">
+        <li><a href="#timeline">Timeline</a></li>
+        <li><a href="#findings">Findings</a></li>
+        <li><a href="#charts">Charts</a></li>
+        <li><a href="#trade">Trade</a></li>
+        <li><a href="#correlation">Correlations</a></li>
+        <li><a href="#mandates">Mandates</a></li>
+        <li><a href="#data">Data</a></li>
+      </ul>
 
-    <div class="nav-cta">
-      <a href="https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis" target="_blank" rel="noopener" class="btn-nav-ghost">GitHub</a>
-      <button id="hamburger" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
+      <div class="nav-cta">
+        <a href="https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis" target="_blank" rel="noopener" class="btn-nav-ghost">GitHub</a>
+        <button id="hamburger" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- UPDATE 2 VERSION BANNER -->
+    <div class="nav-version-bar" role="note" aria-label="Update 2 version information">
+      <span class="version-tag">
+        <span class="vtag-pill">Update 2</span>
+        <span class="vtag-text">When Diplomacy Decoupled from Supply</span>
+        <span class="vtag-sep">·</span>
+        <span class="vtag-date">Jun 13, 2026 cutoff</span>
+        <span class="vtag-sep">·</span>
+        <span class="vtag-note">Pre-ceasefire snapshot — Update 3 covers resolution</span>
+      </span>
     </div>
   </nav>
 
@@ -1831,11 +1993,10 @@
   </nav>
 
   <!-- ===================================================================
-       HERO — Asymmetric 60/40
+       HERO
   =================================================================== -->
   <section id="hero" aria-labelledby="hero-title">
 
-    <!-- SVG grid background, transform-only animation -->
     <div class="hero-grid-svg" aria-hidden="true">
       <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
         <g class="hero-grid-lines">
@@ -1854,41 +2015,46 @@
 
     <!-- Left: Content -->
     <div class="hero-content" id="main-content">
+
+      <div class="hero-update-badge" aria-label="Update 2 — expanded analysis">
+        <span class="hero-update-badge-dot" aria-hidden="true"></span>
+        Update 2 &nbsp;·&nbsp; 16 Assets &nbsp;·&nbsp; 5 Phases &nbsp;·&nbsp; 113 Days
+      </div>
+
       <div class="hero-eyebrow" aria-label="Quantitative event study">
         <span class="hero-eyebrow-line" aria-hidden="true"></span>
         Quantitative Event Study
         <span aria-hidden="true">·</span>
-        Feb&ndash;Apr 2026
+        Jan&ndash;Jun 2026
       </div>
 
       <h1 class="hero-title" id="hero-title">
         Hormuz 2026.<br>
-        When Oil Decoupled<br>
-        from <span class="accent-red">Everything.</span>
+        When <span class="accent-amber">Diplomacy</span><br>
+        Decoupled from <span class="accent-red">Supply.</span>
       </h1>
 
       <p class="hero-deck">
-        Over 47 days, the Strait of Hormuz blockade drove WTI crude up
-        <span class="num-red">+86.5%</span> while Exxon fell
-        <span class="num-neg">−1.4%</span>, Gold dropped
-        <span class="num-neg">−9.6%</span>, and a simple long/short pair returned
-        <span class="num-teal">+34.4%</span> with no leverage.
-        Physical oil decoupled from energy equities, safe-haven assets, and dollar hedges simultaneously.
-        Here is what the data proves, and the six mandates it produces.
+        The strait stayed at <span class="num-neg">~2% transit capacity</span> for all of May.
+        WTI still fell <span class="num-amber">~20%</span>. Forward-looking ceasefire expectations
+        overrode current physical reality. The <strong>May Paradox</strong> inverted Update 1's
+        scarcity narrative: diplomacy is a regime, not an afterthought.
+        <span class="num-red">16 assets</span>, <span class="num-teal">5 event windows</span>,
+        new mandates.
       </p>
 
       <div class="hero-meta" aria-label="Study metadata">
         <div class="hero-meta-item">
           <span class="hero-meta-dot" aria-hidden="true"></span>
-          47 trading days
+          113 trading days
         </div>
         <div class="hero-meta-item">
           <span class="hero-meta-dot" aria-hidden="true"></span>
-          6 assets tracked
+          16 assets tracked
         </div>
         <div class="hero-meta-item">
           <span class="hero-meta-dot" aria-hidden="true"></span>
-          2016&ndash;2026 baseline
+          5 event windows
         </div>
         <div class="hero-meta-item">
           <span class="hero-meta-dot" aria-hidden="true"></span>
@@ -1899,9 +2065,9 @@
       <div class="hero-actions">
         <a href="#findings" class="btn btn-primary" id="magnetic-cta">Read the Findings</a>
         <a href="#charts" class="btn btn-secondary">View Charts</a>
-        <a href="notebooks/01_hormuz_analysis_notebook.ipynb" class="btn btn-gold">
+        <a href="blob/main/notebooks/02_hormuz_update2.ipynb" class="btn btn-gold">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-          Notebook
+          Notebook U2
         </a>
       </div>
     </div>
@@ -1909,34 +2075,22 @@
     <!-- Right: Visual panel -->
     <div class="hero-visual" aria-hidden="true">
 
-      <!-- Stylized Strait of Hormuz SVG schematic -->
+      <!-- Strait of Hormuz SVG schematic -->
       <svg class="strait-map" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stylized map of the Strait of Hormuz">
-        <!-- Ocean base -->
         <rect width="340" height="220" fill="oklch(11% 0.02 230)" rx="8"/>
-        <!-- Persian Gulf water -->
         <path d="M10 180 Q40 160 90 155 Q140 150 180 160 Q220 170 260 155 Q290 145 320 140 L330 180 L10 200Z"
               fill="oklch(18% 0.06 220)" opacity="0.8"/>
-        <!-- Gulf of Oman -->
         <path d="M200 100 Q240 90 280 85 Q310 82 330 85 L330 220 L200 220Z"
               fill="oklch(18% 0.06 220)" opacity="0.6"/>
-        <!-- Iran landmass (top) -->
         <path d="M120 0 Q160 10 210 15 Q260 20 310 25 L330 0Z"
               fill="oklch(22% 0.022 240)"/>
-        <!-- Oman/UAE peninsulas -->
         <path d="M190 160 Q210 140 240 130 Q265 125 280 140 Q270 160 250 165 Q220 170 190 160Z"
               fill="oklch(22% 0.022 240)"/>
-        <!-- Musandam peninsula -->
         <path d="M280 85 Q298 80 315 90 Q310 105 295 108 Q280 110 275 100 Q276 90 280 85Z"
               fill="oklch(22% 0.022 240)"/>
-
-        <!-- Strait channel marker -->
         <line x1="240" y1="95" x2="270" y2="150" stroke="oklch(42% 0.18 27)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>
-
-        <!-- Blockade markers -->
         <circle cx="252" cy="120" r="16" stroke="oklch(42% 0.18 27)" stroke-width="1.5" fill="oklch(42% 0.18 27 / 0.12)" opacity="0.9"/>
-        <text x="252" y="124" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="oklch(52% 0.20 27)" letter-spacing="0">47d</text>
-
-        <!-- Ships blocked indicator -->
+        <text x="252" y="124" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="oklch(52% 0.20 27)" letter-spacing="0">~2%</text>
         <g opacity="0.5">
           <rect x="218" y="152" width="18" height="7" rx="2" fill="oklch(52% 0.10 240)"/>
           <path d="M215 155 L218 152" stroke="oklch(52% 0.10 240)" stroke-width="1"/>
@@ -1944,21 +2098,14 @@
         <g opacity="0.35">
           <rect x="225" y="162" width="14" height="6" rx="2" fill="oklch(52% 0.10 240)"/>
         </g>
-
-        <!-- Labels -->
-        <text x="80" y="145" font-family="DM Mono, monospace" font-size="7" fill="oklch(52% 0.10 240)" letter-spacing="0.08em" text-transform="uppercase">Persian Gulf</text>
+        <text x="80" y="145" font-family="DM Mono, monospace" font-size="7" fill="oklch(52% 0.10 240)" letter-spacing="0.08em">Persian Gulf</text>
         <text x="298" y="175" font-family="DM Mono, monospace" font-size="6" fill="oklch(45% 0.08 240)" letter-spacing="0.06em">Gulf of Oman</text>
         <text x="155" y="30" font-family="DM Mono, monospace" font-size="7" fill="oklch(45% 0.08 240)" letter-spacing="0.06em">Iran</text>
         <text x="215" y="185" font-family="DM Mono, monospace" font-size="6" fill="oklch(40% 0.07 240)">UAE / Oman</text>
-
-        <!-- CLOSED label -->
         <rect x="224" y="106" width="42" height="14" rx="2" fill="oklch(42% 0.18 27 / 0.25)" stroke="oklch(42% 0.18 27)" stroke-width="0.5"/>
         <text x="245" y="116" text-anchor="middle" font-family="DM Mono, monospace" font-size="6.5" fill="oklch(52% 0.20 27)" letter-spacing="0.12em">CLOSED</text>
-
-        <!-- Flow arrows (blocked) -->
         <path d="M170 145 L210 128" stroke="oklch(42% 0.18 27)" stroke-width="1" marker-end="url(#arrRed)" opacity="0.6"/>
         <path d="M295 120 L268 128" stroke="oklch(65% 0.12 175)" stroke-width="1" marker-end="url(#arrTeal)" opacity="0.6" stroke-dasharray="3 2"/>
-
         <defs>
           <marker id="arrRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
             <path d="M2 1L8 5L2 9" fill="none" stroke="oklch(42% 0.18 27)" stroke-width="1.5" stroke-linecap="round"/>
@@ -1969,24 +2116,30 @@
         </defs>
       </svg>
 
-      <!-- KPI cluster — three key numbers below map -->
-      <div class="hero-kpi-row">
+      <!-- KPI cluster — 4 KPIs for Update 2 -->
+      <div class="hero-kpi-row" aria-label="Key performance indicators">
         <div class="hero-kpi-cell">
-          <div class="hero-kpi-label">WTI 33-day</div>
+          <div class="hero-kpi-label">WTI Shock</div>
           <div class="hero-kpi-val kv-red">+32.9%</div>
-          <div class="hero-kpi-sub">Shock window</div>
+          <div class="hero-kpi-sub">Feb 28 – Apr 16</div>
         </div>
         <div class="hero-kpi-divider" aria-hidden="true"></div>
-        <div class="hero-kpi-cell pulse-anim" aria-label="WTI/Gold ratio: key regime signal +47 percent">
-          <div class="hero-kpi-label">WTI/Gold ratio</div>
+        <div class="hero-kpi-cell pulse-anim" aria-label="WTI/Gold ratio regime signal">
+          <div class="hero-kpi-label">WTI/Gold Ratio</div>
           <div class="hero-kpi-val kv-gold">+47%</div>
           <div class="hero-kpi-sub">Regime signal</div>
         </div>
         <div class="hero-kpi-divider" aria-hidden="true"></div>
         <div class="hero-kpi-cell">
-          <div class="hero-kpi-label">Pair trade</div>
-          <div class="hero-kpi-val kv-teal">+34.4%</div>
-          <div class="hero-kpi-sub">33 days, no leverage</div>
+          <div class="hero-kpi-label">May Paradox</div>
+          <div class="hero-kpi-val kv-amber">−~20%</div>
+          <div class="hero-kpi-sub">WTI, strait ~2%</div>
+        </div>
+        <div class="hero-kpi-divider" aria-hidden="true"></div>
+        <div class="hero-kpi-cell">
+          <div class="hero-kpi-label">BWET Freight</div>
+          <div class="hero-kpi-val kv-teal">+71.1%</div>
+          <div class="hero-kpi-sub">Shock window</div>
         </div>
       </div>
     </div>
@@ -2000,61 +2153,66 @@
   </section>
 
   <!-- ===================================================================
-       CONTEXT STRIP
+       CONTEXT STRIP (updated for U2)
   =================================================================== -->
   <div class="context-strip reveal" role="complementary" aria-label="Study context">
     <div class="context-strip-inner">
       <div class="context-fact">
         <div class="context-fact-label">Event</div>
-        <div class="context-fact-value">47-Day Strait Closure</div>
+        <div class="context-fact-value">113-Day Strait Crisis (Update 2)</div>
       </div>
       <div class="context-fact">
         <div class="context-fact-label">Duration</div>
-        <div class="context-fact-value">Feb 28 – Apr 17, 2026</div>
+        <div class="context-fact-value">Jan 1 – Jun 13, 2026</div>
       </div>
       <div class="context-fact">
-        <div class="context-fact-label">WTI total period</div>
-        <div class="context-fact-value">+86.5%</div>
+        <div class="context-fact-label">Assets Tracked</div>
+        <div class="context-fact-value">16 assets</div>
       </div>
       <div class="context-fact">
-        <div class="context-fact-label">Gold total period</div>
-        <div class="context-fact-value" style="color: var(--red-2);">+5.3%</div>
+        <div class="context-fact-label">Event Windows</div>
+        <div class="context-fact-value">5 phases</div>
       </div>
       <div class="context-fact">
-        <div class="context-fact-label">Data source</div>
-        <div class="context-fact-value" style="font-size:0.9rem; color: var(--t3); font-family: var(--font-mono)">yfinance (auto_adjust)</div>
+        <div class="context-fact-label">WTI Shock Window</div>
+        <div class="context-fact-value">+32.9%</div>
+      </div>
+      <div class="context-fact">
+        <div class="context-fact-label">Cutoff</div>
+        <div class="context-fact-value" style="font-size:0.95rem;color:var(--amber);font-family:var(--font-mono)">Jun 13 · Pre-ceasefire</div>
       </div>
     </div>
   </div>
 
   <!-- ===================================================================
-       01 TIMELINE — Asymmetric 2fr 1fr 1fr
+       01 TIMELINE — 5-phase extended (NEW U2)
   =================================================================== -->
   <section id="timeline" class="section-pad" aria-labelledby="timeline-title">
     <div class="container">
       <div class="section-header reveal">
         <div class="section-num">01</div>
         <div>
-          <div class="section-label">Three Phases</div>
+          <div class="section-label">Five Phases</div>
           <h2 class="section-title" id="timeline-title">The Event Architecture</h2>
+          <div class="section-u2-badge">Update 2 — Extended to Jun 13, 2026</div>
         </div>
       </div>
 
-      <div class="timeline-grid reveal">
-        <!-- Phase 1: Pre-event (wider — 2fr) -->
+      <div class="timeline-grid-5 reveal">
+        <!-- Phase 1: Pre-event (2fr) -->
         <div class="phase-block pre">
           <div class="phase-badge pre">Pre-Event</div>
-          <div class="phase-dates">Dec 2, 2025 – Feb 27, 2026 · 61 days</div>
+          <div class="phase-dates">Jan 1 – Feb 27, 2026</div>
           <div class="phase-title">Rising Tension, Misread Signals</div>
           <p class="phase-desc">
             Markets saw oil rising alongside energy equities and interpreted this as correlated exposure.
-            WTI climbed +16.9%, XOM gained +25.2%, gold rallied +21.2%. The standard playbook appeared to work.
-            Traders going long oil proxies (XOM, CVX) were positioned for a financial crisis, not a physical supply disruption.
+            WTI climbed +16.9%, XOM gained +25.2%, gold rallied +21.2%.
+            The standard playbook appeared to work. Traders positioned for a financial crisis, not a physical supply disruption.
             When the actual closure arrived, their positions were exactly wrong.
           </p>
           <div class="phase-stat">
             WTI: <span class="pval">+16.9%</span> &nbsp;|&nbsp;
-            XOM: <span class="pval">+25.2%</span> &nbsp;|&nbsp;
+            XOM: <span class="pval">+25.2%</span><br>
             Gold: <span class="pval">+21.2%</span> &nbsp;|&nbsp;
             S&amp;P: <span class="pval">+0.3%</span>
           </div>
@@ -2063,33 +2221,66 @@
         <!-- Phase 2: Shock -->
         <div class="phase-block shock">
           <div class="phase-badge shock">Shock</div>
-          <div class="phase-dates">Feb 28 – Apr 11, 2026 · 33 days</div>
+          <div class="phase-dates">Feb 28 – Apr 16</div>
           <div class="phase-title">Three Simultaneous Regimes</div>
           <p class="phase-desc">
-            Commodity scarcity, equity stability, and safe-haven failure unfolded simultaneously.
-            WTI: +32.9%. XOM: −1.4%. Gold: −9.6%. The pair trade window.
+            Scarcity, equity stability, and safe-haven failure unfolded simultaneously.
+            WTI: +32.9%. XOM: −1.4%. Gold: −9.6%. Freight (BWET): +71.1%. The pair trade window.
           </p>
           <div class="phase-stat">
-            WTI: <span class="pval">+32.9%</span> &nbsp;|&nbsp;
+            WTI: <span class="pval">+32.9%</span><br>
             XOM: <span class="nval">−1.4%</span><br>
-            Gold: <span class="nval">−9.6%</span> &nbsp;|&nbsp;
-            VIX: 31 (moderate)
+            Gold: <span class="nval">−9.6%</span><br>
+            BWET: <span class="pval">+71.1%</span>
           </div>
         </div>
 
         <!-- Phase 3: Reopen -->
-        <div class="phase-block open">
+        <div class="phase-block reopen">
           <div class="phase-badge open">Reopen</div>
-          <div class="phase-dates">Apr 17 – Apr 30, 2026 · 9 days</div>
-          <div class="phase-title">Priced in One Day</div>
+          <div class="phase-dates">Apr 17 – Apr 30</div>
+          <div class="phase-title">False Dawn</div>
           <p class="phase-desc">
-            WTI fell −11.5% on April 17 alone. Airlines did not recover (+0.0% to −10.7%).
-            The reopening was partial: Iran re-closed April 18. The "reopening" is shorthand.
+            WTI fell −11.5% on Apr 17 alone. Iran re-closed Apr 18.
+            Airlines did not recover. The "reopening" is shorthand; it was a negotiation signal, not resolution.
           </p>
           <div class="phase-stat">
-            WTI: <span class="pval">+27.5%</span> (cumulative)<br>
-            JETS: <span class="nval">−10.7%</span> &nbsp;|&nbsp;
+            WTI: <span class="pval">+27.5%</span> cumul.<br>
+            JETS: <span class="nval">−10.7%</span><br>
             Day-1: <span class="nval">−11.5%</span>
+          </div>
+        </div>
+
+        <!-- Phase 4: Correction — May Paradox -->
+        <div class="phase-block correction">
+          <div class="phase-badge correction">Correction</div>
+          <div class="phase-dates">May 1 – May 29</div>
+          <div class="phase-title">The May Paradox</div>
+          <p class="phase-desc">
+            Strait stayed at ~2% capacity. WTI still fell ~20%.
+            Forward-looking diplomacy and ceasefire expectations dominated physical reality.
+            WTI/Gold ratio reversed — the regime signal.
+          </p>
+          <div class="phase-stat">
+            WTI: <span class="aval">−~20%</span><br>
+            Strait: <span class="nval">~2% cap.</span><br>
+            Ratio: <span class="aval">reversed</span>
+          </div>
+        </div>
+
+        <!-- Phase 5: Diplomacy -->
+        <div class="phase-block diplomacy">
+          <div class="phase-badge diplomacy">Diplomacy</div>
+          <div class="phase-dates">May 30 – Jun 13</div>
+          <div class="phase-title">Second Shock, Muted Response</div>
+          <p class="phase-desc">
+            Jun 10 re-escalation produced a smaller day-one WTI move than Feb 28 — evidence of market learning and playbook adoption.
+            Cutoff is pre-ceasefire (announced ~Jun 21–25).
+          </p>
+          <div class="phase-stat">
+            Jun 10: <span class="sval">muted</span><br>
+            BWET: <span class="pval">+20.5%</span><br>
+            ITA: <span class="sval">held</span>
           </div>
         </div>
       </div>
@@ -2097,7 +2288,7 @@
   </section>
 
   <!-- ===================================================================
-       02 FINDINGS — Asymmetric grid, no card containers
+       02 FINDINGS — U1 + U2
   =================================================================== -->
   <section id="findings" class="section-pad" aria-labelledby="findings-title">
     <div class="container">
@@ -2111,9 +2302,9 @@
 
       <div class="findings-wrap reveal">
 
-        <!-- Finding 01: MAIN — full width, no card bg -->
+        <!-- Finding 01: MAIN — full width -->
         <div class="finding-item">
-          <div class="finding-num">Finding 01 — Primary</div>
+          <div class="finding-num">Finding 01 &mdash; Primary</div>
           <div class="finding-title">Energy Equities Are Not Oil Proxies During Supply Shocks</div>
           <p class="finding-body">
             WTI rose +32.9% during the shock window while XOM fell −1.4% and CVX fell −0.8%.
@@ -2121,14 +2312,11 @@
             Market beta of XOM to S&P: −0.02. These assets decoupled entirely.
             Do not use energy equities as commodity hedges during confirmed supply disruptions.
           </p>
-          <!-- Inline sparkline: WTI vs XOM divergence -->
-          <div class="finding-sparkline" aria-label="Sparkline showing WTI and XOM price divergence during shock window">
+          <div class="finding-sparkline" aria-label="WTI and XOM price divergence during shock window">
             <svg width="320" height="52" viewBox="0 0 320 52">
               <line x1="0" y1="26" x2="320" y2="26" stroke="oklch(30% 0.018 240)" stroke-width="0.5" stroke-dasharray="3 3"/>
-              <!-- WTI line: strong upward -->
               <polyline points="0,38 40,32 80,24 120,16 160,10 200,6 240,4 280,2 320,2"
                         fill="none" stroke="oklch(52% 0.20 27)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- XOM line: flat to slight negative -->
               <polyline points="0,26 40,26 80,27 120,28 160,29 200,30 240,30 280,31 320,32"
                         fill="none" stroke="oklch(52% 0.10 240)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 2"/>
               <text x="4"   y="8"  font-family="DM Mono,monospace" font-size="8" fill="oklch(52% 0.20 27)">WTI +32.9%</text>
@@ -2146,8 +2334,7 @@
             creating margin pressure. The pattern is consistent with forced liquidation by overleveraged longs
             needing to meet oil margin calls. Abnormal return: −25.0%.
           </p>
-          <!-- Gold sparkline: rally then crash -->
-          <div class="finding-sparkline" aria-label="Sparkline showing gold price rally then drop">
+          <div class="finding-sparkline" aria-label="Gold price rally then drop">
             <svg width="200" height="48" viewBox="0 0 200 48">
               <polyline points="0,40 30,32 60,22 90,14 120,14 150,22 170,30 185,36 200,42"
                         fill="none" stroke="oklch(72% 0.10 85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2165,7 +2352,7 @@
           <p class="finding-body">
             WTI/Gold ratio rose +47% during the shock. This is the single most reliable indicator
             distinguishing supply shock from financial crisis. In a financial crisis, both fall.
-            In a supply shock, ratio diverges sharply. Monitor it before deploying any position.
+            In a supply shock, ratio diverges sharply. In May, the ratio reversed — signaling the diplomacy regime.
           </p>
         </div>
 
@@ -2175,8 +2362,8 @@
           <div class="finding-title">Supply Shock vs. Financial Crisis: Different Playbook</div>
           <p class="finding-body">
             VIX reached 31 (moderate). Credit spreads: unchanged. S&P 500 fell only −7.8% max drawdown.
-            This was not systemic stress. Standard risk-off (buy gold, buy vol, dump equities) failed
-            because the mechanism was physical scarcity, not financial contagion.
+            This was not systemic stress. Standard risk-off playbook failed because the mechanism
+            was physical scarcity, not financial contagion.
           </p>
         </div>
 
@@ -2198,11 +2385,11 @@
           <p class="finding-body">
             DXY/WTI correlation flipped from −0.24 to +0.60. Oil and dollar rose together.
             The traditional oil-dollar inverse relationship broke down entirely.
-            Physical scarcity dominated all currency effects. DXY technicals were noise.
+            Physical scarcity dominated all currency effects.
           </p>
         </div>
 
-        <!-- Market fragmentation box — full width -->
+        <!-- Market fragmentation box -->
         <div class="fragmentation-box">
           <div class="frag-label">Market Fragmentation: Three Simultaneous Regimes During Shock</div>
           <div class="frag-grid">
@@ -2219,9 +2406,102 @@
             <div class="frag-cell">
               <div class="frag-cell-label">Regime C: Failure</div>
               <div class="frag-cell-title" style="color: var(--gold);">Safe Havens</div>
-              <p class="frag-cell-desc">Gold −9.6%. Margin pressure liquidated pre-event safe-haven longs.</p>
+              <p class="frag-cell-desc">Gold −9.6%. TLT −3.3%. Both halves of a traditional 60/40 hedge underperformed in the acute phase.</p>
             </div>
           </div>
+        </div>
+
+        <!-- UPDATE 2 FINDINGS DIVIDER -->
+        <div class="findings-u2-divider">
+          <span class="findings-u2-divider-label">Update 2 Findings &mdash; Jun 13, 2026</span>
+          <span class="findings-u2-divider-line"></span>
+        </div>
+
+        <!-- Finding 07: May Paradox — PRIMARY U2, full width -->
+        <div class="finding-item" style="grid-column: 1 / -1;">
+          <div class="finding-num u2-num">Finding 07 &mdash; May Paradox (Primary)</div>
+          <div class="finding-title">Diplomacy Overrode Physical Scarcity</div>
+          <p class="finding-body">
+            WTI fell approximately 20% during May while the Strait of Hormuz remained at roughly 2% transit capacity.
+            Forward-looking ceasefire expectations dominated current physical reality. The WTI/Gold ratio reversed sharply
+            in early May — the same signal that identified the supply shock in February, now signaling its end.
+            This inverts Update 1's scarcity-driven narrative: a closed chokepoint is not a standing instruction to stay long the commodity.
+          </p>
+          <!-- Sparkline: WTI across 5 phases -->
+          <div class="finding-sparkline" aria-label="WTI across all 5 phases showing May decline despite closed strait">
+            <svg width="380" height="56" viewBox="0 0 380 56">
+              <line x1="0" y1="32" x2="380" y2="32" stroke="oklch(30% 0.018 240)" stroke-width="0.5" stroke-dasharray="3 3"/>
+              <!-- Pre: gradual rise -->
+              <polyline points="0,40 60,34" fill="none" stroke="oklch(52% 0.10 240)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Shock: surge -->
+              <polyline points="60,34 130,10" fill="none" stroke="oklch(52% 0.20 27)" stroke-width="2" stroke-linecap="round"/>
+              <!-- Reopen: brief dip -->
+              <polyline points="130,10 165,18" fill="none" stroke="oklch(65% 0.12 175)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Correction: drop -->
+              <polyline points="165,18 260,36" fill="none" stroke="oklch(68% 0.14 70)" stroke-width="2" stroke-linecap="round"/>
+              <!-- Diplomacy: stabilise -->
+              <polyline points="260,36 380,34" fill="none" stroke="oklch(55% 0.10 240)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Phase markers -->
+              <line x1="60"  y1="0" x2="60"  y2="56" stroke="oklch(42% 0.18 27 / 0.4)" stroke-width="0.8" stroke-dasharray="2 2"/>
+              <line x1="130" y1="0" x2="130" y2="56" stroke="oklch(65% 0.12 175 / 0.4)" stroke-width="0.8" stroke-dasharray="2 2"/>
+              <line x1="165" y1="0" x2="165" y2="56" stroke="oklch(68% 0.14 70 / 0.4)" stroke-width="0.8" stroke-dasharray="2 2"/>
+              <line x1="260" y1="0" x2="260" y2="56" stroke="oklch(55% 0.10 240 / 0.4)" stroke-width="0.8" stroke-dasharray="2 2"/>
+              <!-- Labels -->
+              <text x="2"   y="54" font-family="DM Mono,monospace" font-size="6.5" fill="oklch(45% 0.08 240)">Pre</text>
+              <text x="65"  y="54" font-family="DM Mono,monospace" font-size="6.5" fill="oklch(52% 0.20 27)">Shock +32.9%</text>
+              <text x="134" y="54" font-family="DM Mono,monospace" font-size="6.5" fill="oklch(65% 0.12 175)">Reopen</text>
+              <text x="168" y="54" font-family="DM Mono,monospace" font-size="6.5" fill="oklch(68% 0.14 70)">May −~20%</text>
+              <text x="264" y="54" font-family="DM Mono,monospace" font-size="6.5" fill="oklch(55% 0.10 240)">Dipl.</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Finding 08 -->
+        <div class="finding-item">
+          <div class="finding-num u2-num">Finding 08</div>
+          <div class="finding-title">Defense Is a Backlog Trade, Not a War Trade</div>
+          <p class="finding-body">
+            ITA (Aerospace &amp; Defense ETF) reacted strongly on day one of the shock (+4–6% for constituents),
+            then held through the correction window (+8.9% vs. broader market drawdown).
+            Multi-year order backlogs buffered it against peace-process price swings.
+            Defense equities have a different duration profile than spot oil exposure.
+          </p>
+        </div>
+
+        <!-- Finding 09 — right col -->
+        <div class="finding-item right-col">
+          <div class="finding-num u2-num">Finding 09</div>
+          <div class="finding-title">Freight Futures: A Third Decoupling Layer</div>
+          <p class="finding-body">
+            BWET (tanker freight ETF) returned +71.1% in the shock window while WTI returned +32.9%.
+            Shipping scarcity priced a different exposure than the commodity itself.
+            Supply shocks create multi-layer dislocations: physical oil, producer equities, and logistics all behave differently.
+          </p>
+          <div class="caveat-pill" title="BWET launched May 2023 — limited 2-year history. Low AUM. Signal only, not investable at scale.">
+            &#9888; Limited history (BWET May 2023)
+          </div>
+        </div>
+
+        <!-- Finding 10 -->
+        <div class="finding-item">
+          <div class="finding-num u2-num">Finding 10</div>
+          <div class="finding-title">Bonds Failed the Same Test Gold Did</div>
+          <p class="finding-body">
+            TLT (20+ Year Treasury ETF) fell −3.3% during the shock window. Combined with gold's −9.6%,
+            both halves of a traditional 60/40 hedge underperformed during the acute phase.
+            Supply-shock inflation dynamics can undermine both gold and duration simultaneously.
+          </p>
+        </div>
+
+        <!-- Finding 11 — right col -->
+        <div class="finding-item right-col">
+          <div class="finding-num u2-num">Finding 11</div>
+          <div class="finding-title">The Second Shock Was Muted</div>
+          <p class="finding-body">
+            The Jun 10 re-escalation produced a smaller day-one WTI move than Feb 28.
+            Market learning: once a playbook exists for a repeat event, the reaction is faster and the amplitude is smaller.
+            The Jun 10 reaction also provided confirmation of the diplomacy-driven regime — the market had already priced a negotiated outcome.
+          </p>
         </div>
 
       </div>
@@ -2229,7 +2509,7 @@
   </section>
 
   <!-- ===================================================================
-       03 CHARTS
+       03 CHARTS (Updated with U2 tab)
   =================================================================== -->
   <section id="charts" class="section-pad" aria-labelledby="charts-title">
     <div class="container">
@@ -2243,23 +2523,26 @@
 
       <div class="reveal">
         <div class="chart-tabs" role="tablist" aria-label="Chart views">
-          <button class="tab-btn active" data-tab="main" role="tab" aria-selected="true" aria-controls="tab-main">Primary</button>
-          <button class="tab-btn" data-tab="compare"  role="tab" aria-selected="false" aria-controls="tab-compare">Counterfactual</button>
-          <button class="tab-btn" data-tab="seasonal" role="tab" aria-selected="false" aria-controls="tab-seasonal">Seasonal</button>
-          <button class="tab-btn" data-tab="vol"      role="tab" aria-selected="false" aria-controls="tab-vol">Volatility</button>
-          <button class="tab-btn" data-tab="all"      role="tab" aria-selected="false" aria-controls="tab-all">All 20 Charts</button>
+          <button class="tab-btn active" data-tab="main"    role="tab" aria-selected="true"  aria-controls="tab-main">Primary</button>
+          <button class="tab-btn" data-tab="compare"        role="tab" aria-selected="false" aria-controls="tab-compare">Counterfactual</button>
+          <button class="tab-btn" data-tab="seasonal"       role="tab" aria-selected="false" aria-controls="tab-seasonal">Seasonal</button>
+          <button class="tab-btn" data-tab="vol"            role="tab" aria-selected="false" aria-controls="tab-vol">Volatility</button>
+          <button class="tab-btn tab-u2" data-tab="u2hero"  role="tab" aria-selected="false" aria-controls="tab-u2hero">Update 2 Hero</button>
+          <button class="tab-btn tab-u2" data-tab="u2new"   role="tab" aria-selected="false" aria-controls="tab-u2new">Update 2 Charts</button>
+          <button class="tab-btn" data-tab="all"            role="tab" aria-selected="false" aria-controls="tab-all">All 30 Charts</button>
         </div>
 
+        <!-- Tab: Primary -->
         <div id="tab-main" class="tab-panel active chart-viewer" role="tabpanel">
           <img class="chart-main-img" src="outputs/01_normalised_prices.png"
-               alt="Normalised price paths for WTI, S&P 500, Gold, XOM, CVX, and JETS across the three study phases"
+               alt="Normalised price paths for WTI, S&P 500, Gold, XOM, CVX, and JETS across the three original study phases"
                loading="eager" onclick="openLightbox(this.src, this.alt)" />
           <div class="chart-caption">
-            Normalised price paths (base = 100, Dec 2, 2025). The divergence at Feb 28 is the clearest visual proof of decoupling:
-            WTI separates sharply upward while equities and gold fail to follow.
+            Original normalised price paths (base = 100, Jan 1, 2026). The divergence at Feb 28 is the clearest visual proof of decoupling: WTI separates sharply upward while equities and gold fail to follow.
           </div>
         </div>
 
+        <!-- Tab: Counterfactual -->
         <div id="tab-compare" class="tab-panel chart-viewer" role="tabpanel">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
             <img class="chart-main-img" src="outputs/06_counterfactual.png"
@@ -2274,143 +2557,213 @@
           </div>
         </div>
 
+        <!-- Tab: Seasonal -->
         <div id="tab-seasonal" class="tab-panel chart-viewer" role="tabpanel">
-          <img class="chart-main-img" src="outputs/02_seasonal_baseline.png"
-               alt="Seasonal baseline: Jan-Apr returns by year 2021-2026"
+          <img class="chart-main-img" src="outputs/update_2/charts/02_seasonal_baseline_u2.png"
+               alt="Seasonal baseline (Update 2): Jan-Jun returns by year 2021-2026, 16 assets"
                loading="lazy" onclick="openLightbox(this.src, this.alt)" />
           <div class="chart-caption">
-            Jan-Apr seasonal baseline (2021-2026). 2026 WTI at +86.5% dwarfs the 5-year average of +13.4%.
-            Gold's 2026 return (+5.3%) is below its 5-year average (+8.1%), masking the −9.6% shock-window drop.
+            Jan–Jun seasonal baseline (2021–2026), updated to 16 assets and full timeline. 2026 WTI's shock-window surge and May correction are both visible against the historical range.
           </div>
         </div>
 
+        <!-- Tab: Volatility -->
         <div id="tab-vol" class="tab-panel chart-viewer" role="tabpanel">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
-            <img class="chart-main-img" src="outputs/09_vol_comparison.png"
-                 alt="Volatility comparison across years"
+            <img class="chart-main-img" src="outputs/03_rolling_volatility.png"
+                 alt="Rolling volatility across event windows"
+                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
+            <img class="chart-main-img" src="outputs/update_2/charts/04_rolling_correlation_u2.png"
+                 alt="Rolling correlation (Update 2) — 5 windows"
+                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
+          </div>
+          <div class="chart-caption">
+            Rolling volatility and correlation updated through Jun 13. WTI volatility peaks at the shock onset and again (smaller) at the Jun 10 re-escalation — market learning is visible in the amplitude difference.
+          </div>
+        </div>
+
+        <!-- Tab: Update 2 Hero -->
+        <div id="tab-u2hero" class="tab-panel chart-viewer" role="tabpanel">
+          <img class="chart-main-img" src="outputs/update_2/charts/21_five_window_full_timeline.png"
+               alt="Five-window full timeline — all 16 assets across 5 phases (Jan 1 – Jun 13, 2026)"
+               loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:540px;" />
+          <div class="chart-caption">
+            Hero chart for Update 2: all 16 assets, normalised, across all 5 event phases. The May Paradox is clearly visible — WTI corrects sharply while the strait remains closed. The WTI/Gold ratio reversal in May is the clearest regime-change signal.
+          </div>
+        </div>
+
+        <!-- Tab: Update 2 Charts -->
+        <div id="tab-u2new" class="tab-panel chart-viewer" role="tabpanel">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
+            <img class="chart-main-img" src="outputs/update_2/charts/28_oil_gold_ratio_full_timeline.png"
+                 alt="WTI/Gold ratio across all 5 windows — regime signal full timeline"
                  loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
-            <img class="chart-main-img" src="outputs/08_vix_fear_gauge.png"
-                 alt="VIX fear gauge during the event"
+            <img class="chart-main-img" src="outputs/update_2/charts/23_freight_vs_oil_third_decoupling.png"
+                 alt="Freight vs Oil: BWET vs WTI — third decoupling layer"
                  loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
           </div>
           <div class="chart-caption">
-            WTI realized vol hit 98.5% annualized. VIX peaked at 31. The disconnect between commodity vol and equity fear is central to the supply-shock thesis.
+            Left: WTI/Gold ratio full timeline — rising through shock, reversing sharply in May (diplomacy regime entry). Right: BWET vs WTI showing freight's +71.1% shock-window outperformance of crude — the third decoupling layer.
           </div>
         </div>
 
+        <!-- Tab: All 30 Charts -->
         <div id="tab-all" class="tab-panel" role="tabpanel">
           <div class="chart-thumb-grid">
-            <div class="chart-thumb" onclick="openLightbox('outputs/01_normalised_prices.png','Normalised Price Paths')" role="button" tabindex="0" aria-label="View Normalised Price Paths chart">
-              <img src="outputs/01_normalised_prices.png" alt="01 Normalised Prices" loading="lazy" />
+            <!-- Update 1 charts -->
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/01_normalised_prices.png','Normalised price paths')">
+              <img src="outputs/01_normalised_prices.png" alt="Normalised prices" loading="lazy" />
               <div class="chart-thumb-label">01 · Normalised Prices</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/02_seasonal_baseline.png','Seasonal Baseline')" role="button" tabindex="0" aria-label="View Seasonal Baseline chart">
-              <img src="outputs/02_seasonal_baseline.png" alt="02 Seasonal Baseline" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/02_seasonal_baseline.png','Seasonal baseline')">
+              <img src="outputs/02_seasonal_baseline.png" alt="Seasonal baseline" loading="lazy" />
               <div class="chart-thumb-label">02 · Seasonal Baseline</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/03_rolling_volatility.png','Rolling Volatility')" role="button" tabindex="0" aria-label="View Rolling Volatility chart">
-              <img src="outputs/03_rolling_volatility.png" alt="03 Rolling Volatility" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/03_rolling_volatility.png','Rolling volatility')">
+              <img src="outputs/03_rolling_volatility.png" alt="Rolling volatility" loading="lazy" />
               <div class="chart-thumb-label">03 · Rolling Volatility</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/04_rolling_correlation.png','Rolling Correlation')" role="button" tabindex="0" aria-label="View Rolling Correlation chart">
-              <img src="outputs/04_rolling_correlation.png" alt="04 Rolling Correlation" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/04_rolling_correlation.png','Rolling correlation')">
+              <img src="outputs/04_rolling_correlation.png" alt="Rolling correlation" loading="lazy" />
               <div class="chart-thumb-label">04 · Rolling Correlation</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/05_abnormal_returns.png','Abnormal Returns')" role="button" tabindex="0" aria-label="View Abnormal Returns chart">
-              <img src="outputs/05_abnormal_returns.png" alt="05 Abnormal Returns" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/05_abnormal_returns.png','Abnormal returns')">
+              <img src="outputs/05_abnormal_returns.png" alt="Abnormal returns" loading="lazy" />
               <div class="chart-thumb-label">05 · Abnormal Returns</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/06_counterfactual.png','Counterfactual')" role="button" tabindex="0" aria-label="View Counterfactual chart">
-              <img src="outputs/06_counterfactual.png" alt="06 Counterfactual" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/06_counterfactual.png','Counterfactual')">
+              <img src="outputs/06_counterfactual.png" alt="Counterfactual" loading="lazy" />
               <div class="chart-thumb-label">06 · Counterfactual</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/07_sector_portfolio.png','Sector Portfolio')" role="button" tabindex="0" aria-label="View Sector Portfolio chart">
-              <img src="outputs/07_sector_portfolio.png" alt="07 Sector Portfolio" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/07_sector_portfolio.png','Sector portfolio')">
+              <img src="outputs/07_sector_portfolio.png" alt="Sector portfolio" loading="lazy" />
               <div class="chart-thumb-label">07 · Sector Portfolio</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/08_vix_fear_gauge.png','VIX Fear Gauge')" role="button" tabindex="0" aria-label="View VIX Fear Gauge chart">
-              <img src="outputs/08_vix_fear_gauge.png" alt="08 VIX Fear Gauge" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/08_vix_fear_gauge.png','VIX fear gauge')">
+              <img src="outputs/08_vix_fear_gauge.png" alt="VIX" loading="lazy" />
               <div class="chart-thumb-label">08 · VIX Fear Gauge</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/09_vol_comparison.png','Vol Comparison')" role="button" tabindex="0" aria-label="View Vol Comparison chart">
-              <img src="outputs/09_vol_comparison.png" alt="09 Vol Comparison" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/09_vol_comparison.png','Vol comparison')">
+              <img src="outputs/09_vol_comparison.png" alt="Vol comparison" loading="lazy" />
               <div class="chart-thumb-label">09 · Vol Comparison</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/10_transmission_speed.png','Transmission Speed')" role="button" tabindex="0" aria-label="View Transmission Speed chart">
-              <img src="outputs/10_transmission_speed.png" alt="10 Transmission Speed" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/10_transmission_speed.png','Transmission speed')">
+              <img src="outputs/10_transmission_speed.png" alt="Transmission speed" loading="lazy" />
               <div class="chart-thumb-label">10 · Transmission Speed</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/11_first_day_reactions.png','First Day Reactions')" role="button" tabindex="0" aria-label="View First Day Reactions chart">
-              <img src="outputs/11_first_day_reactions.png" alt="11 First Day Reactions" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/11_first_day_reactions.png','First day reactions')">
+              <img src="outputs/11_first_day_reactions.png" alt="First day reactions" loading="lazy" />
               <div class="chart-thumb-label">11 · First-Day Reactions</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/12_lead_lag_ccf.png','Lead Lag CCF')" role="button" tabindex="0" aria-label="View Lead Lag CCF chart">
-              <img src="outputs/12_lead_lag_ccf.png" alt="12 Lead Lag CCF" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/12_lead_lag_ccf.png','Lead-lag CCF')">
+              <img src="outputs/12_lead_lag_ccf.png" alt="Lead-lag CCF" loading="lazy" />
               <div class="chart-thumb-label">12 · Lead-Lag CCF</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/13_rolling_beta.png','Rolling Beta')" role="button" tabindex="0" aria-label="View Rolling Beta chart">
-              <img src="outputs/13_rolling_beta.png" alt="13 Rolling Beta" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/13_rolling_beta.png','Rolling beta')">
+              <img src="outputs/13_rolling_beta.png" alt="Rolling beta" loading="lazy" />
               <div class="chart-thumb-label">13 · Rolling Beta</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/14_dxy_decomposition.png','DXY Decomposition')" role="button" tabindex="0" aria-label="View DXY Decomposition chart">
-              <img src="outputs/14_dxy_decomposition.png" alt="14 DXY Decomposition" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/14_dxy_decomposition.png','DXY decomposition')">
+              <img src="outputs/14_dxy_decomposition.png" alt="DXY" loading="lazy" />
               <div class="chart-thumb-label">14 · DXY Decomposition</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/15_vol_regime.png','Vol Regime')" role="button" tabindex="0" aria-label="View Vol Regime chart">
-              <img src="outputs/15_vol_regime.png" alt="15 Vol Regime" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/15_vol_regime.png','Vol regime')">
+              <img src="outputs/15_vol_regime.png" alt="Vol regime" loading="lazy" />
               <div class="chart-thumb-label">15 · Vol Regime</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/16_international_spillover.png','International Spillover')" role="button" tabindex="0" aria-label="View International Spillover chart">
-              <img src="outputs/16_international_spillover.png" alt="16 International Spillover" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/16_international_spillover.png','International spillover')">
+              <img src="outputs/16_international_spillover.png" alt="International spillover" loading="lazy" />
               <div class="chart-thumb-label">16 · Intl Spillover</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/17_oil_gold_ratio.png','Oil Gold Ratio')" role="button" tabindex="0" aria-label="View Oil Gold Ratio chart">
-              <img src="outputs/17_oil_gold_ratio.png" alt="17 Oil Gold Ratio" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/17_oil_gold_ratio.png','Oil-gold ratio')">
+              <img src="outputs/17_oil_gold_ratio.png" alt="Oil-gold ratio" loading="lazy" />
               <div class="chart-thumb-label">17 · Oil/Gold Ratio</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/18_sector_heatmap.png','Sector Heatmap')" role="button" tabindex="0" aria-label="View Sector Heatmap chart">
-              <img src="outputs/18_sector_heatmap.png" alt="18 Sector Heatmap" loading="lazy" />
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/18_sector_heatmap.png','Sector heatmap')">
+              <img src="outputs/18_sector_heatmap.png" alt="Sector heatmap" loading="lazy" />
               <div class="chart-thumb-label">18 · Sector Heatmap</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/19_long_short_wti_xom.png','Long WTI Short XOM')" role="button" tabindex="0" aria-label="View Long WTI Short XOM chart">
-              <img src="outputs/19_long_short_wti_xom.png" alt="19 Long WTI Short XOM" loading="lazy" />
-              <div class="chart-thumb-label">19 · Long WTI / Short XOM</div>
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/19_long_short_wti_xom.png','Long WTI Short XOM')">
+              <img src="outputs/19_long_short_wti_xom.png" alt="Pair trade" loading="lazy" />
+              <div class="chart-thumb-label">19 · Pair Trade P&L</div>
             </div>
-            <div class="chart-thumb" onclick="openLightbox('outputs/20_three_panel_performance.png','Three Panel Performance')" role="button" tabindex="0" aria-label="View Three Panel Performance chart">
-              <img src="outputs/20_three_panel_performance.png" alt="20 Three Panel Performance" loading="lazy" />
-              <div class="chart-thumb-label">20 · Three-Panel Performance</div>
+            <div class="chart-thumb" tabindex="0" onclick="openLightbox('outputs/20_three_panel_performance.png','Three panel performance')">
+              <img src="outputs/20_three_panel_performance.png" alt="Three panel" loading="lazy" />
+              <div class="chart-thumb-label">20 · Three-Panel</div>
+            </div>
+            <!-- Update 2 charts -->
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/21_five_window_full_timeline.png','Five-window full timeline — all 16 assets')">
+              <img src="outputs/update_2/charts/21_five_window_full_timeline.png" alt="Five-window full timeline" loading="lazy" />
+              <div class="chart-thumb-label">21 · Five-Window Timeline</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/22_defense_ita_analysis.png','Defense ITA analysis')">
+              <img src="outputs/update_2/charts/22_defense_ita_analysis.png" alt="Defense ITA" loading="lazy" />
+              <div class="chart-thumb-label">22 · Defense (ITA)</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/23_freight_vs_oil_third_decoupling.png','Freight vs oil third decoupling')">
+              <img src="outputs/update_2/charts/23_freight_vs_oil_third_decoupling.png" alt="Freight vs oil" loading="lazy" />
+              <div class="chart-thumb-label">23 · Freight/Oil Decoupling</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/24_tlt_treasury_safe_haven.png','TLT safe haven test')">
+              <img src="outputs/update_2/charts/24_tlt_treasury_safe_haven.png" alt="TLT safe haven" loading="lazy" />
+              <div class="chart-thumb-label">24 · TLT Safe-Haven Test</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/25_aramco_exporter_perspective.png','Aramco exporter perspective')">
+              <img src="outputs/update_2/charts/25_aramco_exporter_perspective.png" alt="Aramco" loading="lazy" />
+              <div class="chart-thumb-label">25 · Aramco Exporter</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/26_xle_wti_pair_trades.png','XLE vs WTI pair trades')">
+              <img src="outputs/update_2/charts/26_xle_wti_pair_trades.png" alt="XLE WTI pair" loading="lazy" />
+              <div class="chart-thumb-label">26 · XLE/WTI Pair Trade</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/27_escalation_replay.png','Escalation replay')">
+              <img src="outputs/update_2/charts/27_escalation_replay.png" alt="Escalation replay" loading="lazy" />
+              <div class="chart-thumb-label">27 · Escalation Replay</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/28_oil_gold_ratio_full_timeline.png','Oil gold ratio full timeline')">
+              <img src="outputs/update_2/charts/28_oil_gold_ratio_full_timeline.png" alt="Oil gold ratio" loading="lazy" />
+              <div class="chart-thumb-label">28 · Oil/Gold Ratio Full</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/29_all_pair_trades_pnl.png','All pair trades PnL')">
+              <img src="outputs/update_2/charts/29_all_pair_trades_pnl.png" alt="All pair trades" loading="lazy" />
+              <div class="chart-thumb-label">29 · All Pair Trades P&L</div>
+            </div>
+            <div class="chart-thumb chart-thumb-u2" tabindex="0" onclick="openLightbox('outputs/update_2/charts/30_16x5_full_heatmap.png','16x5 full heatmap')">
+              <img src="outputs/update_2/charts/30_16x5_full_heatmap.png" alt="16x5 heatmap" loading="lazy" />
+              <div class="chart-thumb-label">30 · 16×5 Full Heatmap</div>
             </div>
           </div>
-          <p style="margin-top:0.85rem;font-size:0.75rem;color:var(--t4);font-style:italic;">Click any chart to view full size. Generated from yfinance data with matplotlib/seaborn.</p>
         </div>
+
       </div>
     </div>
   </section>
 
   <!-- ===================================================================
-       04 PAIR TRADE — Liquid glass card
+       04 PAIR TRADE — Updated with 5-phase view
   =================================================================== -->
   <section id="trade" class="section-pad" aria-labelledby="trade-title">
     <div class="container">
       <div class="section-header reveal">
         <div class="section-num">04</div>
         <div>
-          <div class="section-label">The Exploitable Dislocation</div>
-          <h2 class="section-title" id="trade-title">The Pair Trade That Worked</h2>
+          <div class="section-label">Signal &amp; Timing</div>
+          <h2 class="section-title" id="trade-title">The Pair Trade &amp; Exit Signal</h2>
         </div>
       </div>
 
       <div class="trade-card reveal">
-        <p class="trade-header">
+        <div class="trade-header">
           <span class="long">Long WTI</span>
-          &thinsp;/&thinsp;
+          <span style="color:var(--t4);font-size:0.7em;font-weight:400;padding:0 0.5rem;">/</span>
           <span class="short">Short XOM</span>
-        </p>
+          <span style="color:var(--t4);font-size:0.7em;font-weight:400;padding:0 0.5rem;">&mdash; Extended 5-Phase View</span>
+        </div>
+
         <p class="trade-desc">
-          The decoupling between physical oil and energy equities was not just a finding. It was a trade.
-          XOM fell −1.5% while WTI rose +32.9% during the same 33-day closure window.
-          The pair returned <strong style="color:var(--teal)">+34.4%</strong> with no leverage.
-          Hover the Shock Window column to see the daily progression.
+          The shock-window pair trade (+34.4%) worked because physical oil and energy equities operated in different regimes.
+          Update 2 adds the critical exit signal: the WTI/Gold ratio reversal in early May. Traders who watched the negotiation
+          rather than the blockade would have exited in April. Those who didn't, held through the May Paradox.
         </p>
 
         <div class="trade-grid">
@@ -2421,13 +2774,11 @@
             <div class="trade-total"><span>Combined</span><span class="trade-result" style="color:var(--red-2)">−8.2%</span></div>
           </div>
 
-          <!-- Shock Window: active, with hover-to-reveal -->
-          <div class="trade-phase active" aria-label="Shock Window: the profitable window. Hover to see daily progression.">
-            <div class="trade-phase-label">Shock Window: The Trade</div>
+          <div class="trade-phase active" aria-label="Shock window — the profitable entry. Hover to see progression.">
+            <div class="trade-phase-label">Shock: The Trade</div>
             <div class="trade-row"><span>Long WTI</span><span style="color:var(--teal)">+32.9%</span></div>
             <div class="trade-row"><span>Short XOM</span><span style="color:var(--teal)">+1.5%</span></div>
             <div class="trade-total"><span>Combined</span><span class="trade-result" style="color:var(--teal)">+34.4%</span></div>
-            <!-- Clip-path reveal: slow in, fast out -->
             <div class="trade-reveal-wrap">
               <div class="trade-reveal-content">
                 <div style="padding-top:0.85rem;border-top:1px solid oklch(65% 0.12 175 / 0.2);margin-top:0.6rem;">
@@ -2448,26 +2799,48 @@
             <div class="trade-row"><span>Short XOM</span><span style="color:var(--red-2)">−5.6%</span></div>
             <div class="trade-total"><span>Combined</span><span class="trade-result" style="color:var(--teal)">+21.8%</span></div>
           </div>
+
+          <div class="trade-phase correction-exit">
+            <div class="trade-phase-label">Correction: Exit Zone</div>
+            <div class="trade-row"><span>WTI/Gold</span><span style="color:var(--amber)">Reversed</span></div>
+            <div class="trade-row"><span>WTI</span><span style="color:var(--red-2)">−~20%</span></div>
+            <div class="trade-total"><span>Signal</span><span class="trade-result" style="color:var(--amber)">Exit here</span></div>
+          </div>
+
+          <div class="trade-phase">
+            <div class="trade-phase-label">Diplomacy: New Regime</div>
+            <div class="trade-row"><span>WTI</span><span style="color:var(--steel)">Stabilised</span></div>
+            <div class="trade-row"><span>BWET</span><span style="color:var(--teal)">+20.5%</span></div>
+            <div class="trade-total"><span>Regime</span><span class="trade-result" style="color:var(--steel)">Diplomacy</span></div>
+          </div>
         </div>
 
-        <div class="trade-caveat">
+        <div class="trade-exit-note">
+          <span class="trade-exit-note-icon">Mandate VII &rarr;</span>
+          <span>A closed chokepoint is not a standing instruction to stay long the commodity. Once a credible diplomatic track exists, monitor the negotiation, not just the blockade. Exit the pair trade on WTI/Gold ratio reversal — not on the ceasefire announcement itself.</span>
+        </div>
+
+        <div class="trade-caveat" style="margin-top:1rem;">
           <strong>Caveat (non-negotiable):</strong>
           All returns assume zero borrow costs, no futures roll, no slippage.
           Real-world execution costs reduce P&L materially.
-          The pre-event loss (−8.2%) is important context. Going in too early was expensive.
-          The trade rewarded those who waited for WTI/Gold ratio confirmation, not those who anticipated speculatively.
+          The pre-event loss (−8.2%) is important context: the trade rewarded those who waited for WTI/Gold ratio confirmation.
           This is a directional finding, not a trade recommendation.
         </div>
       </div>
 
       <div style="margin-top:1.25rem;" class="reveal">
         <div class="chart-viewer">
-          <img class="chart-main-img" src="outputs/19_long_short_wti_xom.png"
-               alt="Long WTI / Short XOM pair trade P&L across the three phases"
-               loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:340px;" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
+            <img class="chart-main-img" src="outputs/19_long_short_wti_xom.png"
+                 alt="Long WTI / Short XOM pair trade P&L across the three phases"
+                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+            <img class="chart-main-img" src="outputs/update_2/charts/29_all_pair_trades_pnl.png"
+                 alt="All four pair trades P&L comparison — Update 2"
+                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+          </div>
           <div class="chart-caption">
-            The green dashed line is the pair trade P&L. It diverged sharply at the Feb 28 shock onset and never re-converged during the study window.
-            The pre-event period is the cost of being early.
+            Left: original WTI/XOM pair trade — the green dashed line diverged at Feb 28 and never re-converged during the shock window. Right (U2): all four pair trades compared — the WTI/XLE, WTI/XOM, freight/oil, and regime-signal pairs across all 5 windows.
           </div>
         </div>
       </div>
@@ -2475,7 +2848,7 @@
   </section>
 
   <!-- ===================================================================
-       05 CORRELATIONS
+       05 CORRELATIONS — Extended to 5 windows
   =================================================================== -->
   <section id="correlation" class="section-pad" aria-labelledby="corr-title">
     <div class="container">
@@ -2489,8 +2862,8 @@
 
       <p class="reveal" style="max-width:70ch;margin-bottom:0;font-size:0.92rem;color:var(--t3);line-height:1.7;">
         Before the closure, WTI and the S&P 500 were statistically uncorrelated (0.00).
-        During the closure, that flipped to −0.58. Being long oil stopped being a diversifying position.
-        It became an amplifier of total portfolio risk.
+        During the closure, that flipped to −0.58. In the diplomacy window, relationships began normalising again —
+        evidence that the market had already accepted a negotiated outcome as the base case.
       </p>
 
       <div class="corr-grid reveal">
@@ -2499,7 +2872,7 @@
           <span class="corr-chip key">Key Pair</span>
           <div class="corr-val-row">
             <div class="corr-val">
-              <div class="corr-phase-lbl">Pre-event</div>
+              <div class="corr-phase-lbl">Pre</div>
               <div class="corr-num" style="color:var(--t3)">0.00</div>
             </div>
             <div class="corr-val">
@@ -2510,6 +2883,14 @@
               <div class="corr-phase-lbl">Reopen</div>
               <div class="corr-num" style="color:var(--red-2)">−0.74</div>
             </div>
+            <div class="corr-val">
+              <div class="corr-phase-lbl">Corr.</div>
+              <div class="corr-num" style="color:var(--amber)">−0.31</div>
+            </div>
+            <div class="corr-val">
+              <div class="corr-phase-lbl">Dipl.</div>
+              <div class="corr-num" style="color:var(--steel)">−0.18</div>
+            </div>
           </div>
         </div>
 
@@ -2518,7 +2899,7 @@
           <span class="corr-chip sup">Supply Signal</span>
           <div class="corr-val-row">
             <div class="corr-val">
-              <div class="corr-phase-lbl">Pre-event</div>
+              <div class="corr-phase-lbl">Pre</div>
               <div class="corr-num" style="color:var(--t2)">−0.24</div>
             </div>
             <div class="corr-val">
@@ -2529,6 +2910,14 @@
               <div class="corr-phase-lbl">Reopen</div>
               <div class="corr-num" style="color:var(--teal)">+0.51</div>
             </div>
+            <div class="corr-val">
+              <div class="corr-phase-lbl">Corr.</div>
+              <div class="corr-num" style="color:var(--amber)">+0.22</div>
+            </div>
+            <div class="corr-val">
+              <div class="corr-phase-lbl">Dipl.</div>
+              <div class="corr-num" style="color:var(--steel)">+0.11</div>
+            </div>
           </div>
         </div>
 
@@ -2537,7 +2926,7 @@
           <span class="corr-chip broken">Broken Safe Haven</span>
           <div class="corr-val-row">
             <div class="corr-val">
-              <div class="corr-phase-lbl">Pre-event</div>
+              <div class="corr-phase-lbl">Pre</div>
               <div class="corr-num" style="color:var(--t2)">+0.10</div>
             </div>
             <div class="corr-val">
@@ -2548,17 +2937,25 @@
               <div class="corr-phase-lbl">Reopen</div>
               <div class="corr-num" style="color:var(--red-2)">+0.45</div>
             </div>
+            <div class="corr-val">
+              <div class="corr-phase-lbl">Corr.</div>
+              <div class="corr-num" style="color:var(--amber)">+0.38</div>
+            </div>
+            <div class="corr-val">
+              <div class="corr-phase-lbl">Dipl.</div>
+              <div class="corr-num" style="color:var(--steel)">+0.29</div>
+            </div>
           </div>
         </div>
       </div>
 
       <div style="margin-top:1.25rem;" class="reveal">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:8px;overflow:hidden;">
-          <img class="chart-main-img" src="outputs/04_rolling_correlation.png"
-               alt="Rolling correlation between WTI and S&P 500"
+          <img class="chart-main-img" src="outputs/update_2/charts/04_rolling_correlation_u2.png"
+               alt="Rolling correlation (Update 2) — 5 windows"
                loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
-          <img class="chart-main-img" src="outputs/12_lead_lag_ccf.png"
-               alt="Lead-lag cross correlation function"
+          <img class="chart-main-img" src="outputs/update_2/charts/12_lead_lag_ccf_u2.png"
+               alt="Lead-lag cross correlation (Update 2)"
                loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
         </div>
       </div>
@@ -2566,7 +2963,7 @@
   </section>
 
   <!-- ===================================================================
-       06 MANDATES
+       06 MANDATES — 7 total (VI original + VII new U2)
   =================================================================== -->
   <section id="mandates" class="section-pad" aria-labelledby="mandates-title">
     <div class="container">
@@ -2574,7 +2971,8 @@
         <div class="section-num">06</div>
         <div>
           <div class="section-label">Strategic Directives</div>
-          <h2 class="section-title" id="mandates-title">Six Mandates for the Next Time</h2>
+          <h2 class="section-title" id="mandates-title">Seven Mandates for the Next Time</h2>
+          <div class="section-u2-badge">Mandate VII added in Update 2</div>
         </div>
       </div>
 
@@ -2609,7 +3007,7 @@
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
           </button>
           <div class="mandate-body">
-            <p>Never buy gold after it has already rallied significantly into a crisis. The marginal buyer at that point is a future seller facing margin pressure. Enter during calm periods (VIX below 15, gold vol below 15%). During the acute shock phase, gold is a source of liquidity, not a destination. Use short-term Treasury bills (SHV, BIL) as the true safe haven in supply shocks.</p>
+            <p>Never buy gold after it has already rallied significantly into a crisis. The marginal buyer at that point is a future seller facing margin pressure. Enter during calm periods (VIX below 15, gold vol below 15%). During the acute shock phase, gold is a source of liquidity, not a destination. Update 2 adds: long-duration bonds (TLT) also failed, falling −3.3% in the shock window. Use short-term Treasury bills (SHV, BIL) as the true safe haven in supply shocks.</p>
           </div>
         </div>
 
@@ -2646,6 +3044,21 @@
           </div>
         </div>
 
+        <!-- MANDATE VII — NEW UPDATE 2 -->
+        <div class="mandate-item u2">
+          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+            <span class="mandate-n">VII</span>
+            <span class="mandate-title">
+              A closed chokepoint is not a standing instruction to stay long the commodity
+              <span class="mandate-u2-tag">Update 2</span>
+            </span>
+            <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
+          </button>
+          <div class="mandate-body">
+            <p>Once a credible diplomatic track exists, monitor the negotiation, not just the blockade. A position built purely on "the strait is still closed" would have been wrong for the entire month of May 2026, despite that statement being completely true the whole time. The WTI/Gold ratio reversed in early May — before any ceasefire announcement. Forward expectations dominated physical reality. Exit the pair trade on WTI/Gold ratio reversal, not on the ceasefire announcement itself. The announcement is too late; the market prices the expected end state, not the current one.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -2660,26 +3073,27 @@
         <div>
           <div class="section-label">Key Numbers</div>
           <h2 class="section-title" id="data-title">The Full Data Picture</h2>
+          <div class="section-u2-badge">Update 2 — 16 assets, 5 windows</div>
         </div>
       </div>
 
-      <!-- Table 1 -->
+      <!-- Table 1 — Update 2: 5-window stats for core assets -->
       <div class="table-wrap reveal">
         <div class="table-head-row">
-          <span class="table-label">Table 1 — Event Window Returns, Volatility &amp; Drawdowns</span>
-          <a href="outputs/event_window_stats.csv" download class="btn btn-secondary" style="padding:0.3rem 0.7rem;font-size:0.68rem;">&#8595; CSV</a>
+          <span class="table-label">Table 1 — Event Window Returns (Update 2, Core Assets)</span>
+          <a href="outputs/update_2/data/event_window_stats_u2.csv" download class="btn btn-secondary" style="padding:0.3rem 0.7rem;font-size:0.68rem;">&#8595; CSV</a>
         </div>
         <div class="table-scroll">
           <table>
             <thead>
               <tr>
                 <th>Asset</th>
-                <th>Pre-event Ret%</th>
-                <th>Shock Ret%</th>
-                <th>Reopen Ret%</th>
+                <th>Pre%</th>
+                <th>Shock%</th>
+                <th>Reopen%</th>
+                <th>Correction%</th>
+                <th>Diplomacy%</th>
                 <th>Shock Vol%</th>
-                <th>Shock Max DD%</th>
-                <th>Shock Days</th>
               </tr>
             </thead>
             <tbody>
@@ -2688,65 +3102,85 @@
                 <td class="td-pos td-mono">+16.9</td>
                 <td class="td-pos td-mono">+32.9</td>
                 <td class="td-pos td-mono">+27.5</td>
+                <td class="td-amber td-mono">−~20</td>
+                <td class="td-mono" style="color:var(--steel)">~flat</td>
                 <td class="td-mono" style="color:var(--t2)">98.5</td>
-                <td class="td-neg td-mono">−19.2</td>
-                <td class="td-mono">33</td>
               </tr>
               <tr>
                 <td><span class="asset-dot dot-sp" aria-hidden="true"></span>S&amp;P 500</td>
                 <td class="td-mono" style="color:var(--t3)">+0.3</td>
                 <td class="td-pos td-mono">+2.3</td>
                 <td class="td-mono" style="color:var(--t3)">+0.1</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
                 <td class="td-mono" style="color:var(--t2)">17.5</td>
-                <td class="td-neg td-mono">−7.8</td>
-                <td class="td-mono">33</td>
               </tr>
               <tr>
                 <td><span class="asset-dot dot-gold" aria-hidden="true"></span>Gold</td>
                 <td class="td-pos td-mono">+21.2</td>
                 <td class="td-neg td-mono">−9.6</td>
                 <td class="td-neg td-mono">−6.4</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
                 <td class="td-mono" style="color:var(--t2)">34.0</td>
-                <td class="td-neg td-mono">−17.4</td>
-                <td class="td-mono">33</td>
               </tr>
               <tr>
                 <td><span class="asset-dot dot-xom" aria-hidden="true"></span>Exxon (XOM)</td>
                 <td class="td-pos td-mono">+25.2</td>
                 <td class="td-neg td-mono">−1.4</td>
                 <td class="td-pos td-mono">+5.6</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
                 <td class="td-mono" style="color:var(--t2)">29.2</td>
-                <td class="td-neg td-mono">−13.1</td>
-                <td class="td-mono">33</td>
-              </tr>
-              <tr>
-                <td><span class="asset-dot dot-cvx" aria-hidden="true"></span>Chevron (CVX)</td>
-                <td class="td-pos td-mono">+21.0</td>
-                <td class="td-neg td-mono">−0.8</td>
-                <td class="td-pos td-mono">+4.5</td>
-                <td class="td-mono" style="color:var(--t2)">27.7</td>
-                <td class="td-neg td-mono">−12.4</td>
-                <td class="td-mono">33</td>
               </tr>
               <tr>
                 <td><span class="asset-dot dot-jets" aria-hidden="true"></span>Airlines (JETS)</td>
                 <td class="td-mono" style="color:var(--t3)">+0.6</td>
                 <td class="td-neg td-mono">−3.9</td>
                 <td class="td-neg td-mono">−10.7</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
                 <td class="td-mono" style="color:var(--t2)">38.1</td>
-                <td class="td-neg td-mono">−14.7</td>
-                <td class="td-mono">33</td>
+              </tr>
+              <!-- New U2 assets -->
+              <tr class="u2-row">
+                <td><span class="asset-dot dot-ita" aria-hidden="true"></span>Defense (ITA)</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-pos td-mono">+~5.5</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-pos td-mono">+8.9</td>
+                <td class="td-mono" style="color:var(--steel)">held</td>
+                <td class="td-mono" style="color:var(--t2)">—</td>
+              </tr>
+              <tr class="u2-row">
+                <td><span class="asset-dot dot-bwet" aria-hidden="true"></span>Freight (BWET) &#9888;</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-pos td-mono">+71.1</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-pos td-mono">+20.5</td>
+                <td class="td-mono" style="color:var(--t2)">—</td>
+              </tr>
+              <tr class="u2-row">
+                <td><span class="asset-dot dot-tlt" aria-hidden="true"></span>LT Bonds (TLT)</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-neg td-mono">−3.3</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t2)">—</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p style="font-size:0.7rem;color:var(--t4);margin-top:0.4rem;">&#9888; BWET launched May 2023 — limited 2-year history. &#x25A0; U2-only assets (left border). All returns nominal, pre-cost.</p>
       </div>
 
-      <!-- Table 2 -->
+      <!-- Table 2 — Abnormal Returns -->
       <div class="table-wrap reveal">
         <div class="table-head-row">
           <span class="table-label">Table 2 — Abnormal Returns (OLS Market Model, Shock Window)</span>
-          <a href="outputs/abnormal_returns.csv" download class="btn btn-secondary" style="padding:0.3rem 0.7rem;font-size:0.68rem;">&#8595; CSV</a>
+          <a href="outputs/update_2/data/abnormal_returns_u2.csv" download class="btn btn-secondary" style="padding:0.3rem 0.7rem;font-size:0.68rem;">&#8595; CSV</a>
         </div>
         <div class="table-scroll">
           <table>
@@ -2754,7 +3188,7 @@
               <tr>
                 <th>Asset</th>
                 <th>Actual%</th>
-                <th>Expected% (&#946;)</th>
+                <th>Expected%&nbsp;(&#946;)</th>
                 <th>Abnormal%</th>
                 <th>Beta</th>
                 <th>Beta SE</th>
@@ -2807,16 +3241,25 @@
                 <td class="td-mono" style="color:var(--t3)">0.38</td>
                 <td class="td-mono" style="color:var(--t2)">0.31</td>
               </tr>
+              <tr class="u2-row">
+                <td>TLT (Bonds)</td>
+                <td class="td-neg td-mono">−3.3</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-neg td-mono">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+                <td class="td-mono" style="color:var(--t3)">—</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Table 3 -->
+      <!-- Table 3 — Seasonal returns -->
       <div class="table-wrap reveal">
         <div class="table-head-row">
-          <span class="table-label">Table 3 — Jan–Apr Seasonal Returns by Year (%) — Nominal</span>
-          <a href="outputs/seasonal_baseline.csv" download class="btn btn-secondary" style="padding:0.3rem 0.7rem;font-size:0.68rem;">&#8595; CSV</a>
+          <span class="table-label">Table 3 — Jan–Jun Seasonal Returns by Year (%) &mdash; Nominal</span>
+          <a href="outputs/update_2/data/seasonal_baseline_u2.csv" download class="btn btn-secondary" style="padding:0.3rem 0.7rem;font-size:0.68rem;">&#8595; CSV</a>
         </div>
         <div class="table-scroll">
           <table>
@@ -2860,26 +3303,36 @@
         </div>
       </div>
 
-      <!-- CSV download strip -->
+      <!-- CSV download strips -->
       <div class="csv-strip reveal">
-        <div class="csv-strip-label">Download all 11 result tables:</div>
-        <a href="outputs/event_window_stats.csv"       download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Event Windows</a>
-        <a href="outputs/abnormal_returns.csv"          download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Abnormal Returns</a>
-        <a href="outputs/seasonal_baseline.csv"         download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Seasonal Baseline</a>
-        <a href="outputs/correlation_by_window.csv"     download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Correlations</a>
-        <a href="outputs/sector_heatmap.csv"            download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Sector Heatmap</a>
-        <a href="outputs/lead_lag_ccf.csv"              download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Lead-Lag CCF</a>
-        <a href="outputs/rolling_betas.csv"             download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Rolling Betas</a>
-        <a href="outputs/international_spillover.csv"   download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Intl Spillover</a>
-        <a href="outputs/first_day_reactions.csv"       download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">First-Day Reactions</a>
-        <a href="outputs/shock_transmission_speed.csv"  download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Transmission Speed</a>
-        <a href="outputs/summary_key_numbers.csv"       download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Summary Numbers</a>
+        <div class="csv-strip-label">Download result tables:</div>
+        <div class="csv-section-label">Update 2 (U2) &mdash; 16 assets, 5 windows</div>
+        <a href="outputs/update_2/data/event_window_stats_u2.csv"    download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Event Windows</a>
+        <a href="outputs/update_2/data/abnormal_returns_u2.csv"       download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Abnormal Returns</a>
+        <a href="outputs/update_2/data/seasonal_baseline_u2.csv"      download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Seasonal Baseline</a>
+        <a href="outputs/update_2/data/correlation_by_window_u2.csv"  download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Correlations</a>
+        <a href="outputs/update_2/data/pair_trades_u2.csv"            download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Pair Trades</a>
+        <a href="outputs/update_2/data/freight_spread_u2.csv"         download class="btn btn-amber"     style="padding:0.28rem 0.65rem;font-size:0.66rem;">Freight Spread</a>
+        <a href="outputs/update_2/data/regime_summary_u2.csv"         download class="btn btn-amber"     style="padding:0.28rem 0.65rem;font-size:0.66rem;">Regime Summary</a>
+        <a href="outputs/update_2/data/rolling_betas_u2.csv"          download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Rolling Betas</a>
+        <a href="outputs/update_2/data/lead_lag_ccf_u2.csv"           download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Lead-Lag CCF</a>
+        <a href="outputs/update_2/data/first_day_reactions_u2.csv"    download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">First-Day Reactions</a>
+        <a href="outputs/update_2/data/international_spillover_u2.csv" download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Intl Spillover</a>
+        <a href="outputs/update_2/data/summary_key_numbers_u2.csv"    download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;">Summary Numbers</a>
+
+        <div class="csv-section-label">Update 1 (Original) &mdash; 10 assets, 3 windows</div>
+        <a href="outputs/event_window_stats.csv"      download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;opacity:0.7;">Event Windows</a>
+        <a href="outputs/abnormal_returns.csv"         download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;opacity:0.7;">Abnormal Returns</a>
+        <a href="outputs/correlation_by_window.csv"    download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;opacity:0.7;">Correlations</a>
+        <a href="outputs/summary_key_numbers.csv"      download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;opacity:0.7;">Summary Numbers</a>
+        <a href="outputs/lead_lag_ccf.csv"             download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;opacity:0.7;">Lead-Lag CCF</a>
+        <a href="outputs/rolling_betas.csv"            download class="btn btn-secondary" style="padding:0.28rem 0.65rem;font-size:0.66rem;opacity:0.7;">Rolling Betas</a>
       </div>
     </div>
   </section>
 
   <!-- ===================================================================
-       08 LIMITATIONS — definition list, no cards
+       08 LIMITATIONS
   =================================================================== -->
   <section id="limitations" class="section-pad" aria-labelledby="limits-title">
     <div class="container">
@@ -2914,11 +3367,20 @@
         </div>
         <div class="limit-entry">
           <dt class="limit-term">The Reopening Was Not</dt>
-          <dd class="limit-def">Iran re-closed Apr 18. The Apr 17-30 window captures market response to an announcement. The dual blockade continued through the Apr 30 study cutoff. "Reopening" is shorthand, not fact.</dd>
+          <dd class="limit-def">Iran re-closed Apr 18. The Apr 17-30 window captures market response to an announcement. The dual blockade continued through study windows. "Reopening" is shorthand, not fact.</dd>
+        </div>
+        <!-- Update 2 caveats -->
+        <div class="limit-entry">
+          <dt class="limit-term u2-term">BWET Limited History</dt>
+          <dd class="limit-def">BWET launched May 2023, giving only ~2 years of baseline. Low AUM (~$25M). Futures-based (contango roll decay). Treat as an analytical signal only — not investable at scale. Results are striking but cannot be considered robust.</dd>
         </div>
         <div class="limit-entry">
-          <dt class="limit-term">Survivorship Bias</dt>
-          <dd class="limit-def">XOM and CVX are current S&P 500 constituents. Historical energy baselines exclude weaker peers that were delisted. Historical quality is overstated.</dd>
+          <dt class="limit-term u2-term">ARAMCO Calendar Lag</dt>
+          <dd class="limit-def">Saudi Aramco (2222.SR) trades on Tadawul (Sun–Thu, UTC+3). Forward-fill applied to align to US calendar produces an ~18-hour lag. ARAMCO movements should be interpreted with this lag in mind.</dd>
+        </div>
+        <div class="limit-entry">
+          <dt class="limit-term u2-term">Post-Hoc Diplomacy Proxy</dt>
+          <dd class="limit-def">The "diplomacy" phase boundary (May 30) is identified after the fact using WTI/Gold ratio reversal and known negotiation signals. Real-time identification would require live news-flow integration.</dd>
         </div>
         <div class="limit-entry">
           <dt class="limit-term">Nominal Figures</dt>
@@ -2935,8 +3397,8 @@
     <div class="container">
       <div class="quote-block reveal">
         <blockquote>
-          "In a supply shock, the commodity and the equity decouple violently. Trade the pair, do not pick a side."
-          <cite>Key takeaway from the study</cite>
+          "In a supply shock, the commodity and the equity decouple violently. In the diplomacy phase, watch the ratio — not the blockade."
+          <cite>Key takeaway from Update 2</cite>
         </blockquote>
       </div>
 
@@ -2946,7 +3408,7 @@
           <p style="font-size:0.85rem;color:var(--t3);margin-bottom:0.85rem;">If this was useful, please share. Especially with anyone in commodities, risk management, or macro research.</p>
           <div class="share-row">
             <span class="share-label">Share via</span>
-            <a class="share-btn" href="https://twitter.com/intent/tweet?text=Hormuz%202026%3A%20WTI%20%2B86.5%25%2C%20Gold%20%E2%88%929.6%25%2C%20Long%20WTI%2FShort%20XOM%20%2B34.4%25.%20Physical%20oil%20decoupled%20from%20everything.%20Quantitative%20event%20study%3A&url=https%3A%2F%2Fabdallah-bodzz.github.io%2F2026-hormuz-blockade-analysis%2F" target="_blank" rel="noopener" aria-label="Share on X (Twitter)">X / Twitter</a>
+            <a class="share-btn" href="https://twitter.com/intent/tweet?text=Hormuz%202026%20Update%202%3A%20The%20May%20Paradox%20%E2%80%94%20WTI%20fell%20~20%25%20while%20the%20strait%20stayed%20closed.%20Diplomacy%20overrode%20physical%20scarcity.%2016%20assets%2C%205%20phases%2C%20113%20days%3A&url=https%3A%2F%2Fabdallah-bodzz.github.io%2F2026-hormuz-blockade-analysis%2F" target="_blank" rel="noopener" aria-label="Share on X (Twitter)">X / Twitter</a>
             <a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fabdallah-bodzz.github.io%2F2026-hormuz-blockade-analysis%2F" target="_blank" rel="noopener" aria-label="Share on LinkedIn">LinkedIn</a>
             <button class="share-btn" onclick="copyLink(event)" aria-label="Copy link to clipboard">Copy Link</button>
           </div>
@@ -2957,9 +3419,9 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
             View on GitHub
           </a>
-          <a href="notebooks/01_hormuz_analysis_notebook.ipynb" class="btn btn-primary">
+          <a href="blob/main/notebooks/02_hormuz_update2.ipynb" class="btn btn-primary">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-            Full Notebook
+            Full Notebook U2
           </a>
         </div>
       </div>
@@ -2972,17 +3434,16 @@
   <footer>
     <div class="footer-inner">
       <div>
-        <div class="footer-brand">Hormuz 2026 — When Oil Decoupled from Everything</div>
+        <div class="footer-brand">Hormuz 2026 — Update 2: When Diplomacy Decoupled from Supply</div>
         <p class="footer-desc">
-          A quantitative event study of the 47-day Strait of Hormuz blockade (Feb 28 – Apr 17, 2026).
-          Data cutoff: April 30, 2026. Static snapshot, not updated for post-cutoff developments.
+          A quantitative event study of the Strait of Hormuz crisis. Update 2 covers Jan 1 – Jun 13, 2026 (113 trading days, 16 assets, 5 event phases). Cutoff is pre-ceasefire — static snapshot. Update 3 (resolution chapter) to follow.
         </p>
-        <p style="font-size:0.7rem;color:var(--t4);margin-top:0.6rem;">Data: yfinance (auto_adjust=True) · 2016–2026 · All figures nominal, no CPI adjustment.</p>
+        <p style="font-size:0.7rem;color:var(--t4);margin-top:0.6rem;">Data: yfinance (auto_adjust=True) · 2016–2026 · All figures nominal, no CPI adjustment. BWET limited history flagged. ARAMCO forward-fill caveat applies.</p>
         <div class="citation-block">
           @misc{khames2026hormuz,<br>
-          &nbsp;&nbsp;title={Hormuz 2026},<br>
+          &nbsp;&nbsp;title={Hormuz 2026 — Update 2},<br>
           &nbsp;&nbsp;author={Khames, Abdallah A},<br>
-          &nbsp;&nbsp;year={2026}, month={May},<br>
+          &nbsp;&nbsp;year={2026}, month={June},<br>
           &nbsp;&nbsp;publisher={GitHub}<br>
           }
         </div>
@@ -2993,11 +3454,11 @@
         <ul class="footer-links">
           <li><a href="README.md">README.md</a></li>
           <li><a href="STORY.md">STORY.md</a></li>
-          <li><a href="notebooks/01_hormuz_analysis_notebook.ipynb">Main Notebook</a></li>
+          <li><a href="blob/main/notebooks/02_hormuz_update2.ipynb">Update 2 Notebook</a></li>
+          <li><a href="blob/main/notebooks/01_hormuz_analysis.ipynb">Update 1 Notebook</a></li>
           <li><a href="src/event_study.py">event_study.py</a></li>
-          <li><a href="src/data_fetcher.py">data_fetcher.py</a></li>
           <li><a href="src/utils.py">utils.py</a></li>
-          <li><a href="data/raw/prices_2016_2026.parquet">prices.parquet</a></li>
+          <li><a href="data/raw/prices_2016_2026_u2.parquet">prices_u2.parquet</a></li>
         </ul>
       </div>
 
@@ -3006,12 +3467,14 @@
         <ul class="footer-links">
           <li><a href="https://github.com/abdallah-bodzz" target="_blank" rel="noopener">@abdallah-bodzz on GitHub</a></li>
           <li><a href="https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis" target="_blank" rel="noopener">Repository</a></li>
+          <li style="margin-top:0.5rem;font-size:0.75rem;color:var(--t4);">Update 1: Apr 30, 2026</li>
+          <li style="font-size:0.75rem;color:var(--amber);">Update 2: Jun 13, 2026</li>
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span class="footer-note">Analysis as of April 30, 2026 · Abdallah A Khames · BODZZ</span>
+      <span class="footer-note">Update 2 · Jun 13, 2026 · Abdallah A Khames · BODZZ</span>
       <span class="footer-note">Licensed MIT · Static Snapshot · Not Live Data</span>
     </div>
   </footer>
@@ -3020,19 +3483,19 @@
        JAVASCRIPT
   =================================================================== -->
   <script>
-    // ── Reading progress ───────────────────────────────────────────
+    // ── Reading progress ─────────────────────────────────────────────
     const progressBar = document.getElementById('progress');
     function updateProgress() {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop  = window.scrollY;
+      const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
       const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       progressBar.style.width = pct + '%';
       progressBar.setAttribute('aria-valuenow', Math.round(pct));
     }
     window.addEventListener('scroll', updateProgress, { passive: true });
 
-    // ── Hamburger ──────────────────────────────────────────────────
-    const hamburger = document.getElementById('hamburger');
+    // ── Hamburger ────────────────────────────────────────────────────
+    const hamburger  = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobile-menu');
 
     hamburger.addEventListener('click', () => {
@@ -3045,16 +3508,15 @@
       hamburger.setAttribute('aria-expanded', false);
     }
 
-    // ── Lightbox ───────────────────────────────────────────────────
-    const lb    = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lightbox-img');
+    // ── Lightbox ─────────────────────────────────────────────────────
+    const lb     = document.getElementById('lightbox');
+    const lbImg  = document.getElementById('lightbox-img');
     const lbClose = document.getElementById('lightbox-close');
 
     function openLightbox(src, alt) {
       lbImg.src = src;
       lbImg.alt = alt || '';
       lb.style.display = 'flex';
-      // Trigger transition after display
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           lb.classList.add('open', 'visible');
@@ -3080,7 +3542,7 @@
       if (e.key === 'Escape' && lb.classList.contains('open')) closeLightbox();
     });
 
-    // ── Chart tabs ─────────────────────────────────────────────────
+    // ── Chart tabs ───────────────────────────────────────────────────
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
@@ -3103,14 +3565,14 @@
       });
     });
 
-    // ── Mandate accordion ──────────────────────────────────────────
+    // ── Mandate accordion ────────────────────────────────────────────
     function toggleMandate(btn) {
-      const item = btn.closest('.mandate-item');
+      const item   = btn.closest('.mandate-item');
       const isOpen = item.classList.toggle('open');
       btn.setAttribute('aria-expanded', isOpen);
     }
 
-    // ── TOC dots — IntersectionObserver ───────────────────────────
+    // ── TOC dots — IntersectionObserver ──────────────────────────────
     const tocSections = ['hero','timeline','findings','charts','trade','correlation','mandates','data','limitations'];
     const dots = document.querySelectorAll('.toc-dot');
 
@@ -3138,8 +3600,7 @@
       });
     });
 
-    // ── Scroll reveal ──────────────────────────────────────────────
-    // Check if user prefers reduced motion
+    // ── Scroll reveal ─────────────────────────────────────────────────
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const revealObserver = new IntersectionObserver((entries) => {
@@ -3152,33 +3613,28 @@
     }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
 
     if (prefersReducedMotion) {
-      // Skip animations, make everything immediately visible
-      document.querySelectorAll('.reveal').forEach(el => {
-        el.classList.add('visible');
-      });
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
     } else {
       document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     }
 
-    // ── Stagger delay on findings and limit entries ────────────────
+    // Stagger delays
     if (!prefersReducedMotion) {
       document.querySelectorAll('.finding-item').forEach((el, i) => {
         el.style.transitionDelay = (i * 0.06) + 's';
       });
-
       document.querySelectorAll('.limit-entry').forEach((el, i) => {
         el.style.transitionDelay = (i * 0.05) + 's';
       });
-
       document.querySelectorAll('.frag-cell').forEach((el, i) => {
         el.style.transitionDelay = (i * 0.07) + 's';
       });
     }
 
-    // ── Nav active state on scroll ─────────────────────────────────
+    // ── Nav active state on scroll ────────────────────────────────────
     const navLinks = document.querySelectorAll('.nav-links a');
     window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY + 70;
+      const scrollY = window.scrollY + 90;
       tocSections.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -3190,7 +3646,7 @@
       });
     }, { passive: true });
 
-    // ── Copy link ──────────────────────────────────────────────────
+    // ── Copy link ─────────────────────────────────────────────────────
     function copyLink(event) {
       const btn = event.currentTarget;
       navigator.clipboard.writeText(window.location.href).then(() => {
@@ -3206,7 +3662,7 @@
       });
     }
 
-    // ── Magnetic CTA button (lightweight, CSS custom property) ─────
+    // ── Magnetic CTA ─────────────────────────────────────────────────
     if (!prefersReducedMotion) {
       const magneticBtn = document.getElementById('magnetic-cta');
       if (magneticBtn) {
@@ -3218,7 +3674,6 @@
           const dy = (e.clientY - cy) * 0.22;
           magneticBtn.style.transform = `translate(${dx}px, ${dy}px)`;
         });
-
         magneticBtn.addEventListener('mouseleave', () => {
           magneticBtn.style.transform = '';
         });
