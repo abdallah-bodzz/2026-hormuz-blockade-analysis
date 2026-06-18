@@ -1,0 +1,76 @@
+,window,window_label,pair,correlation
+0,pre_event,Pre-event,WTI / SP500,0.002
+1,pre_event,Pre-event,GOLD / SP500,0.099
+2,pre_event,Pre-event,WTI / GOLD,0.321
+3,pre_event,Pre-event,DXY / WTI,-0.246
+4,pre_event,Pre-event,DXY / SP500,0.021
+5,pre_event,Pre-event,ITA / SP500,0.449
+6,pre_event,Pre-event,ITA / WTI,0.094
+7,pre_event,Pre-event,BWET / WTI,0.155
+8,pre_event,Pre-event,BWET / SP500,0.361
+9,pre_event,Pre-event,TLT / SP500,-0.061
+10,pre_event,Pre-event,TLT / WTI,-0.262
+11,pre_event,Pre-event,TLT / GOLD,-0.018
+12,pre_event,Pre-event,XLE / WTI,0.698
+13,pre_event,Pre-event,XLE / SP500,0.105
+14,pre_event,Pre-event,UNG / WTI,0.228
+15,shock,Hormuz Closure,WTI / SP500,-0.577
+16,shock,Hormuz Closure,GOLD / SP500,0.315
+17,shock,Hormuz Closure,WTI / GOLD,-0.217
+18,shock,Hormuz Closure,DXY / WTI,0.598
+19,shock,Hormuz Closure,DXY / SP500,-0.591
+20,shock,Hormuz Closure,ITA / SP500,0.763
+21,shock,Hormuz Closure,ITA / WTI,-0.452
+22,shock,Hormuz Closure,BWET / WTI,-0.002
+23,shock,Hormuz Closure,BWET / SP500,-0.107
+24,shock,Hormuz Closure,TLT / SP500,0.44
+25,shock,Hormuz Closure,TLT / WTI,-0.209
+26,shock,Hormuz Closure,TLT / GOLD,-0.037
+27,shock,Hormuz Closure,XLE / WTI,0.507
+28,shock,Hormuz Closure,XLE / SP500,-0.456
+29,shock,Hormuz Closure,UNG / WTI,0.508
+30,reopen,False Dawn,WTI / SP500,-0.714
+31,reopen,False Dawn,GOLD / SP500,0.912
+32,reopen,False Dawn,WTI / GOLD,-0.74
+33,reopen,False Dawn,DXY / WTI,0.437
+34,reopen,False Dawn,DXY / SP500,-0.617
+35,reopen,False Dawn,ITA / SP500,0.388
+36,reopen,False Dawn,ITA / WTI,-0.401
+37,reopen,False Dawn,BWET / WTI,-0.61
+38,reopen,False Dawn,BWET / SP500,0.175
+39,reopen,False Dawn,TLT / SP500,0.603
+40,reopen,False Dawn,TLT / WTI,-0.784
+41,reopen,False Dawn,TLT / GOLD,0.643
+42,reopen,False Dawn,XLE / WTI,0.794
+43,reopen,False Dawn,XLE / SP500,-0.475
+44,reopen,False Dawn,UNG / WTI,-0.292
+45,correction,Paradox Correction,WTI / SP500,-0.647
+46,correction,Paradox Correction,GOLD / SP500,0.75
+47,correction,Paradox Correction,WTI / GOLD,-0.567
+48,correction,Paradox Correction,DXY / WTI,0.442
+49,correction,Paradox Correction,DXY / SP500,-0.622
+50,correction,Paradox Correction,ITA / SP500,0.78
+51,correction,Paradox Correction,ITA / WTI,-0.536
+52,correction,Paradox Correction,BWET / WTI,0.123
+53,correction,Paradox Correction,BWET / SP500,-0.032
+54,correction,Paradox Correction,TLT / SP500,0.862
+55,correction,Paradox Correction,TLT / WTI,-0.758
+56,correction,Paradox Correction,TLT / GOLD,0.677
+57,correction,Paradox Correction,XLE / WTI,0.805
+58,correction,Paradox Correction,XLE / SP500,-0.584
+59,correction,Paradox Correction,UNG / WTI,0.363
+60,diplomacy,Volatile Diplomacy,WTI / SP500,-0.088
+61,diplomacy,Volatile Diplomacy,GOLD / SP500,0.669
+62,diplomacy,Volatile Diplomacy,WTI / GOLD,-0.337
+63,diplomacy,Volatile Diplomacy,DXY / WTI,0.312
+64,diplomacy,Volatile Diplomacy,DXY / SP500,-0.712
+65,diplomacy,Volatile Diplomacy,ITA / SP500,0.581
+66,diplomacy,Volatile Diplomacy,ITA / WTI,-0.659
+67,diplomacy,Volatile Diplomacy,BWET / WTI,0.153
+68,diplomacy,Volatile Diplomacy,BWET / SP500,0.405
+69,diplomacy,Volatile Diplomacy,TLT / SP500,0.658
+70,diplomacy,Volatile Diplomacy,TLT / WTI,-0.315
+71,diplomacy,Volatile Diplomacy,TLT / GOLD,0.117
+72,diplomacy,Volatile Diplomacy,XLE / WTI,0.774
+73,diplomacy,Volatile Diplomacy,XLE / SP500,0.016
+74,diplomacy,Volatile Diplomacy,UNG / WTI,-0.175

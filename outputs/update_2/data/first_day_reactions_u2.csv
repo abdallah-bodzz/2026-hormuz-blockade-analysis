@@ -1,0 +1,43 @@
+,event,event_date,actual_trading_date,asset,day1_return_%
+0,Op. Epic Fury (Feb 28),2026-02-28,2026-03-01,WTI,0.0
+1,Op. Epic Fury (Feb 28),2026-02-28,2026-03-01,SP500,0.0
+2,Op. Epic Fury (Feb 28),2026-02-28,2026-03-01,GOLD,0.0
+3,Op. Epic Fury (Feb 28),2026-02-28,2026-03-01,XOM,0.0
+4,Op. Epic Fury (Feb 28),2026-02-28,2026-03-01,ITA,0.0
+5,Op. Epic Fury (Feb 28),2026-02-28,2026-03-01,JETS,0.0
+6,Op. Epic Fury (Feb 28),2026-02-28,2026-03-01,TLT,0.0
+7,Ceasefire (Apr 7),2026-04-07,2026-04-07,WTI,0.48
+8,Ceasefire (Apr 7),2026-04-07,2026-04-07,SP500,0.08
+9,Ceasefire (Apr 7),2026-04-07,2026-04-07,GOLD,0.01
+10,Ceasefire (Apr 7),2026-04-07,2026-04-07,XOM,0.33
+11,Ceasefire (Apr 7),2026-04-07,2026-04-07,ITA,-0.84
+12,Ceasefire (Apr 7),2026-04-07,2026-04-07,JETS,-0.8
+13,Ceasefire (Apr 7),2026-04-07,2026-04-07,TLT,-0.01
+14,Lebanon CF (Apr 16),2026-04-16,2026-04-16,WTI,3.72
+15,Lebanon CF (Apr 16),2026-04-16,2026-04-16,SP500,0.26
+16,Lebanon CF (Apr 16),2026-04-16,2026-04-16,GOLD,-0.3
+17,Lebanon CF (Apr 16),2026-04-16,2026-04-16,XOM,1.99
+18,Lebanon CF (Apr 16),2026-04-16,2026-04-16,ITA,-2.12
+19,Lebanon CF (Apr 16),2026-04-16,2026-04-16,JETS,-1.44
+20,Lebanon CF (Apr 16),2026-04-16,2026-04-16,TLT,-0.63
+21,Hormuz Open (Apr 17),2026-04-17,2026-04-17,WTI,-11.45
+22,Hormuz Open (Apr 17),2026-04-17,2026-04-17,SP500,1.2
+23,Hormuz Open (Apr 17),2026-04-17,2026-04-17,GOLD,1.51
+24,Hormuz Open (Apr 17),2026-04-17,2026-04-17,XOM,-3.65
+25,Hormuz Open (Apr 17),2026-04-17,2026-04-17,ITA,1.27
+26,Hormuz Open (Apr 17),2026-04-17,2026-04-17,JETS,4.84
+27,Hormuz Open (Apr 17),2026-04-17,2026-04-17,TLT,0.92
+28,May Correction Start,2026-05-01,2026-05-01,WTI,-2.98
+29,May Correction Start,2026-05-01,2026-05-01,SP500,0.29
+30,May Correction Start,2026-05-01,2026-05-01,GOLD,0.33
+31,May Correction Start,2026-05-01,2026-05-01,XOM,-1.02
+32,May Correction Start,2026-05-01,2026-05-01,ITA,-1.05
+33,May Correction Start,2026-05-01,2026-05-01,JETS,1.34
+34,May Correction Start,2026-05-01,2026-05-01,TLT,0.36
+35,Iran Re-escalation (Jun 10),2026-06-10,2026-06-10,WTI,2.07
+36,Iran Re-escalation (Jun 10),2026-06-10,2026-06-10,SP500,-1.62
+37,Iran Re-escalation (Jun 10),2026-06-10,2026-06-10,GOLD,-3.56
+38,Iran Re-escalation (Jun 10),2026-06-10,2026-06-10,XOM,1.15
+39,Iran Re-escalation (Jun 10),2026-06-10,2026-06-10,ITA,-2.42
+40,Iran Re-escalation (Jun 10),2026-06-10,2026-06-10,JETS,-4.59
+41,Iran Re-escalation (Jun 10),2026-06-10,2026-06-10,TLT,-0.28

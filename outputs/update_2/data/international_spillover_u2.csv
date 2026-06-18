@@ -1,0 +1,13 @@
+,window,window_label,index,index_label,cum_return_%,max_dd_%,fx_caveat
+0,shock,Hormuz Closure,SP500,S&P 500,2.32,-7.82,Local-currency return. No FX adjustment applied.
+1,shock,Hormuz Closure,DAX,DAX (Germany),-1.96,-9.49,Local-currency return. No FX adjustment applied.
+2,shock,Hormuz Closure,NKY,Nikkei 225,2.52,-12.05,Local-currency return. No FX adjustment applied.
+3,reopen,False Dawn,SP500,S&P 500,1.16,-0.87,Local-currency return. No FX adjustment applied.
+4,reopen,False Dawn,DAX,DAX (Germany),-1.66,-3.03,Local-currency return. No FX adjustment applied.
+5,reopen,False Dawn,NKY,Nikkei 225,1.38,-2.07,Local-currency return. No FX adjustment applied.
+6,correction,Paradox Correction,SP500,S&P 500,4.84,-1.97,Local-currency return. No FX adjustment applied.
+7,correction,Paradox Correction,DAX,DAX (Germany),4.64,-3.89,Local-currency return. No FX adjustment applied.
+8,correction,Paradox Correction,NKY,Nikkei 225,11.45,-5.48,Local-currency return. No FX adjustment applied.
+9,diplomacy,Volatile Diplomacy,SP500,S&P 500,-2.22,-4.5,Local-currency return. No FX adjustment applied.
+10,diplomacy,Volatile Diplomacy,DAX,DAX (Germany),-1.47,-3.7,Local-currency return. No FX adjustment applied.
+11,diplomacy,Volatile Diplomacy,NKY,Nikkei 225,-1.37,-6.4,Local-currency return. No FX adjustment applied.

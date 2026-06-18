@@ -1,0 +1,6 @@
+,window,window_label,bwet_ret_%,wti_ret_%,spread_%,spread_interp,n_days,caveat
+0,pre_event,Pre-event,205.93,16.92,189.0,Tanker scarcity premium: freight outpaced commodity.,39,"BWET: launched May 2023 (2 baseline years only). Holds futures — contango roll decay applies. AUM ~$25M: analytical signal, not a liquid instrument."
+1,shock,Hormuz Closure,71.1,32.94,38.17,Tanker scarcity premium: freight outpaced commodity.,33,"BWET: launched May 2023 (2 baseline years only). Holds futures — contango roll decay applies. AUM ~$25M: analytical signal, not a liquid instrument."
+2,reopen,False Dawn,9.9,25.31,-15.41,Freight normalising: oil scarcity dominates over shipping crunch.,10,"BWET: launched May 2023 (2 baseline years only). Holds futures — contango roll decay applies. AUM ~$25M: analytical signal, not a liquid instrument."
+3,correction,Paradox Correction,-8.8,-14.3,5.51,Tanker scarcity premium: freight outpaced commodity.,20,"BWET: launched May 2023 (2 baseline years only). Holds futures — contango roll decay applies. AUM ~$25M: analytical signal, not a liquid instrument."
+4,diplomacy,Volatile Diplomacy,20.54,-7.9,28.44,Tanker scarcity premium: freight outpaced commodity.,10,"BWET: launched May 2023 (2 baseline years only). Holds futures — contango roll decay applies. AUM ~$25M: analytical signal, not a liquid instrument."

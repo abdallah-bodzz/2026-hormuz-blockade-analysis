@@ -1,0 +1,6 @@
+,window,window_label,wti_ret_%,og_ratio_chg_%,wti_sp500_corr,regime
+0,pre_event,Pre-event,16.92,-3.56,,PRE_EVENT
+1,shock,Hormuz Closure,32.94,47.08,-0.577,SUPPLY_SHOCK
+2,reopen,False Dawn,25.31,31.9,-0.714,SUPPLY_SHOCK
+3,correction,Paradox Correction,-14.3,-13.0,-0.647,DIPLOMACY_BREAK
+4,diplomacy,Volatile Diplomacy,-7.9,-2.21,-0.088,RESOLUTION

@@ -1,0 +1,81 @@
+,window,window_label,asset,cum_return,avg_daily,ann_vol,max_dd,n_days
+0,pre_event,Pre-event,SP500,0.3,-0.005,10.96,-2.59,39
+1,pre_event,Pre-event,WTI,16.92,0.329,31.75,-5.01,39
+2,pre_event,Pre-event,GOLD,21.23,0.397,39.16,-13.08,39
+3,pre_event,Pre-event,XOM,25.17,0.466,27.56,-5.48,39
+4,pre_event,Pre-event,CVX,20.97,0.321,20.69,-5.28,39
+5,pre_event,Pre-event,VIX,36.87,0.912,120.48,-22.15,39
+6,pre_event,Pre-event,JETS,0.57,-0.025,30.68,-8.7,39
+7,pre_event,Pre-event,DXY,-0.82,-0.014,5.49,-3.19,39
+8,pre_event,Pre-event,DAX,3.04,0.039,11.19,-4.37,41
+9,pre_event,Pre-event,NKY,13.54,0.291,20.66,-3.1,37
+10,pre_event,Pre-event,ITA,9.78,0.17,19.04,-7.22,39
+11,pre_event,Pre-event,BWET,205.93,2.653,85.56,-10.03,39
+12,pre_event,Pre-event,TLT,4.75,0.094,7.94,-1.9,39
+13,pre_event,Pre-event,XLE,22.5,0.4,20.58,-3.75,39
+14,pre_event,Pre-event,ARAMCO,4.52,0.147,15.35,-4.0,40
+15,pre_event,Pre-event,UNG,-4.48,0.179,99.34,-32.66,39
+16,shock,Hormuz Closure,SP500,2.32,0.065,16.28,-7.82,33
+17,shock,Hormuz Closure,WTI,32.94,0.919,91.78,-19.19,33
+18,shock,Hormuz Closure,GOLD,-9.61,-0.246,31.69,-17.36,33
+19,shock,Hormuz Closure,XOM,-1.45,-0.024,27.18,-13.1,33
+20,shock,Hormuz Closure,CVX,-0.76,-0.007,25.8,-12.43,33
+21,shock,Hormuz Closure,VIX,-16.32,-0.092,139.81,-42.22,33
+22,shock,Hormuz Closure,JETS,-3.86,-0.079,35.47,-14.66,33
+23,shock,Hormuz Closure,DXY,-0.16,-0.004,6.3,-2.44,33
+24,shock,Hormuz Closure,DAX,-1.96,-0.041,24.4,-9.49,32
+25,shock,Hormuz Closure,NKY,2.52,0.092,36.8,-12.05,33
+26,shock,Hormuz Closure,ITA,-8.54,-0.222,26.01,-15.82,33
+27,shock,Hormuz Closure,BWET,71.1,1.934,163.12,-30.64,33
+28,shock,Hormuz Closure,TLT,-3.33,-0.087,10.07,-4.43,33
+29,shock,Hormuz Closure,XLE,-0.16,0.004,20.82,-10.87,33
+30,shock,Hormuz Closure,ARAMCO,8.02,0.166,16.84,-3.14,30
+31,shock,Hormuz Closure,UNG,-10.17,-0.25,40.36,-19.02,33
+32,reopen,False Dawn,SP500,1.16,0.118,9.94,-0.87,10
+33,reopen,False Dawn,WTI,25.31,2.322,48.26,-1.69,10
+34,reopen,False Dawn,GOLD,-5.0,-0.506,18.46,-6.43,10
+35,reopen,False Dawn,XOM,5.39,0.531,17.24,-1.55,10
+36,reopen,False Dawn,CVX,5.07,0.5,17.01,-1.5,10
+37,reopen,False Dawn,VIX,-3.38,-0.218,82.95,-13.38,10
+38,reopen,False Dawn,JETS,-8.95,-0.922,25.84,-10.71,10
+39,reopen,False Dawn,DXY,-0.02,-0.001,5.64,-0.85,10
+40,reopen,False Dawn,DAX,-1.66,-0.165,10.2,-3.03,10
+41,reopen,False Dawn,NKY,1.38,0.141,13.67,-2.07,9
+42,reopen,False Dawn,ITA,-5.77,-0.58,26.36,-8.11,10
+43,reopen,False Dawn,BWET,9.9,1.104,94.46,-13.85,10
+44,reopen,False Dawn,TLT,-1.67,-0.167,5.33,-1.67,10
+45,reopen,False Dawn,XLE,8.42,0.815,13.67,-0.37,10
+46,reopen,False Dawn,ARAMCO,2.06,0.205,6.07,-0.51,10
+47,reopen,False Dawn,UNG,-2.21,-0.2,36.63,-7.31,10
+48,correction,Paradox Correction,SP500,4.84,0.235,9.47,-1.97,20
+49,correction,Paradox Correction,WTI,-14.3,-0.84,52.24,-19.6,20
+50,correction,Paradox Correction,GOLD,-1.5,0.046,16.58,-5.78,20
+51,correction,Paradox Correction,XOM,-4.26,-0.206,31.72,-10.64,20
+52,correction,Paradox Correction,CVX,-3.41,-0.183,26.43,-7.53,20
+53,correction,Paradox Correction,VIX,-9.83,-0.755,50.13,-16.87,21
+54,correction,Paradox Correction,JETS,13.82,0.678,37.85,-10.08,20
+55,correction,Paradox Correction,DXY,0.71,0.021,3.9,-0.65,20
+56,correction,Paradox Correction,DAX,4.64,0.213,18.69,-3.89,20
+57,correction,Paradox Correction,NKY,11.45,0.509,28.19,-5.48,18
+58,correction,Paradox Correction,ITA,8.86,0.437,21.76,-3.86,20
+59,correction,Paradox Correction,BWET,-8.8,-0.136,113.37,-29.21,20
+60,correction,Paradox Correction,TLT,0.18,0.044,9.17,-3.55,20
+61,correction,Paradox Correction,XLE,-4.35,-0.23,26.1,-8.16,20
+62,correction,Paradox Correction,ARAMCO,1.45,0.069,12.24,-2.81,20
+63,correction,Paradox Correction,UNG,11.39,0.424,42.35,-8.32,20
+64,diplomacy,Volatile Diplomacy,SP500,-2.22,-0.217,19.33,-4.5,10
+65,diplomacy,Volatile Diplomacy,WTI,-7.9,-0.793,38.52,-11.6,10
+66,diplomacy,Volatile Diplomacy,GOLD,-5.81,-0.58,30.73,-8.88,10
+67,diplomacy,Volatile Diplomacy,XOM,-1.59,-0.15,23.24,-3.89,10
+68,diplomacy,Volatile Diplomacy,CVX,0.75,0.081,19.32,-2.1,10
+69,diplomacy,Volatile Diplomacy,VIX,10.16,1.89,243.08,-20.43,10
+70,diplomacy,Volatile Diplomacy,JETS,2.07,0.246,48.07,-5.81,10
+71,diplomacy,Volatile Diplomacy,DXY,0.55,0.056,3.97,-0.32,10
+72,diplomacy,Volatile Diplomacy,DAX,-1.47,-0.144,14.57,-3.7,10
+73,diplomacy,Volatile Diplomacy,NKY,-1.37,-0.117,33.79,-6.4,10
+74,diplomacy,Volatile Diplomacy,ITA,1.69,0.19,36.03,-2.89,10
+75,diplomacy,Volatile Diplomacy,BWET,20.54,2.005,83.33,-9.63,10
+76,diplomacy,Volatile Diplomacy,TLT,0.35,0.037,9.07,-1.2,10
+77,diplomacy,Volatile Diplomacy,XLE,0.44,0.052,21.71,-2.77,10
+78,diplomacy,Volatile Diplomacy,ARAMCO,0.59,0.06,9.3,-1.39,9
+79,diplomacy,Volatile Diplomacy,UNG,-1.65,-0.139,38.42,-7.92,10
