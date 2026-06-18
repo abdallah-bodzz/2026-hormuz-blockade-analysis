@@ -162,3 +162,168 @@ This project avoids all three. It's a **real geopolitical event with clean dates
 ---
 
 *This document serves as the project's methodological appendix. For the narrative version, see `STORY.md`. For the quick overview, see `README.md`.*
+
+---
+---
+
+# 2026 Strait of Hormuz Crisis — Update 2
+## Extended Event-Driven Analysis: From Decoupling to Regime Switching
+
+**Lead Developer:** Abdallah A Khames (BODZZ)
+**Analysis Date:** June 13, 2026 (static snapshot, extended)
+**Repository:** github.com/abdallah-bodzz/2026-hormuz-blockade-analysis
+**Supersedes for analytical scope:** Sections below extend, but do not replace, the Update 1 methodology above. Update 1's numbers are unchanged and untouched.
+
+---
+
+## Executive Summary
+
+Update 2 extends the original 47-day, 10-asset, 3-window study into a **113-trading-day, 16-asset, 5-window** analysis (Jan 1 – Jun 13, 2026). It does not just add more data to the same question — it answers a different question that the original window was too short to ask: *what happens to the same decoupling once diplomacy enters the picture?*
+
+**Core finding (Update 2):** Forward-looking diplomatic and ceasefire expectations overrode persistent physical supply constraints. The strait remained at roughly 2% transit capacity through May, while WTI fell sharply over the same month. Markets priced the *expected future barrel*, not the current physical one. We call this the **May Paradox**.
+
+**The question this answers:** "Once a supply shock stops being new, does the market keep pricing physical scarcity, or does it start pricing the path to resolution — and how do you tell which one is happening?"
+
+**What this does NOT do:** No prediction of the eventual outcome of the underlying conflict. No claim that the May Paradox generalizes to other protracted shocks. Still purely a quantitative post-mortem, now of a longer and more complex period.
+
+---
+
+## Why Update 2 Was Necessary, Not Optional
+
+Update 1 was explicit that it covered a single, bounded 47-day event and that further evolution would be "a separate study." By late May, three things had happened that a 3-window, 10-asset framework structurally could not represent:
+
+1. **The strait did not reopen, but price behaved as if risk was falling.** This is not capturable in a framework with only "shock" and "reopening" — neither label fits a month where the physical situation is unchanged but pricing reverses.
+2. **A second escalation event occurred (June 10).** Update 1's framework was built around one shock. Testing whether markets "learned" from the first shock requires a second, comparable event inside the same analytical structure — something Update 1 flagged as future work.
+3. **New asset classes became relevant.** Defense equities (backlog dynamics), freight markets (a shipping-specific decoupling), and the sovereign exporter itself (Aramco) were not answerable with the original 10-asset universe.
+
+---
+
+## Asset Universe — Update 2 (16 Total)
+
+The original 10 assets are retained unchanged. Six are added:
+
+| Asset | Ticker | Role | Why Added in Update 2 |
+|-------|--------|------|------------------------|
+| Defense ETF | `ITA` | Backlog vs. spot war-trade test | Original 47-day window was too short to separate day-1 reaction from multi-month order-book dynamics |
+| Freight/Tanker ETF | `BWET` | Third decoupling layer (shipping) | Captures vessel scarcity / war-risk premium that neither WTI nor energy equities reflect |
+| 20+ Year Treasury ETF | `TLT` | Second safe-haven test | Update 1 only tested gold; bonds are the other half of a traditional hedge and were a gap |
+| Energy Sector ETF | `XLE` | Sector-level decoupling check | Confirms the XOM/CVX finding isn't a single-stock artifact |
+| Saudi Aramco | `2222.SR` | Exporter-side perspective | Every other asset is a consumer or financial-market view; Aramco is the supply side |
+| Natural Gas ETF | `UNG` | Completeness | Minor role, included once the pipeline supported it; flagged for roll decay, not load-bearing |
+
+**Data range:** Jan 2016 – Jun 13, 2026 · 16 tickers · Source: yfinance (`auto_adjust=True`), with `align_gulf_asset()` handling the Tadawul (Sun–Thu) to US-calendar forward-fill for Aramco.
+
+---
+
+## Methodology Overview — Update 2
+
+### Five Event Windows
+
+| Window | Dates | Trading Days | Purpose |
+|--------|-------|---------------|---------|
+| Pre-event (baseline) | Jan 1 – Feb 27, 2026 | 39 | Unchanged from Update 1 — beta estimation baseline |
+| Shock (closure) | Feb 28 – Apr 16, 2026 | 33 | Unchanged from Update 1 |
+| Reopen (announcement) | Apr 17 – Apr 30, 2026 | 9 | Unchanged from Update 1 (same caveat: Iran re-closed Apr 18) |
+| **Correction** | May 1 – May 29, 2026 | — | New. The May Paradox window — price fell while physical capacity stayed near 2% |
+| **Diplomacy** | May 30 – Jun 13, 2026 | — | New. Isolates the Jun 10 re-escalation test from the broader correction regime |
+
+### Key Analytical Components — New in Update 2
+
+| Component | Method | Business Question |
+|-----------|--------|--------------------|
+| `pair_trade_extended()` | Long/short P&L across all 5 windows, multiple pairs | "Which decoupling trades survived into the correction/diplomacy phases?" |
+| `freight_oil_spread()` | BWET vs. WTI spread by window | "Is shipping pricing something crude isn't?" |
+| `aramco_sovereign_discount()` | 2222.SR vs. fundamental proxy, with Gulf calendar alignment | "Does the actual exporter trade differently from consumer-market proxies?" |
+| `tlt_safe_haven_test()` | TLT return/vol by window, same structure as the Update 1 gold test | "Did duration fail the same way gold did?" |
+| `window_regime_summary()` | WTI/Gold ratio direction by window | "Which regime — supply or diplomacy — was dominant in each phase?" |
+| `escalation_replay()` | Day-1 reaction comparison, Feb 28 vs. Jun 10 | "Did the market react more calmly the second time?" |
+| `cross_asset_correlation_delta()` | Correlation matrix, all pairs, all 5 windows | "How did relationships evolve across the full timeline, not just shock vs. pre-event?" |
+
+All Update 1 functions (`seasonal_baseline`, `compute_abnormal_returns`, `correlation_by_window`, etc.) were extended to handle 5 windows and 16 assets automatically rather than rewritten — see `Methodological & Technical Overview: Update 2 Implementation` for the full engineering detail.
+
+### What Was Planned vs. What Was Built (Round 2)
+
+| Planned | Built | Notes |
+|---------|-------|-------|
+| Extend to ~100 trading days | ✅ 113 trading days (Jan 1–Jun 13) | Landed naturally on the Jun 13 cutoff, just ahead of the framework deal reported in mid-June |
+| Add 4–5 new assets | ✅ 6 new assets (16 total) | Aramco ended up necessary, not optional, once the exporter-perspective question was posed |
+| 4-window framework (add one "post-shock" window) | ❌ 5 windows | One window wasn't enough to separate the May correction from the Jun 10 re-escalation — they are different regimes and conflating them would have hidden the second-shock finding |
+| Reuse Update 1 functions as-is | ❌ Extended in place, backward-compatible | Needed multi-window support; rewriting from scratch would have risked breaking Update 1 reproducibility |
+| Single "new findings" chapter | ❌ Split into themed sections (Defense, Freight, Bonds, Aramco) | Each new asset class answers a different question; bundling them would have buried the Aramco and freight findings under the headline May Paradox result |
+
+---
+
+## Key Findings (Quantified) — Update 2
+
+| Finding | Metric |
+|---------|--------|
+| WTI shock-window return (unchanged from U1) | **+32.9%** |
+| WTI correction-window return (May Paradox) | **−14.3% to −20%** |
+| Strait transit capacity during correction window | **~2%** (physically unchanged from shock window) |
+| BWET shock-window return | **+71.1%** |
+| BWET diplomacy-window return | **+20.5%** |
+| ITA correction-window return | **+8.9%** (more resilient than broader market) |
+| TLT shock-window return | **−3.3%** (second safe-haven failure, alongside gold) |
+| Aramco shock-window return | **+8.0%** (lagged WTI, muted across all windows) |
+| Jun 10 re-escalation, WTI day-1 reaction | Smaller than Feb 28 (market-learning signature) |
+
+---
+
+## What This Project Proves — Update 2 (No BS)
+
+1. **Diplomacy can override physical scarcity in pricing, even when scarcity hasn't resolved.** The May Paradox is the clearest demonstration: capacity stayed near 2%, price fell anyway.
+
+2. **The WTI/Gold ratio is a regime signal across more than one regime type.** It correctly flagged both the original supply shock (Update 1) and the May reversal (Update 2) — the same tool, two different jobs.
+
+3. **Decoupling is not a single event — it's a recurring structural feature, and it has layers.** Physical oil vs. energy equities (Update 1), now joined by freight vs. crude (Update 2). Each new asset class tested produced its own version of the same underlying phenomenon: financial markets pricing different things than the physical commodity.
+
+4. **Backlog-driven assets (defense) behave differently from spot-driven assets (oil) under the same shock.** ITA's resilience through the correction window — while WTI fell sharply — shows that "war trade" is not one trade.
+
+5. **Markets show a measurable learning effect across repeated shocks.** The muted Jun 10 reaction relative to Feb 28 is evidence, not just intuition, that repeated exposure to the same type of event changes transmission speed and magnitude.
+
+---
+
+## What This Project Does NOT Claim — Update 2
+
+- **That the May Paradox will hold up as "correct" in hindsight.** It describes how the market priced the situation through June 13. It does not predict whether diplomacy or supply risk wins out longer-term.
+
+- **That BWET is investable at the returns shown.** Low AUM (~$25M), 2-year history, futures-based with contango roll decay. The freight-decoupling finding is analytical, not a trade recommendation, more so than any other number in this study.
+
+- **That the Jun 10 "market learning" effect generalizes.** One repeated-event comparison inside one conflict is suggestive, not proof of a general market-learning law.
+
+- **Anything about the eventual resolution of the underlying conflict.** This is explicitly a pre-resolution snapshot. See Update 3 for the resolution chapter.
+
+---
+
+## Technical Implementation — Update 2
+
+| Component | Implementation |
+|-----------|-----------------|
+| Data source | yfinance (`auto_adjust=True`), 16 tickers |
+| Storage | `prices_2016_2026_u2.parquet`, separate from Update 1's parquet |
+| New windows | Correction (May 1–29), Diplomacy (May 30–Jun 13) |
+| Gulf calendar handling | `align_gulf_asset()` — Tadawul Sun–Thu forward-fill to US calendar (~18h lag, caveated) |
+| New functions | 10+ in `event_study.py` — see Methodological & Technical Overview for full list |
+| Outputs | 30+ PNG charts (`outputs/update_2/charts/`, new charts prefixed 21–30), 11+ new CSVs (`outputs/update_2/data/`, `_u2` suffix) |
+
+**Dependencies:** unchanged from Update 1 — numpy, pandas, matplotlib, seaborn, statsmodels, yfinance, pyarrow, IPython.
+
+**Reproduction:** Clone repo, `pip install -r requirements.txt`, open `notebooks/02_hormuz_update2.ipynb`, run end-to-end. Cached U2 parquet loads by default; set `CACHE_DATA = False` to re-fetch.
+
+---
+
+## Document Control — Update 2
+
+| Field | Value |
+|-------|-------|
+| Author | Abdallah A Khames |
+| Organization | BODZZ |
+| GitHub | github.com/abdallah-bodzz |
+| Analysis date | June 13, 2026 |
+| Data range | Jan 2016 – Jun 13, 2026 |
+| Status | Static snapshot (not live-updated) — second in a series |
+| License | MIT |
+
+---
+
+*This section extends the project's methodological appendix for Update 2. For the narrative version of the new chapters, see `STORY.md` (Act V onward). For the quick overview, see `README.md`. Update 1's methodology above this section is preserved unmodified.*

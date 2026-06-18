@@ -135,3 +135,101 @@ If the situation evolves materially (full resolution, re-escalation, new blockad
 **BODZZ · May 2026**
 
 *"The market treated energy equities and physical oil as fundamentally different exposures during the 47-day closure. One rose 33%. The other fell. They were not the same trade."*
+
+---
+---
+
+# Update 2 Planning Log: Expanding the Window
+## What Changed, Why, and What We Learned the Second Time
+
+**Lead Developer:** Abdallah A Khames
+**Timeline:** June 2026 · Data cutoff extended to June 13, 2026
+
+---
+
+## Why Update 2 Happened
+
+Update 1 closed at April 30, 2026, with an explicit note in this log: *"If the situation evolves materially (full resolution, re-escalation, new blockade), that's a separate study."*
+
+It evolved materially. The strait stayed at roughly 2% transit capacity through May while WTI fell sharply — the opposite of what a naive "supply still constrained → price still elevated" model would predict. Then a second escalation hit on June 10. That's not noise sitting on top of Update 1's story. That's a second regime the original 3-window framework had no language for. The fix isn't a patch to Update 1 — it's a second study built on the same scaffolding.
+
+**The decision we made early and didn't relitigate:** Update 1's files stay untouched. New parquet, new notebook, new output folder, `_u2` suffix on every derived file. If Update 2 had broken backward compatibility with Update 1, we would have lost the ability to show "here's what changed in our own thinking" — which is itself part of the value of a multi-part series.
+
+---
+
+## The Core Pivot: From "Decoupling" to "Regime Switching"
+
+Update 1's spine was a single decoupling: physical oil vs. energy equities. Update 2's spine is different in kind, not just bigger — it's about **which regime is pricing the asset at any given moment**, and how that regime flips.
+
+**The May Paradox is the reason the whole update exists.** Without it, Update 2 would just be "Update 1 but longer," which isn't worth shipping. With it, there's a genuine second finding: forward-looking diplomacy expectations overrode physical scarcity pricing, inverting the mechanism (not just the magnitude) of Update 1's core result. WTI/Gold ratio — which was already Update 1's best signal — turned out to be the same tool that detects this second regime. That continuity is the throughline we built the new chapters around.
+
+---
+
+## Asset Expansion Decisions (Round 2)
+
+| Asset | Added? | Rationale |
+|-------|--------|-----------|
+| ITA (Defense ETF) | ✅ | Tests whether "war trades" are spot-driven or backlog-driven over a multi-month horizon — couldn't ask this question in a 47-day window |
+| BWET (Freight/Tanker ETF) | ✅ | A third decoupling layer (shipping vs. crude vs. equities). High signal, but flagged hard for limited history and low AUM — see caveats |
+| TLT (20+Y Treasury ETF) | ✅ | Update 1 tested gold as a safe haven and it failed. Bonds were the obvious missing half of "traditional 60/40 hedge" — should have been in Update 1, wasn't, fixed here |
+| XLE (Energy Sector ETF) | ✅ | XOM/CVX are single names; XLE lets the energy-equity-vs-oil decoupling be tested as a sector-level effect, not a stock-picking artifact |
+| ARAMCO (2222.SR) | ✅ | Every other asset in the study is a consumer-side or financial-market view of the shock. Aramco is the actual exporter. Needed the supply-side perspective, with explicit Tadawul calendar caveats |
+| UNG (Natural Gas ETF) | ✅ | Cheap addition once the pipeline was extended; included for completeness, flagged for roll decay, not load-bearing for any core finding |
+
+**What we didn't add, and why:** we considered pulling in a second freight benchmark to cross-check BWET, given how thin its trading history is. Decision matrix said skip — one already-caveated proxy is honest; two thin proxies just compounds uncertainty without resolving it. Better to flag BWET clearly once than to dilute the caveat across two assets.
+
+---
+
+## Window Expansion: 3 → 5
+
+| Old (Update 1) | New (Update 2) | Why |
+|---|---|---|
+| Pre-event | Pre-event | Unchanged — still the beta estimation baseline |
+| Shock | Shock | Unchanged — Feb 28–Apr 16 closure, untouched |
+| Reopening | Reopen | Renamed for consistency, same dates, same caveat (Iran re-closed Apr 18) |
+| — | **Correction** | New. May 1–29. Required to even state the May Paradox — without a window boundary here, "WTI fell in May" has no event-study structure behind it |
+| — | **Diplomacy** | New. May 30–Jun 13. Separates the Jun 10 re-escalation test from the broader correction regime, so the second shock doesn't get averaged away inside a 6-week window |
+
+The two-window expansion wasn't scope creep — it was a structural requirement. You cannot make a falsifiable claim like "diplomacy decoupled from supply in May" using a 3-window framework built for a single shock-and-resolution arc. The framework had to grow before the new thesis could be tested at all, not after.
+
+---
+
+## What Worked Well (Round 2)
+
+**1. The WTI/Gold ratio, again.** Same signal, new regime. It correctly flagged the May reversal and gave us a clean, pre-existing tool rather than requiring a new metric invented post-hoc to fit the narrative. This is the strongest continuity argument for the whole series.
+
+**2. Keeping U1 and U2 fully separate.** Backward-compatible function signatures in `event_study.py` meant zero risk of silently changing an Update 1 number while building Update 2. Worth the extra discipline.
+
+**3. The Jun 10 second-shock test.** Comparing day-1 reactions across two separate escalation events (Feb 28 vs. Jun 10) inside the same study is the kind of repeated-event comparison Update 1 explicitly flagged as future work ("run event studies on historical supply shocks... for comparison"). We didn't have to wait for a different historical event — this project generated its own second data point.
+
+**4. ARAMCO forward-fill.** Getting the Tadawul (Sun–Thu) to US-calendar alignment right, with an explicit ~18h lag caveat attached everywhere the asset appears, meant we could include the exporter's perspective without quietly overstating same-day comparability.
+
+---
+
+## What We're Defending (Round 2)
+
+| Decision | Criticism we anticipated | Our defense |
+|---|---|---|
+| Including BWET despite 2-year history | "Not enough baseline to mean anything" | Flagged everywhere — character card, every chart, every CSV note. It's presented as a signal, not a statistically mature time series. The alternative (excluding it) loses the freight-decoupling finding entirely. |
+| Calling May a "paradox" rather than just "a correction" | "Markets always mean-revert, this isn't surprising" | The strait *did not reopen* in May — capacity stayed near 2%. A pure mean-reversion story doesn't explain why price fell while the physical constraint didn't change. That gap between price and physical reality is the actual paradox, not the direction of the move alone. |
+| Keeping the analysis as a static snapshot through a live, fast-moving diplomatic situation | "Why not wait for resolution before publishing?" | Same answer as Update 1: capturing the market's read of an unresolved situation is itself the finding. Waiting for resolution turns this into hindsight commentary instead of a documented real-time read. The series format (U1 → U2 → U3) is the actual answer to "shouldn't you wait" — we don't wait, we iterate. |
+| Five windows instead of trying to model continuous regime transitions | "Discrete windows are an oversimplification of a continuous process" | True, and stated as a limitation. Discrete windows are legible and reproducible. A continuous regime-switching model is a legitimate follow-up, not a reason to withhold a simpler, auditable version now. |
+
+---
+
+## Lessons for Update 3
+
+1. **The framework absorbed a second event without a rewrite.** `EVENT_CONFIG` being the single source of truth for window dates meant adding two windows was a config change plus a notebook re-run, not a redesign. That validates the re-extensibility bet made early in Update 2.
+
+2. **A thesis needs a window boundary before it's a finding.** The May Paradox didn't exist as a statement until the Correction window existed as a defined object. Anticipate this for Update 3: whatever the post-resolution thesis turns out to be, it will need its own window before it's anything more than a narrative claim.
+
+3. **Caveat density should scale with asset thinness, not with how good the story is.** BWET produced the most dramatic numbers in Update 2 and got the most caveats, on purpose. That ordering should hold for Update 3 too — the more compelling a number is, the more scrutiny its underlying data deserves, not less.
+
+4. **Keep shipping in discrete updates rather than one continuously-revised document.** A versioned series (U1, U2, U3) is more honest about what was known and when than a single file that quietly gets rewritten as new information arrives. Future readers can see what the May-2026 view looked like even after Update 3 changes the ending.
+
+---
+
+**Abdallah A Khames**
+**BODZZ · June 2026**
+
+*"The May Paradox isn't that the market was wrong. It's that the market was answering a different question than 'is the strait open' — it was pricing whether it would stay closed. Those are not the same number."*

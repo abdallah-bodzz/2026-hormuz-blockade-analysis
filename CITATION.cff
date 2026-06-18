@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-title: "Hormuz 2026: When Oil Decoupled from Everything"
-message: "If you use this analysis in your research, please cite it as below."
+title: "Hormuz 2026: When Diplomacy Decoupled From Supply (Update 2)"
+message: "If you use this analysis in your research, please cite it as below. To cite the original 47-day study specifically, use the 'Update 1' reference entry below instead of the top-level metadata."
 type: software
 authors:
   - name: "Khames, Abdallah A"
@@ -10,7 +10,7 @@ authors:
     orcid: ""
     website: "https://github.com/abdallah-bodzz"
 repository-code: "https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis"
-abstract: "Quantitative event study of the 47-day Strait of Hormuz blockade (Feb 28 – Apr 17, 2026). Analyzes cross-asset shock transmission across 10 global assets using OLS market model, rolling betas, volatility regime detection, and DXY decomposition. Key finding: physical oil decoupled from energy equities during the acute supply shock. WTI returned +32.9% while XOM fell -1.5% in the same 33-day window."
+abstract: "Quantitative event study of the 2026 Strait of Hormuz crisis, extended to a 113-trading-day, 5-window, 16-asset analysis (Jan 1 - Jun 13, 2026). Update 2 builds on the original 47-day study (Feb 28 - Apr 17, 2026, 10 assets, 3 windows) by adding two new event windows (correction, diplomacy) and six new assets (ITA, BWET, TLT, XLE, ARAMCO/2222.SR, UNG). Core finding: forward-looking diplomacy and ceasefire expectations overrode persistent physical supply constraints in May 2026 - the 'May Paradox' - with WTI falling sharply while strait transit capacity remained near 2%. Secondary findings include a third cross-asset decoupling in freight markets (BWET vs. WTI), a backlog-driven resilience pattern in defense equities (ITA), a second safe-haven failure in long-duration Treasuries (TLT), and evidence of market learning across a repeated escalation event (Jun 10, 2026). Static snapshot - data cutoff June 13, 2026, predating the eventual resolution of the underlying conflict. Update 1's analysis and findings are unchanged and preserved separately within the same repository."
 keywords:
   - event study
   - quantitative finance
@@ -19,10 +19,24 @@ keywords:
   - supply shock
   - time-series analysis
   - risk management
+  - regime detection
+  - cross-asset correlation
 license: "MIT with Attribution & Research Citation"
-license-url: "https://opensource.org/licenses/MIT"
-date-released: 2026-05-09
+license-url: "https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis/blob/main/LICENSE"
+date-released: 2026-06-17
+identifiers:
+  - type: url
+    value: "https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis/tree/main/notebooks/02_hormuz_update2.ipynb"
+    description: "Update 2 notebook (16 assets, 5-window framework)"
 references:
+  - type: software
+    title: "Hormuz 2026: When Oil Decoupled from Everything (Update 1)"
+    authors:
+      - name: "Khames, Abdallah A"
+    year: 2026
+    month: 5
+    day: 9
+    notes: "Original study. 47-day closure (Feb 28 - Apr 17, 2026), 10 assets, 3 event windows. Data cutoff April 30, 2026. Preserved unmodified in this repository alongside Update 2."
   - type: article
     title: "Operation Epic Fury: US and allies strike Iran, killing supreme leader Khamenei"
     year: 2026
@@ -39,3 +53,8 @@ references:
     year: 2026
     month: 4
     day: 17
+  - type: article
+    title: "Renewed escalation near the Strait of Hormuz prompts second market shock test"
+    year: 2026
+    month: 6
+    day: 10
