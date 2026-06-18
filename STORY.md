@@ -1,7 +1,8 @@
-# The 47-Day Fracture
-## How the Hormuz Blockade Broke Every Playbook — A Quantitative Post-Mortem
+# The 47-Day Fracture, and the Paradox That Followed
+## How the Hormuz Blockade Broke Every Playbook — Twice — A Quantitative Post-Mortem
 
-*Abdallah A Khames · BODZZ · May 2026 · Data cutoff: April 30, 2026*
+*Abdallah A Khames · BODZZ · Update 2 · Data cutoff: June 13, 2026*
+*(Part One, below, is the original Update 1 narrative — data cutoff April 30, 2026 — preserved unmodified. Update 2 begins at Act V.)*
 
 ---
 
@@ -11,12 +12,13 @@
 >
 > The energy hedge that should have worked — buying Exxon instead of barrels — lost money while the commodity rallied 33%. The safe haven that should have protected — gold — got sold for margin calls.
 >
-> This is the story of a supply shock that didn't behave like a financial crisis. And what broke wasn't the plumbing. It was the playbook.
+> **That was Update 1. Then May happened.** WTI fell sharply while the strait stayed at roughly 2% transit capacity — physically unchanged from the worst of the closure. The market wasn't pricing the blockade anymore. It was pricing the diplomacy around ending it. A second escalation hit on June 10, and the market's reaction was muted compared to the first. This update covers both: the fracture, and the paradox that followed it.
 
 ---
 
 ## Table of Contents
 
+**Part One — Update 1 (Feb 28 – Apr 30, 2026)**
 - [The Setup: Why the Strait Mattered](#the-setup-why-the-strait-mattered)
 - [Act I: Before the Shock — Tension Was Already Priced](#act-i-before-the-shock--tension-was-already-priced)
 - [Act II: The 47 Days — Who Won, Who Lost](#act-ii-the-47-days--who-won-who-lost)
@@ -31,14 +33,32 @@
 - [The Pair Trade That Worked](#the-pair-trade-that-worked)
 - [The Full Picture](#the-full-picture)
 - [What This Means for the Next Time](#what-this-means-for-the-next-time)
-- [Methodology](#methodology)
-- [Limitations](#limitations)
+- [Methodology (Update 1)](#methodology)
+- [Limitations (Update 1)](#limitations)
+
+**Part Two — Update 2 (May 1 – Jun 13, 2026)**
+- [Act V: The May Paradox](#act-v-the-may-paradox)
+- [Act V.5: The Third Decoupling — Freight](#act-v5-the-third-decoupling--freight)
+- [Act V.6: Defense as a Backlog Trade](#act-v6-defense-as-a-backlog-trade)
+- [Act V.7: Bonds Fail the Same Test Gold Did](#act-v7-bonds-fail-the-same-test-gold-did)
+- [Act V.8: The Exporter's Own Perspective](#act-v8-the-exporters-own-perspective)
+- [Act VI: The Second Shock](#act-vi-the-second-shock)
+- [The Full Picture, Extended](#the-full-picture-extended)
+- [Updated Mandates: What This Means for the Next Time](#updated-mandates-what-this-means-for-the-next-time)
+- [Methodology (Update 2)](#methodology-update-2)
+- [Limitations (Update 2)](#limitations-update-2)
 
 ---
 
 > **Notice:** An interactive HTML dashboard of this analysis is available at:
 > https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/
 > The dashboard includes all charts, KPI metrics, phase timeline, pair trade breakdown, correlation tables, and downloadable CSVs.
+
+---
+
+# Part One: Update 1
+
+*The original narrative below describes the 47-day closure through April 30, 2026. It is unmodified from its first publication. If you've already read Update 1, skip ahead to [Act V](#act-v-the-may-paradox) for what's new.*
 
 ---
 
@@ -410,6 +430,8 @@ The heatmap is the single-table summary of the entire study. Each cell is the cu
 
 ## What This Means for the Next Time
 
+*(Update 1 mandates — written at the April 30, 2026 cutoff. See [Updated Mandates](#updated-mandates-what-this-means-for-the-next-time) below for the Update 2 revision, including one mandate that changes.)*
+
 **1. Own the barrel, not the company.**
 During a supply shock, energy equities track equity sentiment, not commodity prices. XOM's beta flipped to −0.42. The pair trade (long WTI, short XOM) returned +34.4% in 33 days. Next time, this is the trade — not a long-only energy equity allocation.
 
@@ -427,6 +449,8 @@ WTI futures lead. The equity open confirms. Don't wait for the NYSE to react to 
 
 ## Methodology
 
+*(Update 1 methodology, unchanged. See [Methodology — Update 2](#methodology-update-2) for the extended 5-window framework.)*
+
 Three event windows define the study: pre-event (Jan 1–Feb 27, 39 trading days), shock/closure (Feb 28–Apr 16, 33 days), and reopening (Apr 17–Apr 30, 9 days). Betas and seasonal baselines are estimated on the pre-event window only.
 
 Abnormal returns use a standard OLS market model — each asset regressed on S&P 500 returns over the pre-event window — to separate the shock-specific component from general market movement. The DXY decomposition applies the same framework to isolate currency effects from real supply disruption. Volatility regime detection uses a 5d/21d annualized volatility ratio. Rolling betas use a 21-day OLS window.
@@ -438,6 +462,8 @@ Full equations and reproducibility are in the [main notebook](notebooks/01_hormu
 ---
 
 ## Limitations
+
+*(Update 1 limitations, unchanged. See [Limitations — Update 2](#limitations-update-2) for caveats on the new assets and windows.)*
 
 **The pair trade is pre-cost.** +34.4% assumes zero borrow costs, no futures roll, no slippage. Directional finding, not a trade recommendation.
 
@@ -453,4 +479,196 @@ Full equations and reproducibility are in the [main notebook](notebooks/01_hormu
 
 ---
 
-*Analysis: Abdallah A Khames · BODZZ · [@abdallah-bodzz](https://github.com/abdallah-bodzz) · Static snapshot as of April 30, 2026.*
+*End of Part One (Update 1 narrative, unmodified). Part Two begins below.*
+
+---
+---
+
+# Part Two: Update 2
+
+---
+
+## Act V: The May Paradox
+
+Update 1 ended on a note of honest uncertainty: the reopening announced April 17 didn't hold, Iran re-closed the strait April 18, and the dual blockade continued past the April 30 cutoff. The obvious next question was simple — does the market keep treating this as a live supply shock for as long as the strait stays shut?
+
+The answer, it turns out, is no. And the reason why is the entire point of this update.
+
+Through May, the Strait of Hormuz remained at approximately **2% of normal transit capacity**. Not a partial recovery. Not a phased reopening. Essentially the same physical situation that produced WTI's +32.9% shock-window rally in March and April.
+
+WTI fell **−14.3% to −20%** during that same month.
+
+![WTI/Gold ratio, full timeline through June 13](outputs/update_2/charts/28_oil_gold_ratio_full_timeline.png)
+
+*The ratio that flagged the supply shock in Update 1 (rising = scarcity pricing) reverses just as sharply here. It peaks in early April, around the original ceasefire signal, then falls through May as the market re-prices around expected resolution rather than current conditions.*
+
+This is the May Paradox: the physical constraint didn't move, but the price did — in the opposite direction the physical situation would predict. The only way to reconcile a closed strait with a falling oil price is that the market stopped pricing today's barrel and started pricing a future one. Diplomatic signals — reported progress on a settlement, expectations of an eventual reopening — became the dominant input. Physical scarcity, while real, became secondary to forward-looking sentiment about how long that scarcity would last.
+
+| Window | WTI | Strait Capacity | What's Being Priced |
+|---|---|---|---|
+| Shock (Feb 28–Apr 16) | +32.9% | ~0% | Current physical scarcity |
+| Reopen (Apr 17–30) | +27.5% | Disputed/reversing | Reopening announcement, then its reversal |
+| **Correction (May 1–29)** | **−14.3% to −20%** | **~2% (unchanged)** | **Expected future resolution, not current conditions** |
+
+*The Correction column is the anomaly. Capacity barely moved between Shock and Correction. Price moved sharply, in the opposite direction physical conditions alone would suggest.*
+
+Update 1 closed with the WTI/Gold ratio as its single cleanest signal — rising ratio means supply scarcity dominates, falling ratio means fear dominates. That framework, built for a different kind of regime, turns out to also be the right tool here, just answering a different question. A falling ratio in May isn't "fear" in the 2008/2020 sense — there was no equity panic, no credit event. It's a different kind of falling: the market re-rating its time horizon, pricing the barrel it expects six months from now rather than the one that isn't moving through the strait today.
+
+**The practical implication, stated plainly:** in a protracted supply shock, physical conditions stop being sufficient information once a credible diplomatic track exists. Anyone managing risk against "the strait is still closed" as a standalone signal would have been wrong-footed by an entire month of price action in May. The thing to watch is not the physical constraint — it's whether a negotiation track exists, and how the market is pricing its odds.
+
+This inverts, rather than just extends, Update 1's framing. Update 1's finding was about *what asset class* tracked the commodity (energy equities didn't). Update 2's correction-window finding is about *what time horizon* the commodity itself was tracking — and for a month, it wasn't the present.
+
+---
+
+## Act V.5: The Third Decoupling — Freight
+
+Update 1 found one decoupling: physical oil vs. energy equities. Update 2 finds a second layer sitting on top of it, in a market most generalist event studies never look at — ocean freight.
+
+![Freight vs. oil third decoupling](outputs/update_2/charts/23_freight_vs_oil_third_decoupling.png)
+
+*BWET, a tanker-shipping futures ETF, outperformed both WTI and energy equities through the shock window and held a meaningful premium well into the diplomacy window — a different exposure pricing a different risk.*
+
+| Window | BWET | WTI | Spread |
+|---|---|---|---|
+| Shock (33d) | **+71.1%** | +32.9% | +38.2pp |
+| Diplomacy (Jun) | **+20.5%** | — | Recovery premium held |
+
+*BWET's shock-window return more than doubled WTI's. Vessel scarcity, war-risk insurance premiums, and rerouting costs are a distinct exposure from the price of the commodity itself.*
+
+The mechanism is intuitive once stated: a closed or contested strait doesn't just affect the price of oil — it affects the cost and availability of the ships that move it. Insurers raise war-risk premiums. Routes lengthen as vessels reroute around the chokepoint. Available tanker capacity tightens. None of that is captured by WTI's price alone, and equities (XOM, CVX, even XLE) don't reflect it either — they're priced on production and refining margins, not on the shipping bottleneck itself.
+
+**The caveat that has to travel with this finding everywhere it goes:** BWET launched in May 2023. That's roughly two years of trading history feeding into a baseline that the rest of this study uses ten years of data to build. Assets under management are around $25 million — thin enough that price action can be driven by flows as much as by the underlying freight market. And it's a futures-based product, meaning multi-month return figures are affected by contango roll costs independent of what's happening to spot freight rates.
+
+None of that makes the finding wrong. It makes it a signal rather than a conclusion — evidence that a third layer of decoupling exists, observed through an imperfect instrument, not a precisely measured freight-market return.
+
+---
+
+## Act V.6: Defense as a Backlog Trade
+
+The "buy defense stocks when war breaks out" instinct showed up immediately on Feb 28 — and Update 1's asset universe didn't include a defense name to test it properly. Update 2 adds ITA, an aerospace and defense ETF, specifically to ask: is this actually a war trade, or something else wearing a war trade's clothes?
+
+![Defense (ITA) analysis](outputs/update_2/charts/22_defense_ita_analysis.png)
+
+*ITA reacted on day one the way a war trade should — then, unlike WTI, didn't reverse through the May correction. Its relationship with the broader market strengthened over time while its relationship with oil weakened.*
+
+ITA's day-one reaction on Feb 28 was sharp — comparable in direction, if not magnitude, to other "this is bad news, buy the obvious hedge" trades. What's different is what happened next. Through the May correction window — the same period where WTI gave back nearly all of its shock-window gain — ITA returned **+8.9%**, holding up better than the broader market through a period that was, on paper, "good news" for risk assets generally.
+
+The likely mechanism: defense contractors don't sell at spot prices. Their revenue comes from multi-year order backlogs, signed well before any given week's headlines. A ceasefire doesn't cancel a contract that was already booked. That structural difference — backlog exposure versus spot exposure — is precisely why ITA's correlation with the S&P 500 grew over the study window while its correlation with WTI shrank: it was behaving more like a steady industrial name with locked-in revenue than like a barometer of how the conflict was going on any given day.
+
+**The lesson for anyone putting on a "war trade":** know which kind you're buying. WTI is spot exposure — it moves with the news, in both directions, immediately. ITA, at least in this case, behaved like backlog exposure — it moved on the initial shock and then largely decoupled from the day-to-day narrative. They are not interchangeable, even though both got bought for similar reasons on the same week in February.
+
+---
+
+## Act V.7: Bonds Fail the Same Test Gold Did
+
+Update 1's most uncomfortable finding was that gold — the textbook safe haven — sold off during the acute shock, consistent with forced liquidation to cover margin calls elsewhere. That left an obvious gap: gold is only half of a traditional 60/40 hedge. Update 2 closes it by adding TLT, a 20+ year Treasury ETF, to ask whether duration did any better.
+
+![TLT safe-haven test](outputs/update_2/charts/24_tlt_treasury_safe_haven.png)
+
+*TLT fell during the shock window and stayed weak through the correction — a flatter, less dramatic failure than gold's, but a failure of the same kind: the asset that was supposed to provide ballast didn't.*
+
+TLT returned **−3.3%** during the shock window. Unlike gold's sharp, fast reversal, this looks more like a slow bleed — consistent with rising inflation expectations from the oil price spike working against long-duration bonds, rather than a forced-selling event. The recovery into the correction and diplomacy windows was limited; TLT did not regain its footing the way some safe-haven theory would predict once the acute crisis phase passed.
+
+Put together with Update 1's gold finding, the picture is now two-for-two: both conventional halves of a traditional defensive allocation underperformed during the period they were supposed to protect a portfolio. Gold failed because of margin-call-style forced selling. Bonds failed because the same supply shock that hurt equities also generated inflation expectations that worked against duration. Different mechanisms, same outcome — the standard playbook for "what to hold when things go wrong" didn't hold up on either side of it.
+
+---
+
+## Act V.8: The Exporter's Own Perspective
+
+Every asset in Update 1 and most of Update 2 represents a consumer-side or financial-market view of the crisis — what oil costs, what equities do, how currencies move. None of them are the actual producer whose product is sitting at a closed chokepoint. Aramco, added in Update 2, is.
+
+![Aramco exporter perspective](outputs/update_2/charts/25_aramco_exporter_perspective.png)
+
+*Aramco's shock-window return lagged WTI's by a wide margin and stayed muted across every subsequent window — the exporter's own equity didn't track the commodity price any more cleanly than the consumer-side equities did.*
+
+Aramco (2222.SR) returned **+8.0%** during the shock window — positive, but a fraction of WTI's +32.9%, and a pattern that held (muted, lagged) across the remaining windows. Q1 2026 earnings beat expectations by roughly 22%, and reported rerouting via an East-West pipeline reportedly maintained production near 12.6 million barrels/day despite the strait disruption — fundamentals that should support the stock. Instead, Aramco traded at what looks like a persistent discount to those fundamentals, plausibly reflecting geopolitical risk premium, state-policy uncertainty, and the practical limits on foreign capital access to the listing.
+
+**A necessary technical caveat:** Aramco trades on the Tadawul exchange, Sunday through Thursday, UTC+3 — a different calendar from every other asset in this study. The data pipeline forward-fills Aramco's price onto the US trading calendar (`align_gulf_asset()`), which introduces an approximate 18-hour lag relative to same-day US market closes. Any same-day correlation figures involving Aramco should be read as directionally informative, not as precise contemporaneous relationships.
+
+The headline insight: even the company most directly exposed to the physical commodity, run by the state most directly involved in resolving the blockade, did not trade as a clean proxy for the crude price. State-controlled exporters respond to policy signals and production decisions as much as — arguably more than — the spot price of what they're pumping.
+
+---
+
+## Act VI: The Second Shock
+
+On June 10, a renewed escalation tested something Update 1 explicitly couldn't: whether markets react the same way to the same kind of shock the second time around.
+
+![Escalation replay: Feb 28 vs. Jun 10](outputs/update_2/charts/27_escalation_replay.png)
+
+*Side by side, the two day-one reactions. WTI's June 10 move was smaller than its February 28 move — not because the news was less serious, but because the market had already built a playbook for this kind of event.*
+
+The day-one WTI reaction on June 10 was measurably smaller than the day-one reaction on Feb 28. Equity moves were similarly more contained. This isn't a claim that the June 10 event was less consequential on the ground — it's a claim about market behavior: having already lived through one Hormuz-related shock, the market's transmission of a second, similar shock was faster to digest and smaller in magnitude.
+
+This is the "market learning" effect — a real, measurable pattern, though one observation of it inside one conflict. It's consistent with a broader idea in market microstructure: the first instance of a new kind of shock requires price discovery from scratch, while subsequent similar shocks get priced against an already-built mental model. Whether that model was "this will probably get walked back like the first one did" or something else, the data shows the reaction was smaller — it doesn't by itself tell us why.
+
+**What this means practically:** if a similar pattern holds for future repeated escalations in protracted conflicts, day-one reactions should be expected to shrink with each repetition, all else equal. That's a hypothesis worth testing again if a third event occurs — not yet a rule.
+
+---
+
+## The Full Picture, Extended
+
+The Update 1 heatmap captured one shock across three windows. The Update 2 version stretches the same idea across the full timeline.
+
+![16-asset, 5-window full heatmap](outputs/update_2/charts/30_16x5_full_heatmap.png)
+
+*Sixteen rows, five columns. Read the WTI row left to right: a positive shock, a positive reopen, then a sharp reversal in correction — the May Paradox, visible in a single cell. Read the ITA row over the same span: comparatively flat after its initial reaction, the backlog effect in miniature.*
+
+The single most useful comparison in this chart is between the WTI row and the ITA row across the Shock → Correction transition. Both assets reacted to the same Feb 28 news. By the Correction window, they've diverged sharply — one asset's price is still tracking the day-to-day narrative, the other's isn't. That divergence is the entire thesis of Update 2 compressed into two adjacent rows.
+
+---
+
+## Updated Mandates: What This Means for the Next Time
+
+*This section revises Update 1's three mandates in light of the Correction and Diplomacy windows, and adds a fourth.*
+
+**1. Own the barrel, not the company.** *(Unchanged from Update 1.)*
+During a supply shock, energy equities track equity sentiment, not commodity prices. This held in the shock window and was reconfirmed at the sector level by XLE's behavior through Update 2's added windows. Still the trade — not a long-only energy equity allocation — for the shock phase specifically.
+
+**2. Watch WTI/Gold — but know which question it's answering.** *(Revised from Update 1.)*
+Update 1 said: rising ratio means supply shock, falling ratio means systemic fear. That's still true during an acute shock. But May showed the same falling ratio can also mean something else entirely — diplomacy overriding scarcity, with no systemic fear involved at all (equities were calm; this wasn't a 2008/2020 risk-off episode). **The mandate update: a falling WTI/Gold ratio is not sufficient on its own to diagnose "fear." Check whether equity volatility is actually elevated before assuming the fear interpretation. If VIX is calm and the ratio is falling, you're probably looking at a diplomacy/resolution repricing, not a flight to safety.**
+
+**3. The reopening will be priced overnight.** *(Unchanged from Update 1.)*
+WTI futures lead, the equity open confirms. Reconfirmed on June 10 — the second escalation was priced into crude before the equity session, same as the first.
+
+**4. New: a closed chokepoint is not a standing instruction to stay long the commodity.** *(New in Update 2.)*
+The single biggest practical lesson of the May Paradox: "the physical situation hasn't changed" is not the same as "the price won't move." Once a credible diplomatic track exists, monitor the negotiation, not just the blockade. A position built purely on "the strait is still closed" would have been wrong for the entire month of May, despite that statement being completely true the whole time.
+
+---
+
+> **Update 1 found that the playbook for a supply shock didn't match the playbook for a financial crisis. Update 2 finds that even the supply-shock playbook has an expiration date — once diplomacy enters the picture, the market starts pricing the negotiation, not the barrel count.**
+
+---
+
+## Methodology — Update 2
+
+Update 2 extends, rather than replaces, the Update 1 framework. The original pre-event window (Jan 1–Feb 27, 39 days) remains the sole source for beta estimation — nothing about the original methodology was rerun or restated with new assumptions.
+
+Two windows are added: **Correction** (May 1–29, 2026) and **Diplomacy** (May 30–Jun 13, 2026). Both were necessary, not optional — there is no way to make a falsifiable claim about a May reversal without a window boundary separating it from the shock and reopening periods, and no way to isolate the June 10 second-shock test from the broader correction trend without a further boundary between Correction and Diplomacy.
+
+New functions in `event_study.py` — `pair_trade_extended()`, `freight_oil_spread()`, `aramco_sovereign_discount()`, `tlt_safe_haven_test()`, `window_regime_summary()`, `escalation_replay()`, and others — extend the original OLS abnormal-returns and rolling-correlation machinery to the 16-asset, 5-window structure automatically. Aramco's Gulf-calendar alignment (`align_gulf_asset()`) forward-fills Tadawul (Sun–Thu, UTC+3) pricing onto the US trading calendar.
+
+Data: yfinance (`auto_adjust=True`), 2016–2026, adjusted close, now 16 tickers. All figures nominal — no CPI adjustment.
+
+Full equations and reproducibility are in the [Update 2 notebook](notebooks/02_hormuz_update2.ipynb), Appendices A and B.
+
+---
+
+## Limitations — Update 2
+
+**BWET has a thin baseline.** Launched May 2023 — about two years of history feeding a study that otherwise uses ten years for its seasonal baseline. Low AUM (~$25M). Futures-based, so multi-month returns include contango roll effects. Read as signal, not as an investable benchmark.
+
+**Aramco runs on a different calendar.** Forward-filled from Tadawul (Sun–Thu) onto the US trading calendar, with an approximate 18-hour lag versus same-day US closes. Same-day correlation figures involving Aramco are directional, not precise.
+
+**UNG is affected by roll decay.** Included for completeness; not load-bearing for any core Update 2 finding.
+
+**The "Diplomacy" window label is applied after the fact.** It's based on observed price action and reported negotiation progress, not a verified, independently-dated diplomatic milestone. Treat the window boundary as analytically useful, not as a claim about exactly when diplomacy "started" mattering more than supply.
+
+**This is still a single, extended event.** A longer window doesn't turn one conflict into a sample of conflicts. The May Paradox and the Jun 10 market-learning effect are both observations from this crisis specifically — directionally interesting, not yet validated against other protracted supply shocks.
+
+**Pre-resolution snapshot.** The June 13, 2026 cutoff predates the eventual outcome of the underlying conflict. This update makes no claim about how that resolves — see Update 3 for whatever comes next.
+
+**Everything inherited from Update 1 still applies:** pre-cost pair trades, 39-day beta estimation window, daily-close-only data with the associated lag-0 CCF bias, nominal figures, and the original survivorship-bias caveat on XOM/CVX.
+
+---
+
+*Analysis: Abdallah A Khames · BODZZ · [@abdallah-bodzz](https://github.com/abdallah-bodzz) · Update 2, static snapshot as of June 13, 2026. Update 1 narrative (Part One) preserved as originally published, static snapshot as of April 30, 2026.*

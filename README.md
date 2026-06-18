@@ -1,36 +1,41 @@
-# Hormuz 2026: When Oil Decoupled from Everything
-### A Quantitative Event Study of the 47-Day Strait of Hormuz Blockade
+# Hormuz 2026: When Diplomacy Decoupled From Supply
+### A Quantitative Event Study of the Strait of Hormuz Crisis — Update 2
 
-> *Physical oil decoupled. Energy stocks fell while crude rallied. Gold failed. Here's the data.*
+> *Update 1 found that physical oil decoupled from energy equities. Update 2 finds something stranger: oil decoupled from the physical situation itself. The strait stayed closed. The price didn't care.*
 >
-> **Context:** The Strait of Hormuz carries ~20% of global seaborne oil. When Operation Epic Fury closed it on Feb 28, 2026, markets didn't react uniformly — they fractured.
+> **Context:** The Strait of Hormuz carries ~20% of global seaborne oil. It closed on Feb 28, 2026 (Operation Epic Fury) and never fully reopened. Update 1 covered the first 47 days. This update covers the next two months — including a month where prices fell sharply while transit capacity stayed near 2%.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?logo=jupyter&logoColor=white)](https://jupyter.org/)
 [![Data: yfinance](https://img.shields.io/badge/data-yfinance-brightgreen?logo=yahoo&logoColor=white)](https://pypi.org/project/yfinance/)
-[![Assets: 10](https://img.shields.io/badge/assets-10%20tickers-blueviolet)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
-[![Event Windows: 3](https://img.shields.io/badge/event%20windows-3%20phases-orange)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
-[![Cutoff: Apr 2026](https://img.shields.io/badge/data%20cutoff-Apr%2030%202026-red)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
-[![Status: Static Snapshot](https://img.shields.io/badge/status-static%20snapshot-lightgrey)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Assets: 16](https://img.shields.io/badge/assets-16%20tickers-blueviolet)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Event Windows: 5](https://img.shields.io/badge/event%20windows-5%20phases-orange)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Cutoff: Jun 13 2026](https://img.shields.io/badge/data%20cutoff-Jun%2013%202026-red)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
+[![Status: Update 2](https://img.shields.io/badge/status-update%202%20of%203-success)](https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis)
 [![Live Demo](https://img.shields.io/badge/Live-Dashboard-1abc9c?logo=githubpages&logoColor=white)](https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/)
 
 ---
 
 > **Notice:** An interactive HTML dashboard of this analysis is available at:
 > https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/
-> The dashboard includes all charts, KPI metrics, phase timeline, pair trade breakdown, correlation tables, and downloadable CSVs.
+> The dashboard includes all charts, KPI metrics, the full phase timeline, pair trade breakdowns, correlation tables, and downloadable CSVs.
+>
+> **This is Update 2 of a series.** [Update 1](#update-1-vs-update-2-whats-different) covered the original 47-day closure (Feb 28–Apr 30). This update extends the window through June 13 and adds six new assets. Update 1's files, numbers, and outputs are preserved untouched alongside this update — nothing here overwrites them.
 
 ---
 
 ## Navigation
 
-- [TL;DR — The Numbers](#tldr-the-numbers)
+- [TL;DR — The Numbers](#tldr--the-numbers)
 - [The Visual That Says It All](#the-visual-that-says-it-all)
+- [The May Paradox](#the-may-paradox)
 - [What This Actually Proves](#what-this-actually-proves)
 - [What This Does NOT Prove](#what-this-does-not-prove)
+- [Update 1 vs. Update 2: What's Different](#update-1-vs-update-2-whats-different)
 - [Quick Start](#quick-start--5-minutes)
-- [Asset Universe](#asset-universe)
+- [Asset Universe](#asset-universe--16-assets)
+- [Event Windows](#event-windows--5-phases)
 - [Methodology](#methodology)
 - [Data and Technical Limitations](#data-and-technical-limitations)
 - [File Structure](#file-structure)
@@ -42,76 +47,85 @@
 
 | Metric | Value | What It Means |
 |--------|-------|---------------|
-| WTI shock-window return | **+32.9%** | 33 trading days of closure |
-| WTI abnormal return (pure Hormuz effect) | **+20.9%** | Net of beta and pre-event trend |
-| WTI Jan–Apr cumulative | **+86.5%** | 6.5× the 5-year average |
-| Gold shock-window return | **−9.6%** | Safe haven failed under margin pressure |
-| S&P 500 max drawdown | **−7.8%** | Equity markets held |
-| Energy basket (XOM+CVX+WTI) max drawdown | **−12.3%** | 4.5pp deeper than the broad market |
-| Long WTI / Short XOM — shock window | **+34.4%** | The exploitable dislocation |
-| WTI/Gold ratio change | **+47%** | Supply shock signal, not systemic fear |
-| DXY contribution to WTI | **<1%** | Physical barrels, not dollar weakness |
-| VIX peak | **31.0** | Elevated, not panic |
-| Days for S&P to price the announcement¹ | **1** | Market efficiency, not complacency |
+| WTI shock-window return | **+32.9%** | Unchanged from Update 1 — the original 33-day closure |
+| WTI correction-window return (May) | **−14.3% to −20%** | Sharp drop while the strait stayed near 2% capacity — the May Paradox |
+| Strait transit capacity, May | **~2%** | Physically unchanged from the shock window — price moved, the situation didn't |
+| BWET (freight ETF) shock-window return | **+71.1%** | A third decoupling layer: shipping repriced harder than crude or equities |
+| ITA (defense ETF) correction-window return | **+8.9%** | More resilient than the broader market through the price reversal — backlog, not spot exposure |
+| TLT (20Y+ Treasuries) shock-window return | **−3.3%** | Second safe-haven failure — bonds, like gold in Update 1, didn't protect |
+| Aramco (2222.SR) shock-window return | **+8.0%** | Muted and lagged vs. WTI — the exporter's own equity didn't track the commodity either |
+| Jun 10 re-escalation, Day-1 WTI move | Smaller than Feb 28 | Evidence of market learning across repeated shocks |
+| WTI/Gold ratio | Cleanest regime signal, again | Same tool from Update 1, now confirmed across a second regime type |
 
-> ¹ *The Apr 17 announcement — not verified normalization. Iran re-closed the strait on Apr 18. See [What This Does NOT Prove](#what-this-does-not-prove).*
+> All figures nominal, no CPI adjustment. BWET and Aramco carry additional caveats — see [Limitations](#data-and-technical-limitations).
 
 ---
 
 ## The Visual That Says It All
 
-![Normalised price paths: WTI vs S&P 500 vs Gold vs XOM vs JETS during the 2026 Hormuz crisis](outputs/01_normalised_prices.png)
-*Five assets. Three regimes. One decoupling. WTI diverges upward, gold reverses mid-crisis, energy equities flatline while crude rallies, and airlines bleed across all three windows.*
+![16-asset, 5-window sector heatmap](outputs/update_2/charts/30_16x5_full_heatmap.png)
+*Sixteen assets, five windows, one table. Read across a row to see an asset's full arc from pre-event through diplomacy. Read down the shock and correction columns to see the regime flip: WTI's relationship with "is this bullish or bearish" inverts between the two.*
 
-What I think makes this chart the clearest summary of the entire study: you can see the exact moment the decoupling started (Feb 28 vertical line), watch gold and XOM fail to track oil upward, and then watch JETS decline even after the reopening announcement — when fuel costs were already falling. Three separate failure modes, all visible in one chart.
-
----
-
-### How Unusual Was 2026?
-
-Before measuring the shock itself, I established a baseline — what does a normal Jan–Apr look like? Five years of history across the same assets, same window.
-
-![Seasonal baseline comparison: WTI, S&P 500, and Gold across 2021-2026](outputs/02_seasonal_baseline.png)
-*2026 WTI (red) isn't just an outlier — it's a different chart entirely. Every prior year fits in a narrow band. 2026 breaks the scale at +86.5% vs. a 5-year average of +13.4%.*
-
-The next-largest Jan–Apr WTI move in the baseline was +37.6% in 2022 (Russia-Ukraine shock). 2026 is more than double that. This framing matters: without the baseline, the shock window returns are just numbers. With it, you see how far outside historical range this event sits.
+This is Update 2's version of Update 1's hero chart. Where the original normalized-price chart showed one decoupling at one moment, this heatmap shows the same kind of fracture recurring across phases — physical oil, energy equities, freight, and defense don't just diverge once, they diverge differently in each regime.
 
 ---
 
-### The Counterfactual: How Much Was Actually the Shock?
+### The Full Timeline, In One Chart
 
-![Counterfactual paths: actual 2026 vs no-shock projection](outputs/06_counterfactual.png)
-*The shaded region is the shock premium — what the market added on top of what historical seasonality would have predicted. WTI: +73pp. S&P: +2.2pp.*
-
-I kept coming back to this chart during the analysis. The counterfactual makes the claim precise: roughly 85% of WTI's Jan–Apr gain is attributable to the closure, not normal seasonal drift. The S&P, by contrast, barely deviated from its no-shock trajectory — which is itself a finding about how contained the financial transmission was.
+![Five-window full timeline](outputs/update_2/charts/21_five_window_full_timeline.png)
+*Pre-event → Shock → Reopen → Correction → Diplomacy. The vertical bands mark each regime. WTI's path is not monotonic — it spikes, partially reopens, then reverses hard in the band most readers will not expect: Correction, not Diplomacy.*
 
 ---
 
-### The Hedge That Wasn't
+## The May Paradox
 
-![Energy basket vs S&P 500: equal-weight portfolio during the closure](outputs/07_sector_portfolio.png)
-*If you bought the "energy hedge" — equal-weight XOM, CVX, WTI — expecting protection during an oil supply shock, you got a −12.3% max drawdown. The S&P 500 only fell −7.8%. The hedge amplified losses.*
+The headline finding of Update 2. In May 2026, WTI fell **−14.3% to −20%** while the Strait of Hormuz remained at roughly **2% of normal transit capacity** — essentially unchanged from the acute shock window. If physical scarcity were still the dominant pricing factor, this shouldn't happen. It happened anyway.
 
-This one is uncomfortable. Energy equities are supposed to benefit when oil rises. During the acute 33-day closure, they didn't behave that way — they were sold as risk assets alongside everything else, while the physical commodity they produce rallied +32.9%. That decoupling is the core empirical finding of this study.
+![WTI/Gold ratio, full timeline](outputs/update_2/charts/28_oil_gold_ratio_full_timeline.png)
+*The same ratio that flagged the Update 1 supply shock (rising = scarcity dominant) flags its inverse here. The ratio falls through May — diplomacy and resolution expectations took over as the dominant pricing factor, even though the physical constraint hadn't moved.*
+
+**The mechanism, as best the data can show it:** markets stopped pricing the barrel sitting at the closed strait and started pricing the barrel they expected to be available after a resolution. That's a forward-looking bet, not a read on current conditions — and it's a different kind of decoupling than Update 1 documented. Update 1 was about *what asset class* moves with oil. Update 2's correction window is about *what time horizon* the market is actually pricing.
+
+This is also why the WTI/Gold ratio matters beyond being "a useful chart." It is the one tool in this study that correctly characterized two structurally different regimes — supply shock (Update 1) and diplomacy-driven reversal (Update 2) — using the same logic both times.
+
+---
+
+### Third Decoupling: Freight vs. Everything Else
+
+![Freight vs. oil third decoupling](outputs/update_2/charts/23_freight_vs_oil_third_decoupling.png)
+*BWET (tanker/freight futures proxy) outperformed both crude and energy equities by a wide margin in the shock window and held a meaningful premium into the diplomacy window. Vessel scarcity and war-risk premiums priced a different exposure than the commodity itself.*
+
+**Caveat, stated plainly:** BWET launched in May 2023. Two years of baseline history, ~$25M AUM, futures-based with contango roll decay. This is a real signal worth noting, not an investable strategy. Every chart and table referencing BWET repeats this caveat — see [Limitations](#data-and-technical-limitations).
+
+---
+
+### Defense as a Backlog Trade, Not a War Trade
+
+![Defense (ITA) analysis](outputs/update_2/charts/22_defense_ita_analysis.png)
+*ITA reacted on day one like every other "war trade" — then held up through the correction window in a way WTI didn't. Its correlation with the S&P 500 grew over time while its correlation with WTI shrank, consistent with multi-year order backlogs buffering it against peace-process price swings.*
+
+---
+
+### Bonds Join Gold on the List of Failed Hedges
+
+![TLT safe-haven test](outputs/update_2/charts/24_tlt_treasury_safe_haven.png)
+*TLT fell −3.3% during the shock window and stayed weak through the correction — inflation expectations from the oil spike worked against duration even as the crisis itself wasn't a credit event. Combined with Update 1's gold finding, both halves of a conventional 60/40 hedge underperformed during the acute phase.*
 
 ---
 
 ## What This Actually Proves
 
-1. **Energy equities are not oil proxies during supply shocks.**
-   XOM fell −1.5% while WTI rose +32.9% during closure. Rolling beta flipped from +0.15 (neutral pre-event) to −0.42 (inverse during shock). Owning XOM instead of WTI was effectively a bet against the commodity you thought you were buying.
+1. **Diplomacy can override physical scarcity in pricing — even when scarcity hasn't resolved.** The May Paradox is direct evidence: capacity near 2%, price falling anyway. The market was pricing a forecast, not a fact.
 
-2. **Gold fails as a safe haven under margin pressure.**
-   Dropped −9.6% during the crisis after rallying +21% pre-event. First 5 days of shock: −2.8%. The pattern is consistent with institutions selling their most liquid profitable asset (gold) to cover equity margin calls. Not because gold was weak — because everything else was falling and cash was needed.
+2. **The WTI/Gold ratio works as a regime signal across more than one kind of regime.** Update 1 used it to detect a supply shock. Update 2 uses the identical logic to detect a diplomacy-driven reversal. Same tool, two jobs, both correct.
 
-3. **The WTI/Gold ratio is the cleanest regime discriminator.**
-   +47% during closure = supply shock pricing. The ratio peaked exactly on April 7 (ceasefire announcement), making it a real-time signal, not a retrospective label. Rising ratio means oil outpaces gold — scarcity dominates. Falling ratio means gold outpaces oil — fear dominates. Knowing which regime you're in changes which hedges work.
+3. **Decoupling has layers, and they don't all move together.** Physical oil vs. energy equities (Update 1). Freight vs. crude (Update 2, new). Defense vs. broader market sentiment (Update 2, new). Each is a separate fracture, not a restatement of the same one.
 
-4. **Supply shocks and financial crises are not the same event.**
-   VIX peaked at 31 (1.5× the 5-year average). No credit event, no liquidity freeze. Commodity chaos with functioning financial plumbing throughout. The 2020 or 2008 risk-off playbook — long gold, long vol, reduce duration — misfired in this environment.
+4. **"War trades" require knowing whether you're holding spot exposure or backlog exposure.** ITA's resilience through the correction window — while WTI reversed sharply — shows these are not interchangeable positions, even when both got bid up on the same news the same week in February.
 
-5. **The reopening announcement was priced in one trading day.**
-   S&P 500 absorbed April 17 within one session. WTI futures (24/5 trading) led the move overnight before the NYSE open. The equity open confirmed it, it didn't discover it. For anyone trying to trade around resolution events: watch the futures, not the equity open.
+5. **Markets show a measurable, not just anecdotal, learning effect across repeated shocks.** The Jun 10 re-escalation produced a smaller day-one WTI move than Feb 28. Same kind of event, smaller reaction, inside one continuous dataset.
+
+6. **Traditional 60/40 hedging failed on both halves during the acute phase.** Gold failed in Update 1. Bonds fail the same test in Update 2. Neither asset behaved as advertised when it mattered.
 
 ---
 
@@ -119,13 +133,30 @@ This one is uncomfortable. Energy equities are supposed to benefit when oil rise
 
 **On interpretation and claims:**
 
-- **The pair trade P&L is pre-cost.** Long WTI / Short XOM at +34.4% assumes zero borrow costs, no futures roll, no slippage. Real-world execution would be materially lower. This is a directional finding, not a trade recommendation.
+- **The May Paradox is a description, not a prediction.** It characterizes how the market priced the situation through June 13, 2026. It does not forecast whether the diplomacy-driven view or the supply-constrained view ultimately "wins."
 
-- **The gold margin-call story is a hypothesis.** The pattern fits the data cleanly. But position-level institutional data would be required to confirm forced liquidation as the mechanism. I'm not claiming proof — I'm claiming the pattern is consistent with that explanation and inconsistent with the safe-haven narrative.
+- **BWET's returns are not investable at the scale shown.** Limited history, low AUM, futures roll decay. Presented as an analytical signal about shipping-market stress, not a trade idea.
 
-- **"The reopening" is not what it sounds like.** Iran announced reopening on April 17. Iran re-closed on April 18. The dual blockade — US on Iranian ports, Iran on commercial traffic — continued through the study cutoff of April 30, 2026. I kept the April 17–30 window because the market treated the announcement as a resolution; that reaction is informative regardless of whether the resolution held. But calling it "the reopening" is shorthand, not fact.
+- **The Jun 10 "market learning" finding is one data point, not a law.** One repeated-event comparison inside one conflict is suggestive. It is not proof that markets generally learn to discount repeated shocks of any kind.
 
-- **Single-event results.** This describes the 2026 Hormuz closure specifically. A different geopolitical topology — demand shock, financial contagion, different central bank posture — may produce completely different regime dynamics.
+- **This says nothing about how the underlying conflict resolves.** This update is explicitly a pre-resolution snapshot, ending June 13, 2026. Whatever happens next is outside this update's scope by design — that's what Update 3 is for.
+
+- **Single-event results, now extended but still single-event.** This describes the 2026 Hormuz crisis specifically, across a longer window than Update 1, but still one underlying geopolitical sequence. Generalizing to other protracted supply shocks requires comparison data this study doesn't have.
+
+---
+
+## Update 1 vs. Update 2: What's Different
+
+| | Update 1 | Update 2 |
+|---|---|---|
+| **Window** | Jan 1 – Apr 30, 2026 (47-day shock) | Jan 1 – Jun 13, 2026 (113 trading days) |
+| **Assets** | 10 | 16 (+ ITA, BWET, TLT, XLE, ARAMCO, UNG) |
+| **Event windows** | 3 (pre-event, shock, reopening) | 5 (+ correction, diplomacy) |
+| **Core thesis** | Physical oil decoupled from energy equities | Diplomacy decoupled from physical supply |
+| **Best signal** | WTI/Gold ratio (supply shock detector) | WTI/Gold ratio (now also a diplomacy-reversal detector) |
+| **Files** | Untouched — see `data/raw/prices_2016_2026.parquet`, `notebooks/01_*` | New, separate — `*_u2.parquet`, `notebooks/02_*`, `outputs/update_2/` |
+
+Update 1's analysis, numbers, and conclusions are unchanged by this update. Nothing in Update 2 retroactively edits Update 1 — it sits alongside it as the next chapter.
 
 ---
 
@@ -139,8 +170,14 @@ cd 2026-hormuz-blockade-analysis
 # Install
 pip install -r requirements.txt
 
-# Run — parquet already included, starts immediately
-jupyter notebook notebooks/01_hormuz_analysis_notebook.ipynb
+# Run Update 2 — cached U2 parquet already included, starts immediately
+jupyter notebook notebooks/02_hormuz_update2.ipynb
+```
+
+To run the original Update 1 notebook instead:
+
+```bash
+jupyter notebook notebooks/01_hormuz_analysis.ipynb
 ```
 
 To re-fetch all data from scratch (requires internet, ~2–3 min):
@@ -150,11 +187,13 @@ To re-fetch all data from scratch (requires internet, ~2–3 min):
 CACHE_DATA = False
 ```
 
-**Requirements:** Python 3.10+, ~500MB disk space for parquet + chart outputs.
+**Requirements:** Python 3.10+, ~700MB disk space for both parquet versions + chart outputs.
 
 ---
 
-## Asset Universe
+## Asset Universe — 16 Assets
+
+**Carried over from Update 1 (unchanged):**
 
 | Asset | Ticker | Role in Analysis |
 |-------|--------|-----------------|
@@ -169,21 +208,44 @@ CACHE_DATA = False
 | DAX | `^GDAXI` | European spillover — industrial energy sensitivity |
 | Nikkei 225 | `^N225` | Asian spillover — oil import dependency |
 
-**Data range:** Jan 2016 – Apr 2026 · 2,686 trading days · Source: yfinance (`auto_adjust=True`)
+**New in Update 2:**
+
+| Asset | Ticker | Role in Analysis |
+|-------|--------|-----------------|
+| Defense ETF | `ITA` | Backlog vs. spot war-trade test |
+| Freight/Tanker ETF | `BWET` | Third decoupling layer — shipping vs. crude vs. equities. *Limited history (since May 2023), low AUM — see Limitations* |
+| 20+ Year Treasury ETF | `TLT` | Second safe-haven test — the bond half of a traditional hedge |
+| Energy Sector ETF | `XLE` | Sector-level confirmation of the XOM/CVX decoupling |
+| Saudi Aramco | `2222.SR` | The exporter's own perspective. *Tadawul (Sun–Thu) calendar, forward-filled to US trading days — ~18h lag, see Limitations* |
+| Natural Gas ETF | `UNG` | Completeness. *Roll decay applies — not load-bearing for any core finding* |
+
+**Data range:** Jan 2016 – Jun 13, 2026 · ~113 trading days in the analysis window · Source: yfinance (`auto_adjust=True`)
+
+---
+
+## Event Windows — 5 Phases
+
+| Window | Dates | Purpose |
+|--------|-------|---------|
+| Pre-event | Jan 1 – Feb 27, 2026 | Beta estimation baseline — unchanged from Update 1 |
+| Shock | Feb 28 – Apr 16, 2026 | Full blockade, peak war premium — unchanged from Update 1 |
+| Reopen | Apr 17 – Apr 30, 2026 | Market response to the (unverified) reopening announcement — unchanged from Update 1 |
+| **Correction** | May 1 – May 29, 2026 | **New.** The May Paradox window — price reversed while physical capacity didn't |
+| **Diplomacy** | May 30 – Jun 13, 2026 | **New.** Isolates the Jun 10 second shock from the broader correction regime |
 
 ---
 
 ## Methodology
 
-The study uses a standard event-study framework across three defined phases: pre-event (Jan 1–Feb 27, 39 days), shock/closure (Feb 28–Apr 16, 33 days), and reopening (Apr 17–Apr 30, 9 days). Betas and baselines are estimated on the pre-event window only, to avoid shock contamination.
+Update 2 extends the Update 1 event-study framework rather than replacing it. Betas and baselines are still estimated on the original 39-day pre-event window. The three original windows are unchanged in both dates and underlying numbers.
 
-**Abnormal returns** separate the shock-specific component from general market movement via OLS (each asset regressed on S&P 500 returns over the pre-event window). The **DXY decomposition** further isolates currency effects from real supply disruption — less than 1% of WTI's move was explained by dollar weakness.
+**The two new windows exist because the thesis required them.** "Diplomacy decoupled from supply in May" is not a testable claim without a window boundary separating May from the shock and reopening periods. The Diplomacy window then separates the June 10 re-escalation from the broader correction trend, so a second shock doesn't get smoothed away inside a six-week average.
 
-**Regime detection** uses a 5d/21d annualized volatility ratio (>2.0× flags a high-vol regime) combined with rolling 21-day OLS betas to track how market sensitivities evolved in real time.
+**New analytical functions** (`pair_trade_extended`, `freight_oil_spread`, `aramco_sovereign_discount`, `tlt_safe_haven_test`, `window_regime_summary`, `escalation_replay`, and others) extend the original abnormal-returns, correlation, and volatility-regime machinery to handle 5 windows and 16 assets automatically. Original Update 1 function calls remain valid and produce identical Update 1 numbers — see `src/event_study.py`.
 
-**Seasonal baseline** compares 2026 Jan–Apr against 2021–2025 to establish the magnitude of the outlier independently of the event-window analysis.
+**Gulf calendar alignment:** Aramco trades on the Tadawul (Sunday–Thursday, UTC+3). `align_gulf_asset()` forward-fills its price series onto the US trading calendar, introducing an approximate 18-hour lag versus same-day US market closes. This is flagged wherever Aramco appears in tables or charts.
 
-Full equations, all methodological choices, and step-by-step reproducibility instructions are in the notebook Appendix (Part A).
+Full equations, all methodological choices for both updates, and step-by-step reproducibility instructions are in the notebook Appendices (Update 1: Part A; Update 2: Appendix A & B) and in `docs/Project Overview & Methodology.md`.
 
 ---
 
@@ -193,14 +255,16 @@ These aren't boilerplate — they affect how specific numbers should be read.
 
 | Limitation | Practical Impact |
 |------------|-----------------|
-| **Daily close data only** | Intraday lead-lag is invisible. The CCF peak at lag 0 is structurally biased by WTI's 24h trading vs. S&P's NYSE hours. Don't read it as "no lead-lag exists within a trading day" — that question needs tick data. |
-| **Beta estimated on 39 pre-event days** | Short window. During extreme vol, relationships go non-linear. Treat abnormal return magnitudes as directional bounds, not precise point estimates. |
-| **No transaction costs** | All pair trade returns are pre-cost upper bounds. Futures roll and short borrow costs reduce them in practice. |
-| **Single event** | Results describe 2026 specifically. Validate against other supply shocks before generalizing. |
-| **"Reopening" window** | Iran re-closed Apr 18. The Apr 17–30 window captures a market response to an announcement. The situation remained unresolved at the Apr 30 study cutoff. |
-| **Survivorship bias** | XOM and CVX are current S&P 500 constituents. Historical energy baselines exclude weaker peers that were delisted. |
-| **Nominal figures** | Multi-year comparisons are not inflation-adjusted. |
-| **Shanghai excluded** | `000001.SS` excluded from international analysis — yfinance timezone and holiday handling produces unreliable same-day alignment with US markets. |
+| **BWET limited history** | Launched May 2023. ~2 years of baseline. Low AUM (~$25M). Futures-based — contango roll decay affects multi-month return figures. Treat as a signal, not an investable benchmark. |
+| **Aramco Gulf-calendar lag** | Forward-filled from Tadawul (Sun–Thu) to US calendar. ~18h lag versus same-day US closes. Same-day correlation figures involving Aramco should be read directionally, not as precise contemporaneous relationships. |
+| **UNG roll decay** | Natural gas futures ETF; multi-month cumulative returns are affected by contract roll mechanics independent of spot gas prices. |
+| **Daily close data only** | Intraday lead-lag remains invisible, as in Update 1. The CCF peak at lag 0 is structurally biased by WTI's 24h trading vs. S&P's NYSE hours. |
+| **Beta estimated on 39 pre-event days** | Same short window as Update 1, now used as the baseline for a much longer post-event period. Treat abnormal-return magnitudes as directional bounds. |
+| **No transaction costs** | All pair trade returns, including new Update 2 pairs (XLE/WTI, freight spreads), are pre-cost upper bounds. |
+| **Single, extended event** | Results still describe the 2026 Hormuz crisis specifically — now over a longer window, but one underlying sequence of events, not independent shocks. |
+| **Post-hoc diplomacy proxy** | The "Diplomacy" window label is applied retrospectively, based on observed price action and reported negotiations — not a real-time, independently verified diplomatic milestone. |
+| **Nominal figures** | Multi-year comparisons (seasonal baseline) are not inflation-adjusted, as in Update 1. |
+| **Pre-resolution snapshot** | This update's June 13 cutoff predates the eventual resolution of the underlying conflict. What happens after is explicitly out of scope — see Update 3. |
 
 ---
 
@@ -210,28 +274,53 @@ These aren't boilerplate — they affect how specific numbers should be read.
 2026-hormuz-blockade-analysis/
 │
 ├── notebooks/
-│   └── 01_hormuz_analysis_notebook.ipynb   ← start here
+│   ├── 01_hormuz_analysis.ipynb            ← Update 1, unchanged
+│   └── 02_hormuz_update2.ipynb             ← Update 2, start here for the latest analysis
 │
 ├── src/
-│   ├── data_fetcher.py     # yfinance download + parquet caching
-│   ├── event_study.py      # all statistical functions
-│   └── utils.py            # event config, rolling stats, chart helpers
+│   ├── data_fetcher.py     # yfinance download + parquet caching, U1 + U2 versioned
+│   ├── event_study.py      # all statistical functions, U1 + 10 new U2 functions
+│   └── utils.py            # event config (now 5 windows), asset groups, chart helpers
 │
 ├── data/
 │   └── raw/
-│       └── prices_2016_2026.parquet        ← cached, included in repo
+│       ├── prices_2016_2026.parquet        ← Update 1, unchanged
+│       └── prices_2016_2026_u2.parquet     ← Update 2, 16 assets, Jun 13 cutoff
 │
-├── outputs/                                ← auto-generated on notebook run
-│   ├── 01_normalised_prices.png            # hero chart
-│   ├── 02_seasonal_baseline.png
-│   ├── 06_counterfactual.png
-│   ├── 07_sector_portfolio.png
-│   ├── ...                                 # 20+ charts total
-│   └── *.csv                               # 11 result tables
+├── outputs/                                ← Update 1 outputs, unchanged
+│   ├── 01_normalised_prices.png … 20_three_panel_performance.png
+│   └── *.csv                               # 11 Update 1 result tables
+│
+├── outputs/update_2/                       ← Update 2 outputs, new
+│   ├── charts/
+│   │   ├── 21_five_window_full_timeline.png
+│   │   ├── 22_defense_ita_analysis.png
+│   │   ├── 23_freight_vs_oil_third_decoupling.png
+│   │   ├── 24_tlt_treasury_safe_haven.png
+│   │   ├── 25_aramco_exporter_perspective.png
+│   │   ├── 26_xle_wti_pair_trades.png
+│   │   ├── 27_escalation_replay.png
+│   │   ├── 28_oil_gold_ratio_full_timeline.png
+│   │   ├── 29_all_pair_trades_pnl.png
+│   │   ├── 30_16x5_full_heatmap.png
+│   │   └── ...                             # plus updated re-renders of select U1 charts (02, 04, 05, 12, 13) with full timeline data
+│   └── data/
+│       ├── event_window_stats_u2.csv
+│       ├── abnormal_returns_u2.csv
+│       ├── correlation_by_window_u2.csv
+│       ├── pair_trades_u2.csv
+│       ├── freight_spread_u2.csv
+│       ├── regime_summary_u2.csv
+│       ├── summary_key_numbers_u2.csv
+│       └── ...                             # 11+ tables total, _u2 suffix throughout
+│
+├── docs/
+│   ├── Project Overview & Methodology.md   # Update 1 + Update 2 sections
+│   └── Planning & Brainstorming Log.md     # Update 1 + Update 2 sections
 │
 ├── requirements.txt
 ├── LICENSE
-└── README.md
+└── README.md                               ← you are here
 ```
 
 ---
@@ -240,16 +329,20 @@ These aren't boilerplate — they affect how specific numbers should be read.
 
 ```bibtex
 @misc{khames2026hormuz,
-  title     = {Hormuz 2026: When Oil Decoupled from Everything},
+  title     = {Hormuz 2026: When Diplomacy Decoupled From Supply (Update 2)},
   author    = {Khames, Abdallah A},
   year      = {2026},
-  month     = {May},
-  note      = {Quantitative event study. Data cutoff: April 30, 2026.
-               Static snapshot — not updated for post-cutoff developments.},
+  month     = {June},
+  note      = {Quantitative event study, extended. Data cutoff: June 13, 2026.
+               Second in a series; supersedes scope but not findings of Update 1
+               (April 30, 2026 cutoff). Static snapshot — not updated for
+               post-cutoff developments.},
   publisher = {GitHub},
   url       = {https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis}
 }
 ```
+
+See `CITATION.cff` for the machine-readable version.
 
 ---
 
@@ -257,8 +350,8 @@ These aren't boilerplate — they affect how specific numbers should be read.
 
 **Abdallah A Khames** — [@abdallah-bodzz](https://github.com/abdallah-bodzz) · BODZZ
 
-This was a week of deep work on a live geopolitical event, built while the situation was still unfolding. The study closes at April 30, 2026. What happens next with the strait, the dual blockade, and the broader standoff is outside the scope of this snapshot — and probably worth a separate study.
+This update was built while the underlying situation was still unfolding — same approach as Update 1, applied to a longer and more complicated window. The study closes at June 13, 2026. What happens with the eventual resolution of the conflict is outside this update's scope by design. That's Update 3.
 
 ---
 
-*Data: yfinance (`auto_adjust=True`), 2016–2026. All figures nominal, no CPI adjustment. Analysis as of April 30, 2026 — static snapshot.*
+*Data: yfinance (`auto_adjust=True`), 2016–2026. All figures nominal, no CPI adjustment. Analysis as of June 13, 2026 — static snapshot, second update in a series.*
