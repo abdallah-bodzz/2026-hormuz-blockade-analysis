@@ -555,8 +555,14 @@
     .hero-kpi-cell {
       padding: 0.9rem 1rem;
       transition: background 180ms ease-out;
+      opacity: 0;
+      animation: kpiCellIn 0.6s var(--ease-out-strong) forwards;
     }
     .hero-kpi-cell:hover { background: oklch(20% 0.06 27 / 0.4); }
+    .hero-kpi-cell:nth-of-type(1) { animation-delay: 0.75s; }
+    .hero-kpi-cell:nth-of-type(2) { animation-delay: 0.85s; }
+    .hero-kpi-cell:nth-of-type(3) { animation-delay: 0.95s; }
+    .hero-kpi-cell:nth-of-type(4) { animation-delay: 1.05s; }
 
     .hero-kpi-label {
       font-family: var(--font-mono);
@@ -894,8 +900,10 @@
       isolation: isolate;
     }
 
-    .timeline-grid-5 .phase-block:first-child { border-radius: 8px 0 0 8px; }
-    .timeline-grid-5 .phase-block:last-child  { border-radius: 0 8px 8px 0; }
+    @media (min-width: 1101px) {
+      .timeline-grid-5 .phase-block:first-child { border-radius: 8px 0 0 8px; }
+      .timeline-grid-5 .phase-block:last-child  { border-radius: 0 8px 8px 0; }
+    }
 
     .phase-block {
       background: var(--navy-2);
@@ -1105,42 +1113,37 @@
       margin-top: 1.1rem;
       overflow: visible;
       position: relative;
+      cursor: default;
+      transition: transform 200ms var(--ease-out-quart);
     }
 
-    .finding-sparkline svg { overflow: visible; }
+    .finding-sparkline:hover { transform: translateY(-1px); }
 
-    .spark-hit {
-      fill: transparent;
-      cursor: crosshair;
-    }
-
-    .spark-dot {
-      opacity: 0;
-      transition: opacity 140ms ease-out;
-      pointer-events: none;
-    }
-
-    .spark-hit:hover + .spark-dot,
-    .spark-dot.show { opacity: 1; }
+    .finding-sparkline svg { overflow: visible; display: block; }
 
     .spark-tip {
       position: absolute;
+      top: -1.9rem;
+      left: 0;
       background: var(--navy-3);
       border: 1px solid var(--b2);
-      color: var(--t1);
+      color: var(--t2);
       font-family: var(--font-mono);
       font-size: 0.62rem;
-      padding: 0.25rem 0.55rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 4px;
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      transform: translate(-50%, -8px);
-      transition: opacity 120ms ease-out;
+      transform: translateY(4px);
+      transition: opacity 160ms ease-out, transform 160ms ease-out;
       z-index: 10;
     }
 
-    .spark-tip.show { opacity: 1; }
+    .finding-sparkline:hover .spark-tip {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* Caveat tooltip pill inline in findings */
     .caveat-pill {
@@ -1365,7 +1368,10 @@
       letter-spacing: 0.1em;
       color: var(--t4);
       text-transform: uppercase;
+      transition: color 180ms ease-out;
     }
+
+    .chart-thumb:hover .chart-thumb-label { color: var(--t1); }
 
     /* U2 chart thumb badge */
     .chart-thumb-u2 .chart-thumb-label::before {
@@ -2111,6 +2117,11 @@
       50%       { background: oklch(68% 0.14 70 / 0.06); }
     }
 
+    @keyframes kpiCellIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     /* =====================================================================
        PREFERS REDUCED MOTION
     ===================================================================== */
@@ -2123,7 +2134,8 @@
 
       .hero-eyebrow, .hero-update-badge,
       .hero-title, .hero-deck, .hero-meta,
-      .hero-actions, .hero-visual, .scroll-hint {
+      .hero-actions, .hero-visual, .scroll-hint,
+      .hero-kpi-cell {
         opacity: 1; animation: none; transform: none;
       }
 
@@ -2133,6 +2145,12 @@
       .nav-brand-dot { animation: none; }
       .scroll-arrow { animation: none; }
       .pulse-anim { animation: none; }
+      .kpi-paradox { animation: none; }
+      .hero-kpi-row::before { animation: none; }
+      .exit-badge { animation: none; }
+      .trade-exit-note { animation: none; }
+      .mandate-item.u2-hero { animation: none; }
+      #scroll-top { transition: opacity 0.001ms, transform 0.001ms; }
     }
 
     /* =====================================================================
@@ -2184,11 +2202,14 @@
       .container { padding: 0 1.25rem; }
       .section-pad { padding: 3.5rem 0; }
       h2.section-title { font-size: 1.6rem; }
-      .hero-kpi-row { grid-template-columns: 1fr 1px 1fr; }
-      .hero-kpi-row .hero-kpi-cell:nth-child(5),
-      .hero-kpi-row .hero-kpi-cell:nth-child(7) { grid-column: 1 / -1; border-top: 1px solid var(--b-red); }
-      .hero-kpi-row .hero-kpi-divider:nth-child(4),
-      .hero-kpi-row .hero-kpi-divider:nth-child(6) { display: none; }
+      .hero-kpi-row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+      }
+      .hero-kpi-divider { display: none; }
+      .hero-kpi-cell:nth-child(1) { border-right: 1px solid var(--b-red); }
+      .hero-kpi-cell:nth-child(5) { border-right: 1px solid var(--b-red); border-top: 1px solid var(--b-red); }
+      .hero-kpi-cell:nth-child(7) { border-top: 1px solid var(--b-red); }
       .trade-grid { grid-template-columns: 1fr 1fr; }
       .context-strip-inner { gap: 1.25rem 2rem; }
       .nav-links { display: none; }
@@ -2203,9 +2224,12 @@
       .timeline-grid-5 { grid-template-columns: 1fr; }
       .timeline-grid-5 .phase-block:nth-child(1) { grid-column: 1; }
       .trade-grid { grid-template-columns: 1fr; }
-      .hero-kpi-row { grid-template-columns: 1fr; }
-      .hero-kpi-divider { display: none; }
-      .hero-kpi-cell:last-child { grid-column: 1; }
+      .hero-kpi-row { grid-template-columns: 1fr; grid-template-rows: none; }
+      .hero-kpi-cell:nth-child(1) { border-right: none; }
+      .hero-kpi-cell:nth-child(5) { border-right: none; }
+      .hero-kpi-cell:nth-child(3),
+      .hero-kpi-cell:nth-child(5),
+      .hero-kpi-cell:nth-child(7) { border-top: 1px solid var(--b-red); }
     }
   </style>
 </head>
@@ -2648,6 +2672,7 @@
             Do not use energy equities as commodity hedges during confirmed supply disruptions.
           </p>
           <div class="finding-sparkline" aria-label="WTI and XOM price divergence during shock window">
+            <span class="spark-tip">Divergence begins Feb 28 — never re-converges</span>
             <svg width="320" height="52" viewBox="0 0 320 52">
               <line x1="0" y1="26" x2="320" y2="26" stroke="oklch(30% 0.018 240)" stroke-width="0.5" stroke-dasharray="3 3"/>
               <polyline points="0,38 40,32 80,24 120,16 160,10 200,6 240,4 280,2 320,2"
@@ -2670,6 +2695,7 @@
             needing to meet oil margin calls. Abnormal return: −25.0%.
           </p>
           <div class="finding-sparkline" aria-label="Gold price rally then drop">
+            <span class="spark-tip">Pre-rally created the margin pressure that broke it</span>
             <svg width="200" height="48" viewBox="0 0 200 48">
               <polyline points="0,40 30,32 60,22 90,14 120,14 150,22 170,30 185,36 200,42"
                         fill="none" stroke="oklch(72% 0.10 85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2764,6 +2790,7 @@
           </p>
           <!-- Sparkline: WTI across 5 phases -->
           <div class="finding-sparkline" aria-label="WTI across all 5 phases showing May decline despite closed strait">
+            <span class="spark-tip">Strait still ~2% open here — price doesn't care</span>
             <svg width="380" height="56" viewBox="0 0 380 56">
               <line x1="0" y1="32" x2="380" y2="32" stroke="oklch(30% 0.018 240)" stroke-width="0.5" stroke-dasharray="3 3"/>
               <!-- Pre: gradual rise -->
@@ -2792,7 +2819,7 @@
         </div>
 
         <!-- Finding 08 -->
-        <div class="finding-item">
+        <div class="finding-item u2-finding">
           <div class="finding-num u2-num">Finding 08</div>
           <div class="finding-title">Defense Is a Backlog Trade, Not a War Trade</div>
           <p class="finding-body">
@@ -2804,7 +2831,7 @@
         </div>
 
         <!-- Finding 09 — right col -->
-        <div class="finding-item right-col">
+        <div class="finding-item u2-finding right-col">
           <div class="finding-num u2-num">Finding 09</div>
           <div class="finding-title">Freight Futures: A Third Decoupling Layer</div>
           <p class="finding-body">
@@ -2818,7 +2845,7 @@
         </div>
 
         <!-- Finding 10 -->
-        <div class="finding-item">
+        <div class="finding-item u2-finding">
           <div class="finding-num u2-num">Finding 10</div>
           <div class="finding-title">Bonds Failed the Same Test Gold Did</div>
           <p class="finding-body">
@@ -2829,7 +2856,7 @@
         </div>
 
         <!-- Finding 11 — right col -->
-        <div class="finding-item right-col">
+        <div class="finding-item u2-finding right-col">
           <div class="finding-num u2-num">Finding 11</div>
           <div class="finding-title">The Second Shock Was Muted</div>
           <p class="finding-body">
@@ -2898,7 +2925,8 @@
                alt="Seasonal baseline (Update 2): Jan-Jun returns by year 2021-2026, 16 assets"
                loading="lazy" onclick="openLightbox(this.src, this.alt)" />
           <div class="chart-caption">
-            Jan–Jun seasonal baseline (2021–2026), updated to 16 assets and full timeline. 2026 WTI's shock-window surge and May correction are both visible against the historical range.
+            Jan–Jun seasonal baseline (2021–2026), updated to 16 assets and full timeline.
+            <strong style="color:var(--t3);font-style:normal;">Look for:</strong> 2026's WTI line breaking from the historical band twice — once up at the shock, once down in May — while every prior year stays within a narrow corridor.
           </div>
         </div>
 
@@ -2913,7 +2941,8 @@
                  loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
           </div>
           <div class="chart-caption">
-            Rolling volatility and correlation updated through Jun 13. WTI volatility peaks at the shock onset and again (smaller) at the Jun 10 re-escalation — market learning is visible in the amplitude difference.
+            Rolling volatility and correlation updated through Jun 13.
+            <strong style="color:var(--t3);font-style:normal;">Look for:</strong> two volatility spikes of different heights — Feb 28 and Jun 10. The second is visibly shorter; that gap is the market-learning effect in Finding 11.
           </div>
         </div>
 
@@ -2921,9 +2950,10 @@
         <div id="tab-u2hero" class="tab-panel chart-viewer" role="tabpanel">
           <img class="chart-main-img" src="outputs/update_2/charts/21_five_window_full_timeline.png"
                alt="Five-window full timeline — all 16 assets across 5 phases (Jan 1 – Jun 13, 2026)"
-               loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:540px;" />
+               loading="eager" onclick="openLightbox(this.src, this.alt)" style="max-height:540px;" />
           <div class="chart-caption">
-            Hero chart for Update 2: all 16 assets, normalised, across all 5 event phases. The May Paradox is clearly visible — WTI corrects sharply while the strait remains closed. The WTI/Gold ratio reversal in May is the clearest regime-change signal.
+            Hero chart for Update 2: all 16 assets, normalised, across all 5 event phases.
+            <strong style="color:var(--t3);font-style:normal;">Look for:</strong> the amber correction band — WTI bends downward there while the rest of the chart barely moves, the clearest single image of the May Paradox.
           </div>
         </div>
 
@@ -2938,7 +2968,8 @@
                  loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
           </div>
           <div class="chart-caption">
-            Left: WTI/Gold ratio full timeline — rising through shock, reversing sharply in May (diplomacy regime entry). Right: BWET vs WTI showing freight's +71.1% shock-window outperformance of crude — the third decoupling layer.
+            <strong style="color:var(--t3);font-style:normal;">Left — look for:</strong> the peak around early April, then the sharp downward kink in May. That kink is the exit signal in Mandate VII, weeks before any ceasefire headline.
+            <strong style="color:var(--t3);font-style:normal;">Right — look for:</strong> how far BWET's line pulls away from WTI's during the shock band — the gap is the third decoupling layer.
           </div>
         </div>
 
@@ -3136,6 +3167,7 @@
           </div>
 
           <div class="trade-phase correction-exit">
+            <span class="exit-badge">EXIT</span>
             <div class="trade-phase-label">Correction: Exit Zone</div>
             <div class="trade-row"><span>WTI/Gold</span><span style="color:var(--amber)">Reversed</span></div>
             <div class="trade-row"><span>WTI</span><span style="color:var(--red-2)">−~20%</span></div>
@@ -3152,7 +3184,7 @@
 
         <div class="trade-exit-note">
           <span class="trade-exit-note-icon">Mandate VII &rarr;</span>
-          <span>A closed chokepoint is not a standing instruction to stay long the commodity. Once a credible diplomatic track exists, monitor the negotiation, not just the blockade. Exit the pair trade on WTI/Gold ratio reversal — not on the ceasefire announcement itself.</span>
+          <span><strong>Exit on the ratio, not the headline.</strong> A closed chokepoint is not a standing instruction to stay long the commodity. Once a credible diplomatic track exists, monitor the negotiation, not just the blockade. Exit the pair trade on WTI/Gold ratio reversal — not on the ceasefire announcement itself, which arrives too late.</span>
         </div>
 
         <div class="trade-caveat" style="margin-top:1rem;">
@@ -3379,13 +3411,13 @@
           </div>
         </div>
 
-        <!-- MANDATE VII — NEW UPDATE 2 -->
-        <div class="mandate-item u2">
+        <!-- MANDATE VII — NEW UPDATE 2, elevated callout -->
+        <div class="mandate-item u2 u2-hero">
           <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">VII</span>
             <span class="mandate-title">
               A closed chokepoint is not a standing instruction to stay long the commodity
-              <span class="mandate-u2-tag">Update 2</span>
+              <span class="mandate-u2-tag">Key Exit Signal</span>
             </span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
           </button>
@@ -3802,8 +3834,13 @@
         <ul class="footer-links">
           <li><a href="https://github.com/abdallah-bodzz" target="_blank" rel="noopener">@abdallah-bodzz on GitHub</a></li>
           <li><a href="https://github.com/abdallah-bodzz/2026-hormuz-blockade-analysis" target="_blank" rel="noopener">Repository</a></li>
-          <li style="margin-top:0.5rem;font-size:0.75rem;color:var(--t4);">Update 1: Apr 30, 2026</li>
-          <li style="font-size:0.75rem;color:var(--amber);">Update 2: Jun 13, 2026</li>
+          <li style="margin-top:0.5rem;font-size:0.75rem;color:var(--t4);">Update 1: Apr 30, 2026 · 10 assets · 3 windows</li>
+          <li style="font-size:0.75rem;color:var(--amber);">Update 2: Jun 13, 2026 · 16 assets · 5 windows</li>
+          <li style="margin-top:0.6rem;">
+            <a href="#timeline" style="display:inline-flex;align-items:center;gap:0.35rem;font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--t3);border:1px solid var(--b2);border-radius:20px;padding:0.22rem 0.7rem;transition:border-color 180ms ease-out,color 180ms ease-out;">
+              U1 &rarr; U2 What Changed
+            </a>
+          </li>
         </ul>
       </div>
     </div>
