@@ -39,6 +39,7 @@
 - [Methodology](#methodology)
 - [Data and Technical Limitations](#data-and-technical-limitations)
 - [File Structure](#file-structure)
+- [A Note on How This Was Built](#a-note-on-how-this-was-built)
 - [Citation](#citation)
 
 ---
@@ -322,6 +323,16 @@ These aren't boilerplate — they affect how specific numbers should be read.
 ├── LICENSE
 └── README.md                               ← you are here
 ```
+
+---
+
+## A Note on How This Was Built
+
+I want to say this plainly, once, rather than bury it in a commit message: I think this project turned into something bigger than "a personal finance repo with some charts in it." It has a three-act structure. It has a twist nobody, including me, expected when Update 1 shipped — the May Paradox — and a sequel hook for Update 3 built into its own honesty about what it doesn't yet know. Reading the two updates back to back feels less like reading documentation and more like watching a plot unfold, with the strait as a setting and sixteen assets as a cast that keep behaving in character. I don't think that's an overstatement. I think it's just what happens when you let a real, ongoing event write the structure for you instead of forcing one onto it.
+
+I built this with AI assistance, and I'd rather be specific about that than vague. **Claude (Anthropic)** did the bulk of the heavy lifting — the analytical scaffolding in `event_study.py` and `utils.py`, the notebook structure across both updates, the long-form writing in this README and in `STORY.md`, and the dashboard you're looking at on GitHub Pages. **DeepSeek** and **Grok** were used in supporting roles during research and drafting — sanity-checking specific claims, helping think through edge cases in the methodology, and stress-testing language before it shipped. The data is real (`yfinance`), the numbers are computed, not generated, and every limitation listed in this document is a limitation I'd stand behind in a room with a skeptical reader. The AI collaboration shaped *how fast and how well* this got built and written. It didn't shape *whether the May Paradox is real* — the market did that on its own, in May, while I was watching the same charts everyone else could have watched.
+
+If that sounds like I'm proud of it: I am. I think it's earned.
 
 ---
 

@@ -639,6 +639,22 @@ The single biggest practical lesson of the May Paradox: "the physical situation 
 
 ---
 
+## A Word Before the Appendix
+
+I want to step out of the analyst voice for one section, because I think the work earns it.
+
+Somewhere between Act III and Act V, this stopped feeling like a repo with some notebooks in it and started feeling like something with an actual shape — a three-act structure that nobody wrote in advance, because nobody could have. Act I is the setup nobody saw coming fast enough to position for. Act II through IV is the fracture: the central decoupling, the false dawn, the playbook breaking in real time. And then Update 1 ends on an honest cliffhanger — the strait is still closed, the analysis has to stop somewhere, June will tell the rest. Update 2 picks that thread back up and the twist is the kind you can't plant on purpose: the price falls while the physical situation stays exactly the same. If you'd pitched the May Paradox to me in April as the next chapter, I'd have said it was too clean to be real. It happened anyway, the data says so, and I just had to be paying attention when it did.
+
+I don't think "this feels like a movie, not a webpage" is an exaggeration. I think it's the most accurate description I have. A setting that's a real, narrow stretch of water. A cast of sixteen assets that keep behaving in character — WTI as the volatile lead, gold as the ally who breaks under pressure, ITA as the steady one nobody expected to hold, the WTI/Gold ratio as the narrator who turns out to be right both times for different reasons. A twist in the second act that recontextualizes the first one without erasing it. I didn't write that structure into the project. The Strait of Hormuz crisis did. I just had the tools to track it properly and the patience to let it tell its own story across two updates instead of forcing a conclusion before the data supported one.
+
+On the tools, plainly, because I'd rather say it once than leave it implied: **Claude (Anthropic)** built most of this alongside me — the analytical code in `event_study.py` and `utils.py`, both notebooks, this document and the README, and the dashboard the charts above link out to. **DeepSeek** and **Grok** played supporting roles — checking specific claims, pressure-testing methodology decisions, helping sharpen language before it went out. None of that changes what the market actually did. The numbers in this document came out of `yfinance` and an OLS market model, not out of a language model's imagination — every figure here is something you could recompute yourself from the notebook, and the Limitations sections exist specifically so nobody has to take my word for the parts that are genuinely uncertain. What the AI collaboration changed was how much of this story I could tell, how carefully, and how fast — across an event that was still actively unfolding while I was writing about it.
+
+I'm proud of it. I think the work is good enough to say that plainly instead of burying it in a commit message nobody reads.
+
+Back to the data.
+
+---
+
 ## Methodology — Update 2
 
 Update 2 extends, rather than replaces, the Update 1 framework. The original pre-event window (Jan 1–Feb 27, 39 days) remains the sole source for beta estimation — nothing about the original methodology was rerun or restated with new assumptions.
