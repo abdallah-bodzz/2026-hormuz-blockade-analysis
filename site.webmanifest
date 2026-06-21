@@ -1,0 +1,21 @@
+{
+  "id": "hormuz-2026-update2",
+  "name": "Hormuz 2026 — When Diplomacy Decoupled from Supply",
+  "short_name": "Hormuz 2026",
+  "description": "113-day quantitative event study of the Strait of Hormuz crisis. Update 2: The May Paradox — when diplomacy overrode physical scarcity.",
+  "start_url": ".",
+  "scope": "./",
+  "display": "browser",
+  "orientation": "any",
+  "theme_color": "#10141a",
+  "background_color": "#10141a",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["finance", "news", "education"],
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icon-180.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

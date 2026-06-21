@@ -15,6 +15,14 @@
   <meta name="twitter:description" content="The May Paradox: WTI −20% while the strait stayed at 2% capacity. 16 assets, 5 phases, 113 days." />
   <meta name="twitter:image" content="outputs/update_2/charts/21_five_window_full_timeline.png" />
 
+  <link rel="canonical" href="https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#10141a" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -123,6 +131,37 @@
       z-index: 0;
     }
 
+    /* Ambient phase glow — a near-imperceptible wash behind the page content
+       that shifts color to match whichever timeline phase the reader is
+       currently scrolled through (red/shock, amber/correction, etc).
+       Implemented as five stacked, always-present radial gradients rather
+       than animating a custom-property color directly, since transitioning
+       a gradient's color stops isn't reliably animatable — crossfading
+       opacity between pre-rendered layers is. Off (all zero) outside the
+       timeline section, and capped low enough to read as atmosphere, not
+       as a colored background. */
+    #ambient-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    #ambient-glow > div {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1100ms ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #ambient-glow > div { transition: none; }
+    }
+    #ambient-glow .glow-pre        { background: radial-gradient(ellipse 70% 50% at 50% 0%, oklch(55% 0.01 240 / 0.05), transparent 70%); }
+    #ambient-glow .glow-shock      { background: radial-gradient(ellipse 70% 50% at 50% 0%, oklch(52% 0.20 27 / 0.06), transparent 70%); }
+    #ambient-glow .glow-open       { background: radial-gradient(ellipse 70% 50% at 50% 0%, oklch(65% 0.12 175 / 0.055), transparent 70%); }
+    #ambient-glow .glow-correction { background: radial-gradient(ellipse 70% 50% at 50% 0%, oklch(68% 0.14 70 / 0.06), transparent 70%); }
+    #ambient-glow .glow-diplomacy  { background: radial-gradient(ellipse 70% 50% at 50% 0%, oklch(55% 0.10 240 / 0.05), transparent 70%); }
+    #ambient-glow .is-on { opacity: 1; }
+
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--navy-2); }
     ::-webkit-scrollbar-thumb { background: var(--red-dim); border-radius: 3px; }
@@ -133,14 +172,61 @@
     /* =====================================================================
        READING PROGRESS
     ===================================================================== */
+    /* Reading progress, rebuilt as a 5-segment phase rail.
+       Segment widths are proportional to each phase's real duration
+       (58 / 48 / 14 / 29 / 15 days of the 164-day event window), not
+       equal fifths — the rail's shape itself is a small piece of data.
+       Colors reuse the exact phase-badge palette (pre/shock/open/
+       correction/diplomacy) so this reads as the same story already
+       told in the Timeline section, not a new color language.
+       Each segment fills left-to-right with scroll progress; once a
+       segment is behind the reader it stays fully lit, so by Mandates
+       the whole rail is lit end-to-end — a visual "story so far." */
     #progress {
       position: fixed;
-      top: 0; left: 0;
-      height: 2px;
-      width: 0%;
-      background: var(--red);
+      top: 0; left: 0; right: 0;
+      height: 3px;
       z-index: 2000;
+      display: flex;
+      opacity: 0;
+      transition: opacity 240ms ease-out;
+      pointer-events: none;
+    }
+    #progress.visible { opacity: 1; }
+    #progress .seg {
+      position: relative;
+      height: 100%;
+      background: var(--b1);
+      overflow: hidden;
+    }
+    #progress .seg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: var(--fill, 0%);
+      background: var(--seg-color, var(--red));
       transition: width 0.1s linear;
+    }
+    #progress .seg.pre        { --seg-color: var(--t3); }
+    #progress .seg.shock      { --seg-color: var(--red-2); }
+    #progress .seg.open       { --seg-color: var(--teal); }
+    #progress .seg.correction { --seg-color: var(--amber); }
+    #progress .seg.diplomacy  { --seg-color: var(--steel); }
+
+    /* Active segment — the phase currently centered in the viewport while
+       scrolling through #timeline gets a brighter, slightly taller fill so
+       the bar communicates "you are here," not just "this much has played." */
+    #progress .seg.is-active::after {
+      filter: brightness(1.35);
+    }
+    #progress .seg.is-active {
+      height: 100%;
+      transform: scaleY(1.8);
+      transform-origin: top;
+      transition: transform 180ms var(--ease-out-strong);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #progress .seg.is-active { transition: none; }
     }
 
     /* =====================================================================
@@ -595,10 +681,16 @@
 
     .pulse-anim { animation: kpiPulse 4s ease-in-out infinite; }
 
-    /* May Paradox cell — headline finding, gets its own breathing glow + sparkline */
+    /* May Paradox cell — headline finding, gets its own breathing glow + sparkline.
+       Runs the same entrance fade-in as every other .hero-kpi-cell (kpiCellIn)
+       PLUS its own looping glow (paradoxBreathe), as two comma-separated animations.
+       Previously this declared `animation` alone, which is a shorthand property —
+       it fully replaced the inherited kpiCellIn fade-in instead of adding to it,
+       so the cell never left opacity:0 and rendered as an empty box. */
     .kpi-paradox {
       position: relative;
-      animation: paradoxBreathe 3.6s ease-in-out infinite;
+      animation: kpiCellIn 0.6s var(--ease-out-strong) forwards,
+                 paradoxBreathe 3.6s ease-in-out 0.6s infinite;
     }
 
     .kpi-micro-spark {
@@ -1659,6 +1751,16 @@
     .mandate-item.u2-hero .mandate-body { padding-left: 3.5rem; }
     .mandate-item.u2-hero.open .mandate-body { padding-left: 3.5rem; }
 
+    /* Heading wrapper around each accordion trigger — kept visually transparent.
+       display:contents removes its own box from layout in all evergreen browsers;
+       the font/margin resets are a fallback for the rare browser without contents support. */
+    .mandate-h {
+      display: contents;
+      font: inherit;
+      font-weight: inherit;
+      margin: 0;
+    }
+
     .mandate-toggle {
       width: 100%;
       display: grid;
@@ -2182,6 +2284,21 @@
       50%       { opacity: 0.82; transform: scale(0.97); }
     }
 
+    /* Strait capacity arc — animates stroke-dasharray's "on" length between
+       roughly 1.5% and 2.5% of the ring's circumference (r=18 → circumference
+       ≈113.1), fixed at 12 o'clock. Slow and small on purpose. */
+    @keyframes capacityBreathe {
+      0%, 100% { stroke-dasharray: 1.7 111.4; }
+      50%       { stroke-dasharray: 2.83 110.27; }
+    }
+    .capacity-arc {
+      stroke-dasharray: 1.7 111.4;
+      animation: capacityBreathe 5.5s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .capacity-arc { animation: none; stroke-dasharray: 2 111.1; }
+    }
+
     @keyframes exitPulse {
       0%, 100% { box-shadow: 0 2px 8px oklch(68% 0.14 70 / 0.35); transform: scale(1); }
       50%       { box-shadow: 0 2px 16px oklch(68% 0.14 70 / 0.6); transform: scale(1.05); }
@@ -2325,7 +2442,20 @@
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
-  <div id="progress" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+  <div id="ambient-glow" aria-hidden="true">
+    <div class="glow-pre"></div>
+    <div class="glow-shock"></div>
+    <div class="glow-open"></div>
+    <div class="glow-correction"></div>
+    <div class="glow-diplomacy"></div>
+  </div>
+  <div id="progress" role="progressbar" aria-label="Story progress through the 5-phase event timeline" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5" aria-valuetext="Not yet reached the timeline">
+    <div class="seg pre"        style="flex-basis:35.4%"></div>
+    <div class="seg shock"      style="flex-basis:29.3%"></div>
+    <div class="seg open"       style="flex-basis:8.5%"></div>
+    <div class="seg correction" style="flex-basis:17.7%"></div>
+    <div class="seg diplomacy"  style="flex-basis:9.1%"></div>
+  </div>
 
   <!-- LIGHTBOX -->
   <div id="lightbox" role="dialog" aria-modal="true" aria-label="Chart viewer">
@@ -2525,6 +2655,14 @@
               fill="oklch(22% 0.022 240)"/>
         <line x1="240" y1="95" x2="270" y2="150" stroke="oklch(42% 0.18 27)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>
         <circle cx="252" cy="120" r="16" stroke="oklch(42% 0.18 27)" stroke-width="1.5" fill="oklch(42% 0.18 27 / 0.12)" opacity="0.9"/>
+        <!-- Capacity arc — a thin ring segment whose length breathes between
+             ~1.5% and ~2.5% of the full circumference, fixed at 12 o'clock.
+             Communicates "this number is small and still moving slightly,"
+             not "this number is exactly 2.000%." Kept to a barely-readable
+             motion; the point is texture, not a literal live data feed. -->
+        <circle class="capacity-arc" cx="252" cy="120" r="18"
+                stroke="oklch(58% 0.20 27)" stroke-width="2" stroke-linecap="round"
+                transform="rotate(-90 252 120)" opacity="0.85"/>
         <text x="252" y="124" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="oklch(52% 0.20 27)" letter-spacing="0">~2%</text>
         <g opacity="0.5">
           <rect x="218" y="152" width="18" height="7" rx="2" fill="oklch(52% 0.10 240)"/>
@@ -2559,10 +2697,15 @@
           <div class="hero-kpi-sub">Feb 28 – Apr 16</div>
         </div>
         <div class="hero-kpi-divider" aria-hidden="true"></div>
-        <div class="hero-kpi-cell pulse-anim" aria-label="WTI/Gold ratio regime signal">
+        <div class="hero-kpi-cell pulse-anim" aria-label="WTI/Gold ratio regime signal: rose sharply during the shock, then reversed in May">
           <div class="hero-kpi-label">WTI/Gold Ratio</div>
           <div class="hero-kpi-val kv-gold">+47%</div>
           <div class="hero-kpi-sub">Regime signal</div>
+          <svg class="kpi-micro-spark" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
+            <polyline points="0,13 12,12 24,3 34,3.5 44,5 54,11 64,13"
+                      fill="none" stroke="oklch(72% 0.10 85)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="24" cy="3" r="1.6" fill="oklch(72% 0.10 85)" opacity="0.85"/>
+          </svg>
         </div>
         <div class="hero-kpi-divider" aria-hidden="true"></div>
         <div class="hero-kpi-cell kpi-paradox" aria-label="May Paradox: WTI fell approximately 20 percent while the strait stayed near 2 percent capacity">
@@ -2570,9 +2713,9 @@
           <div class="hero-kpi-val kv-amber">−~20%</div>
           <div class="hero-kpi-sub">WTI, strait ~2% cap.</div>
           <svg class="kpi-micro-spark" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
-            <polyline points="0,4 14,5 22,3 30,8 40,12 50,14 64,15"
+            <polyline points="0,3 10,5 20,8 32,11 44,13.5 54,15 64,16"
                       fill="none" stroke="oklch(68% 0.14 70)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="64" cy="15" r="2" fill="oklch(68% 0.14 70)"/>
+            <circle cx="64" cy="16" r="2" fill="oklch(68% 0.14 70)"/>
           </svg>
         </div>
         <div class="hero-kpi-divider" aria-hidden="true"></div>
@@ -2640,10 +2783,10 @@
 
       <div class="timeline-grid-5 reveal">
         <!-- Phase 1: Pre-event (2fr) -->
-        <div class="phase-block pre">
+        <div class="phase-block pre" data-phase="pre">
           <div class="phase-badge pre">Pre-Event</div>
           <div class="phase-dates">Jan 1 – Feb 27, 2026</div>
-          <div class="phase-title">Rising Tension, Misread Signals</div>
+          <h3 class="phase-title">Rising Tension, Misread Signals</h3>
           <p class="phase-desc">
             Markets saw oil rising alongside energy equities and interpreted this as correlated exposure.
             WTI climbed +16.9%, XOM gained +25.2%, gold rallied +21.2%.
@@ -2661,10 +2804,10 @@
         </div>
 
         <!-- Phase 2: Shock -->
-        <div class="phase-block shock">
+        <div class="phase-block shock" data-phase="shock">
           <div class="phase-badge shock">Shock</div>
           <div class="phase-dates">Feb 28 – Apr 16</div>
-          <div class="phase-title">Three Simultaneous Regimes</div>
+          <h3 class="phase-title">Three Simultaneous Regimes</h3>
           <p class="phase-desc">
             Scarcity, equity stability, and safe-haven failure unfolded simultaneously.
             WTI: +32.9%. XOM: −1.4%. Gold: −9.6%. Freight (BWET): +71.1%. The pair trade window.
@@ -2680,10 +2823,10 @@
         </div>
 
         <!-- Phase 3: Reopen -->
-        <div class="phase-block reopen">
+        <div class="phase-block reopen" data-phase="open">
           <div class="phase-badge open">Reopen</div>
           <div class="phase-dates">Apr 17 – Apr 30</div>
-          <div class="phase-title">False Dawn</div>
+          <h3 class="phase-title">False Dawn</h3>
           <p class="phase-desc">
             WTI fell −11.5% on Apr 17 alone. Iran re-closed Apr 18.
             Airlines did not recover. The "reopening" is shorthand; it was a negotiation signal, not resolution.
@@ -2698,10 +2841,10 @@
         </div>
 
         <!-- Phase 4: Correction — May Paradox -->
-        <div class="phase-block correction">
+        <div class="phase-block correction" data-phase="correction">
           <div class="phase-badge correction">Correction</div>
           <div class="phase-dates">May 1 – May 29</div>
-          <div class="phase-title">The May Paradox</div>
+          <h3 class="phase-title">The May Paradox</h3>
           <p class="phase-desc">
             Strait stayed at ~2% capacity. WTI still fell ~20%.
             Forward-looking diplomacy and ceasefire expectations dominated physical reality.
@@ -2717,10 +2860,10 @@
         </div>
 
         <!-- Phase 5: Diplomacy -->
-        <div class="phase-block diplomacy">
+        <div class="phase-block diplomacy" data-phase="diplomacy">
           <div class="phase-badge diplomacy">Diplomacy</div>
           <div class="phase-dates">May 30 – Jun 13</div>
-          <div class="phase-title">Second Shock, Muted Response</div>
+          <h3 class="phase-title">Second Shock, Muted Response</h3>
           <p class="phase-desc">
             Jun 10 re-escalation produced a smaller day-one WTI move than Feb 28 — evidence of market learning and playbook adoption.
             Cutoff is pre-ceasefire (announced ~Jun 21–25).
@@ -2754,7 +2897,7 @@
         <!-- Finding 01: MAIN — full width -->
         <div class="finding-item">
           <div class="finding-num">Finding 01 &mdash; Primary</div>
-          <div class="finding-title">Energy Equities Are Not Oil Proxies During Supply Shocks</div>
+          <h3 class="finding-title">Energy Equities Are Not Oil Proxies During Supply Shocks</h3>
           <p class="finding-body">
             WTI rose +32.9% during the shock window while XOM fell −1.4% and CVX fell −0.8%.
             Abnormal returns: WTI +20.9%, XOM −18.6%, CVX −12.7%.
@@ -2778,7 +2921,7 @@
         <!-- Finding 02 -->
         <div class="finding-item">
           <div class="finding-num">Finding 02</div>
-          <div class="finding-title">Gold Failed as a Safe Haven</div>
+          <h3 class="finding-title">Gold Failed as a Safe Haven</h3>
           <p class="finding-body">
             Gold fell −9.6% during the 33-day shock. It had rallied +21.2% in the pre-event window,
             creating margin pressure. The pattern is consistent with forced liquidation by overleveraged longs
@@ -2799,7 +2942,7 @@
         <!-- Finding 03 — right col -->
         <div class="finding-item right-col">
           <div class="finding-num">Finding 03</div>
-          <div class="finding-title">WTI/Gold Ratio Is the Regime Signal</div>
+          <h3 class="finding-title">WTI/Gold Ratio Is the Regime Signal</h3>
           <p class="finding-body">
             WTI/Gold ratio rose +47% during the shock. This is the single most reliable indicator
             distinguishing supply shock from financial crisis. In a financial crisis, both fall.
@@ -2810,7 +2953,7 @@
         <!-- Finding 04 -->
         <div class="finding-item">
           <div class="finding-num">Finding 04</div>
-          <div class="finding-title">Supply Shock vs. Financial Crisis: Different Playbook</div>
+          <h3 class="finding-title">Supply Shock vs. Financial Crisis: Different Playbook</h3>
           <p class="finding-body">
             VIX reached 31 (moderate). Credit spreads: unchanged. S&P 500 fell only −7.8% max drawdown.
             This was not systemic stress. Standard risk-off playbook failed because the mechanism
@@ -2821,7 +2964,7 @@
         <!-- Finding 05 — right col -->
         <div class="finding-item right-col">
           <div class="finding-num">Finding 05</div>
-          <div class="finding-title">Reopening Priced in Day One</div>
+          <h3 class="finding-title">Reopening Priced in Day One</h3>
           <p class="finding-body">
             WTI fell −11.5% on April 17 (announcement day). Airlines −10.7% over the 9-day reopen window.
             The market processed the entire expected move in one session.
@@ -2832,7 +2975,7 @@
         <!-- Finding 06 -->
         <div class="finding-item">
           <div class="finding-num">Finding 06</div>
-          <div class="finding-title">Currency Explained Less Than 1% of the WTI Move</div>
+          <h3 class="finding-title">Currency Explained Less Than 1% of the WTI Move</h3>
           <p class="finding-body">
             DXY/WTI correlation flipped from −0.24 to +0.60. Oil and dollar rose together.
             The traditional oil-dollar inverse relationship broke down entirely.
@@ -2871,7 +3014,7 @@
         <!-- Finding 07: May Paradox — PRIMARY U2, full width -->
         <div class="finding-item u2-finding" style="grid-column: 1 / -1;">
           <div class="finding-num u2-num">Finding 07 &mdash; May Paradox (Primary)</div>
-          <div class="finding-title">Diplomacy Overrode Physical Scarcity</div>
+          <h3 class="finding-title">Diplomacy Overrode Physical Scarcity</h3>
           <p class="finding-body">
             WTI fell approximately 20% during May while the Strait of Hormuz remained at roughly 2% transit capacity.
             Forward-looking ceasefire expectations dominated current physical reality. The WTI/Gold ratio reversed sharply
@@ -2911,7 +3054,7 @@
         <!-- Finding 08 -->
         <div class="finding-item u2-finding">
           <div class="finding-num u2-num">Finding 08</div>
-          <div class="finding-title">Defense Is a Backlog Trade, Not a War Trade</div>
+          <h3 class="finding-title">Defense Is a Backlog Trade, Not a War Trade</h3>
           <p class="finding-body">
             ITA (Aerospace &amp; Defense ETF) reacted strongly on day one of the shock (+4–6% for constituents),
             then held through the correction window (+8.9% vs. broader market drawdown).
@@ -2923,7 +3066,7 @@
         <!-- Finding 09 — right col -->
         <div class="finding-item u2-finding right-col">
           <div class="finding-num u2-num">Finding 09</div>
-          <div class="finding-title">Freight Futures: A Third Decoupling Layer</div>
+          <h3 class="finding-title">Freight Futures: A Third Decoupling Layer</h3>
           <p class="finding-body">
             BWET (tanker freight ETF) returned +71.1% in the shock window while WTI returned +32.9%.
             Shipping scarcity priced a different exposure than the commodity itself.
@@ -2937,7 +3080,7 @@
         <!-- Finding 10 -->
         <div class="finding-item u2-finding">
           <div class="finding-num u2-num">Finding 10</div>
-          <div class="finding-title">Bonds Failed the Same Test Gold Did</div>
+          <h3 class="finding-title">Bonds Failed the Same Test Gold Did</h3>
           <p class="finding-body">
             TLT (20+ Year Treasury ETF) fell −3.3% during the shock window. Combined with gold's −9.6%,
             both halves of a traditional 60/40 hedge underperformed during the acute phase.
@@ -2948,7 +3091,7 @@
         <!-- Finding 11 — right col -->
         <div class="finding-item u2-finding right-col">
           <div class="finding-num u2-num">Finding 11</div>
-          <div class="finding-title">The Second Shock Was Muted</div>
+          <h3 class="finding-title">The Second Shock Was Muted</h3>
           <p class="finding-body">
             The Jun 10 re-escalation produced a smaller day-one WTI move than Feb 28.
             Market learning: once a playbook exists for a repeat event, the reaction is faster and the amplitude is smaller.
@@ -3436,66 +3579,66 @@
       <div class="mandate-list reveal">
 
         <div class="mandate-item">
-          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+          <h3 class="mandate-h"><button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">I</span>
             <span class="mandate-title">Distinguish supply shocks from financial crises: do not hedge them the same way</span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
-          </button>
+          </button></h3>
           <div class="mandate-body">
             <p>WTI/Gold ratio +47% (scarcity signal). VIX 31 (moderate). Credit spreads unchanged. The standard risk-off playbook failed in 2026. In a supply shock, physical commodity is the only direct hedge. Check the WTI/Gold trend before deploying any position.</p>
           </div>
         </div>
 
         <div class="mandate-item">
-          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+          <h3 class="mandate-h"><button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">II</span>
             <span class="mandate-title">Energy equities are not commodity proxies during shocks: trade the pair instead</span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
-          </button>
+          </button></h3>
           <div class="mandate-body">
             <p>When supply shock is confirmed (WTI/Gold rising 5+ consecutive days), execute: Long WTI futures (or USO), Short XOM or XLE. Exit when WTI/Gold ratio peaks and reverses. It peaked April 7. In 2026 this returned +34.4% over 33 days. Do not substitute XOM/CVX for WTI futures in hedging portfolios.</p>
           </div>
         </div>
 
         <div class="mandate-item">
-          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+          <h3 class="mandate-h"><button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">III</span>
             <span class="mandate-title">Gold fails under margin pressure: do not blindly buy safe havens</span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
-          </button>
+          </button></h3>
           <div class="mandate-body">
             <p>Never buy gold after it has already rallied significantly into a crisis. The marginal buyer at that point is a future seller facing margin pressure. Enter during calm periods (VIX below 15, gold vol below 15%). During the acute shock phase, gold is a source of liquidity, not a destination. Update 2 adds: long-duration bonds (TLT) also failed, falling −3.3% in the shock window. Use short-term Treasury bills (SHV, BIL) as the true safe haven in supply shocks.</p>
           </div>
         </div>
 
         <div class="mandate-item">
-          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+          <h3 class="mandate-h"><button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">IV</span>
             <span class="mandate-title">The reopening signal is priced overnight: watch futures, not the equity open</span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
-          </button>
+          </button></h3>
           <div class="mandate-body">
             <p>WTI futures trade 24/5. When a resolution event occurs, monitor WTI during Asian/European hours immediately following the announcement. The direction and magnitude of WTI's move will predict the S&amp;P 500 cash open with near-perfect accuracy (lag-0 correlation −0.58 during shock). Execute equity trades pre-market or at the open, not after the first hour.</p>
           </div>
         </div>
 
         <div class="mandate-item">
-          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+          <h3 class="mandate-h"><button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">V</span>
             <span class="mandate-title">Airlines do not recover when oil falls: demand destruction is the real driver</span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
-          </button>
+          </button></h3>
           <div class="mandate-body">
             <p>JETS fell −10.7% during the reopen window even as WTI dropped −11.5% on the announcement. Wait for: (1) sustained oil decline for 5+ days, (2) airline-specific catalysts such as route restorations and booking data, (3) rolling beta falling below 1.5. Buying airlines on the first oil dip would have lost 10.7% over the following 9 days in 2026.</p>
           </div>
         </div>
 
         <div class="mandate-item">
-          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+          <h3 class="mandate-h"><button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">VI</span>
             <span class="mandate-title">The dollar is not your enemy in a supply shock: ignore DXY technicals</span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
-          </button>
+          </button></h3>
           <div class="mandate-body">
             <p>DXY/WTI correlation flipped from −0.24 to +0.60 during the shock. Oil and dollar rose together because both responded to physical scarcity, not to each other. During a confirmed supply shock, do not short DXY as a proxy for long oil. Focus on physical indicators: tanker tracking, storage data, geopolitical escalation cues. DXY technicals are noise.</p>
           </div>
@@ -3503,14 +3646,14 @@
 
         <!-- MANDATE VII — NEW UPDATE 2, elevated callout -->
         <div class="mandate-item u2 u2-hero">
-          <button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
+          <h3 class="mandate-h"><button class="mandate-toggle" onclick="toggleMandate(this)" aria-expanded="false">
             <span class="mandate-n">VII</span>
             <span class="mandate-title">
               A closed chokepoint is not a standing instruction to stay long the commodity
               <span class="mandate-u2-tag">Key Exit Signal</span>
             </span>
             <span class="mandate-chevron" aria-hidden="true">&#9660;</span>
-          </button>
+          </button></h3>
           <div class="mandate-body">
             <p>Once a credible diplomatic track exists, monitor the negotiation, not just the blockade. A position built purely on "the strait is still closed" would have been wrong for the entire month of May 2026, despite that statement being completely true the whole time. The WTI/Gold ratio reversed in early May — before any ceasefire announcement. Forward expectations dominated physical reality. Exit the pair trade on WTI/Gold ratio reversal, not on the ceasefire announcement itself. The announcement is too late; the market prices the expected end state, not the current one.</p>
           </div>
@@ -3966,16 +4109,139 @@
        JAVASCRIPT
   =================================================================== -->
   <script>
-    // ── Reading progress ─────────────────────────────────────────────
+    // ── Reading progress — 5-phase segmented rail ────────────────────
+    // The five phase cards sit in a single grid row at every breakpoint
+    // (5 columns desktop, 3 columns down to one row each at tablet) — a
+    // reader never scrolls "through" them one at a time the way they
+    // would a vertical list. So the rail lights as a single trigger when
+    // the Timeline section enters view, not as five separate sequential
+    // triggers. From there it stays fully lit: a "story so far" thread
+    // carried into Findings, Charts, and Trade, which all reference these
+    // same five phases by name and color.
     const progressBar = document.getElementById('progress');
-    function updateProgress() {
-      const scrollTop  = window.scrollY;
-      const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      progressBar.style.width = pct + '%';
-      progressBar.setAttribute('aria-valuenow', Math.round(pct));
+    const phaseOrder = ['pre', 'shock', 'open', 'correction', 'diplomacy'];
+    const phaseSegEls = {};
+    progressBar.querySelectorAll('.seg').forEach(seg => {
+      const phase = phaseOrder.find(p => seg.classList.contains(p));
+      if (phase) phaseSegEls[phase] = seg;
+    });
+
+    function lightAllPhases() {
+      const skipStagger = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      phaseOrder.forEach((phase, i) => {
+        const delay = skipStagger ? 0 : i * 110;
+        setTimeout(() => {
+          phaseSegEls[phase]?.style.setProperty('--fill', '100%');
+        }, delay);
+      });
+      progressBar.setAttribute('aria-valuenow', '5');
+      progressBar.setAttribute('aria-valuetext', 'Timeline reached — all 5 phases shown');
     }
-    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    const timelineSection = document.getElementById('timeline');
+    if (timelineSection) {
+      const timelineObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            lightAllPhases();
+            timelineObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.15 });
+      timelineObserver.observe(timelineSection);
+    }
+
+    // Active-phase tracking — once the timeline has been reached, highlight
+    // whichever phase card sits closest to the viewport's vertical center as
+    // the person scrolls. On wide layouts all 5 cards sit in one row (so
+    // this naturally settles on whichever is nearest center and is purely
+    // cosmetic there); on mobile/narrow layouts where phases stack
+    // vertically, this turns the progress bar into a live "you are here"
+    // marker rather than a one-shot reveal. Distance-to-center is computed
+    // directly rather than via IntersectionObserver ratios, since the five
+    // cards have noticeably different heights and ratio-based intersection
+    // favors short cards over true centering.
+    const phaseCardEls = Array.from(document.querySelectorAll('.phase-block[data-phase]'));
+    const ambientGlowEls = {
+      pre: document.querySelector('#ambient-glow .glow-pre'),
+      shock: document.querySelector('#ambient-glow .glow-shock'),
+      open: document.querySelector('#ambient-glow .glow-open'),
+      correction: document.querySelector('#ambient-glow .glow-correction'),
+      diplomacy: document.querySelector('#ambient-glow .glow-diplomacy'),
+    };
+    if (phaseCardEls.length) {
+      let activePhase = null;
+      let tracking = false;
+      let ticking = false;
+
+      const setActivePhase = (phase) => {
+        if (phase === activePhase) return;
+        activePhase = phase;
+        Object.entries(phaseSegEls).forEach(([p, seg]) => {
+          seg?.classList.toggle('is-active', p === phase);
+        });
+        Object.entries(ambientGlowEls).forEach(([p, glow]) => {
+          glow?.classList.toggle('is-on', p === phase);
+        });
+      };
+
+      const clearAmbientGlow = () => {
+        Object.values(ambientGlowEls).forEach(glow => glow?.classList.remove('is-on'));
+      };
+
+      const updateActivePhase = () => {
+        ticking = false;
+        const viewportCenter = window.innerHeight / 2;
+        let best = null;
+        let bestDist = Infinity;
+        phaseCardEls.forEach(el => {
+          const rect = el.getBoundingClientRect();
+          if (rect.bottom < 0 || rect.top > window.innerHeight) return; // fully offscreen
+          const cardCenter = rect.top + rect.height / 2;
+          const dist = Math.abs(cardCenter - viewportCenter);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = el;
+          }
+        });
+        if (best) {
+          setActivePhase(best.dataset.phase);
+        } else {
+          // No phase card in view at all (scrolled above or below the
+          // timeline entirely) — let the ambient glow fade out rather than
+          // holding the last phase's color outside its own section.
+          activePhase = null;
+          clearAmbientGlow();
+        }
+      };
+
+      const onScroll = () => {
+        if (!tracking || ticking) return;
+        ticking = true;
+        requestAnimationFrame(updateActivePhase);
+      };
+
+      // Only start tracking once the timeline has actually been reached —
+      // matches lightAllPhases() firing, so the active highlight never
+      // appears before the base "all phases lit" state exists.
+      const trackingObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            tracking = true;
+            updateActivePhase();
+            window.addEventListener('scroll', onScroll, { passive: true });
+            trackingObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.15 });
+      trackingObserver.observe(timelineSection);
+    }
+
+    function updateProgressVisibility() {
+      progressBar.classList.toggle('visible', window.scrollY > 80);
+    }
+    window.addEventListener('scroll', updateProgressVisibility, { passive: true });
+    updateProgressVisibility();
 
     // ── Scroll to top ────────────────────────────────────────────────
     const scrollTopBtn = document.getElementById('scroll-top');
