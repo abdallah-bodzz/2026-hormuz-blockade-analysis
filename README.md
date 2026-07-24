@@ -366,3 +366,79 @@ This update was built while the underlying situation was still unfolding — sam
 ---
 
 *Data: yfinance (`auto_adjust=True`), 2016–2026. All figures nominal, no CPI adjustment. Analysis as of June 13, 2026 — static snapshot, second update in a series.*
+
+---
+
+## Dashboard: Three.js Layer
+
+The dashboard (`index.html`) got a small, scoped WebGL layer on top of its existing 2D design — three companion scenes, not a rebuild. Written up here plainly rather than in a commit message, per the brief that asked for it.
+
+### What shipped, and why these three
+
+| Scene | Lives in | What it is |
+|---|---|---|
+| **Ambient flow field** | Full-viewport background | A quiet, monochrome fractal-noise field, blended under the page's existing five-color phase glow via `mix-blend-mode: soft-light`. Fires a one-shot ripple when the reader scrolls into a new phase. |
+| **Phase landscape** | Timeline section | A 3D grouped-bar chart, WTI (front row) vs. Exxon/XOM (back row), across Pre-Event → Shock → Reopen — the window where the "decoupling" claim is easiest to feel by rotating around it. |
+| **Asset galaxy** | Findings section | A 3D scatter of nine real assets — axes are Pre-Event / Shock / Correction return, point size is Shock-window volatility. Sits directly under the existing "Market Fragmentation" regime grid, which is the same claim in text form. |
+
+**Descoped, on purpose:** the animated pair-trade tube and the floating chart-gallery from the brief's "recommended directions" list. Three well-built scenes beat five thin ones, and the brief's own performance constraint — a text-heavy page shouldn't lose scroll smoothness to WebGL — argues directly against piling on more canvases. If there's appetite for either later, the pattern in `js/three/` (feature-gate → mount → visibility-gated render loop) extends cleanly to both.
+
+### A deliberate departure from the brief
+
+Direction 1 suggested *replacing* the CSS ambient glow with a shader that owns hue-per-phase. I didn't do that. The CSS system already does that job correctly, cheaply, and it's what the sliding-nav-pill work earlier in this project was about avoiding: two systems that both think they own the same piece of state fight each other. So the shader here is deliberately colorblind — motion and grain only — and the existing CSS glow keeps sole ownership of color. Said so in the code comments, saying it again here.
+
+### Why nine assets, not sixteen
+
+The report's headline number is 16 assets. The two tables with actual per-asset return figures (Table 1, Table 2, in the Data section) name nine between them: WTI, S&P 500, Gold, XOM, JETS, ITA, BWET, TLT, CVX. The asset galaxy plots exactly those nine, with real numbers, rather than sixteen where seven would be invented. Every value in the scene is copied from those tables, not estimated.
+
+### Accessibility and fallbacks
+
+- Every scene checks for WebGL support and `prefers-reduced-motion` before mounting. If either check fails, the `<canvas>` hides and a plain-text fallback message appears in its place, pointing back to the 2D content that's already on the page (the phase cards, Table 1/2) — nothing in this project exists *only* in 3D.
+- Auto-rotate (an unprompted, ambient animation) is disabled under reduced motion. User-initiated dragging still works — that's motion the reader asked for one frame at a time, not something playing at them.
+- Neither 3D scene is keyboard-operable or screen-reader-operable; hover-driven WebGL raycasting doesn't have a meaningful non-visual equivalent, and I'd rather say that plainly than ship a token `tabindex` loop that doesn't actually convey a spatial relationship. The identical numbers are already in ordinary, accessible HTML tables elsewhere on the same page — that's the actual accessibility answer here, not a workaround inside the canvas.
+- `aria-label` on each canvas states its full data content in words, for anyone whose screen reader does announce it.
+
+### Performance
+
+- Every render loop is gated by `IntersectionObserver` (`js/three/webgl-support.js: whenVisible`) — nothing renders a single frame while its container is off-screen. On a long, text-heavy page this is the difference between smooth and janky scrolling, and it's the main reason three separate small renderers (one per scene) was fine rather than something to optimize away.
+- `devicePixelRatio` is capped per scene: 1.5 for the full-viewport ambient field (most expensive per-pixel), 2 for the two bounded card scenes, per the brief's constraint.
+- Colors are read from the page's actual CSS custom properties at runtime (`resolveCssColor` in `webgl-support.js`) rather than hand-copied as a second hex palette, so the 3D layer's colors can't silently drift from the stylesheet the next time someone tunes `--red` or `--steel`.
+
+### Files added
+
+```
+index.html                     modified — importmap, module <script>, new markup/CSS
+                                for the ambient canvas + two scene cards, and a
+                                2-line hook in the existing phase-detection function
+js/three/webgl-support.js      new — WebGL/reduced-motion checks, visibility-gated
+                                render-loop helper, CSS-var → THREE.Color resolver
+js/three/ambient-field.js      new — fullscreen flow-field shader + phase-change ripple
+js/three/phase-landscape.js    new — 3D WTI vs. XOM bar chart (Timeline)
+js/three/asset-galaxy.js       new — 3D asset scatter with hover tooltips (Findings)
+js/three/main.js               new — mounts all three scenes, wires fallbacks
+```
+
+### Running it locally
+
+No build step. Three.js loads from a CDN as native ES modules via `<script type="importmap">`, pinned to `three@0.160.0`. Because it uses ES module imports, most browsers will block it under `file://` due to CORS — serve the folder over plain HTTP instead:
+
+```bash
+cd path/to/repo
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
+
+Any static file server works (`npx serve`, VS Code's Live Server, etc.) — the only requirement is that it's served over `http(s)://`, not opened directly as a local file.
+
+### Trade-offs, stated plainly
+
+- **Nine assets, not sixteen**, and **three phases, not five**, in the two data scenes — covered above. Real data over a complete-looking chart with invented numbers in it.
+- **No in-scene 3D text labels.** Text sprites are blurry at this scale and rotate awkwardly with the camera. Phase names are HTML overlays projected from 3D → screen space each frame (crisp, cheap); axis labels are a static HTML legend beside the canvas instead of living in the scene. Both were the more honest trade for readability over "everything happens inside the WebGL canvas."
+- **Three renderers, not one shared renderer.** Three.js doesn't cheaply support attaching one WebGLRenderer to multiple canvases without re-binding the GL context per frame. With only three scenes total, three small renderers — each fully paused off-screen — was simpler and safer than the shared-renderer plumbing would have been for the perf it'd save.
+
+### Bug fix pass (post-ship)
+
+Two real bugs, from real testing on Windows/Chrome, both fixed at the root rather than patched around:
+
+1. **Colors rendered gray, console showed `THREE.Color: Unknown color model oklch(...)`.** The color resolver read a probe element's `color` back via `getComputedStyle`, assuming that always normalizes to `rgb()`. Current Chrome doesn't guarantee that — per the CSS Color 4 spec a browser may preserve the *specified* color space in computed style, and Chrome does exactly that for `oklch()`, which `THREE.Color.setStyle()` can't parse. Fixed by resolving colors through an offscreen `<canvas>` instead: its `fillStyle` accepts anything CSS can parse (oklch included), and `getImageData()` is guaranteed to return concrete sRGB bytes no matter what color space went in. `var()` references are still resolved first via `getPropertyValue()` on the document root, which returns the raw authored text and was never affected by this bug.
+2. **OrbitControls didn't respond to drag, hover tooltips didn't fire, and the fallback message showed even though WebGL was working.** One CSS mistake explained all three: `.scene-3d-fallback` set `display: flex` unconditionally. An author-stylesheet rule always beats the browser's own `[hidden] { display: none }` regardless of specificity or source order — origin outranks both — so the fallback text was permanently visible and, having no `pointer-events: none`, sat on top of the canvas silently swallowing every mouse event meant for OrbitControls. Fixed by scoping the visible state to `:not([hidden])` and adding an explicit `pointer-events: none`. The same latent issue existed on the canvas elements themselves (`display: block` unconditionally, which would have kept a canvas visible even after `canvas.hidden = true` on the no-WebGL path) — never triggered in this round of testing since WebGL happened to work, but real, and fixed the same way.
