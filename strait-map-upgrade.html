@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Strait of Hormuz — Map v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════
+   DESIGN TOKENS — exact match to your index.html
+═══════════════════════════════════════════════════ */
+:root {
+  --navy:          oklch(9%  0.015 240);
+  --navy-2:        oklch(11% 0.018 240);
+  --navy-3:        oklch(14% 0.022 240);
+  --navy-4:        oklch(18% 0.025 240);
+  --navy-5:        oklch(24% 0.028 240);
+  --red:           oklch(42% 0.18 27);
+  --red-2:         oklch(52% 0.20 27);
+  --red-dim:       oklch(38% 0.12 27);
+  --red-bg:        oklch(16% 0.045 27);
+  --red-border:    oklch(30% 0.10 27);
+  --gold:          oklch(72% 0.10 85);
+  --gold-dim:      oklch(62% 0.08 85);
+  --teal:          oklch(65% 0.12 175);
+  --teal-dim:      oklch(52% 0.10 175);
+  --amber:         oklch(68% 0.14 70);
+  --amber-dim:     oklch(55% 0.11 70);
+  --amber-bg:      oklch(14% 0.04 70);
+  --amber-border:  oklch(32% 0.09 70);
+  --steel:         oklch(55% 0.10 240);
+  --steel-dim:     oklch(44% 0.08 240);
+  --steel-bg:      oklch(13% 0.03 240);
+  --steel-border:  oklch(28% 0.07 240);
+  --t1:            oklch(96% 0.006 240);
+  --t2:            oklch(72% 0.012 240);
+  --t3:            oklch(52% 0.010 240);
+  --t4:            oklch(38% 0.008 240);
+  --b1:            oklch(22% 0.018 240 / 0.8);
+  --b2:            oklch(30% 0.022 240 / 0.6);
+  --font-mono:     'DM Mono', 'Fira Mono', monospace;
+  --font-head:     'Cabinet Grotesk', 'Outfit', system-ui, sans-serif;
+  --font-body:     'Outfit', system-ui, sans-serif;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out-quart:  cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* per-phase accent, updated by JS */
+  --phase-accent:  oklch(52% 0.010 240);
+  --phase-accent2: oklch(38% 0.008 240);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--navy);
+  color: var(--t1);
+  font-family: var(--font-body);
+  padding: 2rem 1.5rem 3rem;
+  min-height: 100vh;
+  line-height: 1.65;
+}
+
+/* ═══════════════════════════════════════════════════
+   OUTER WRAPPER
+═══════════════════════════════════════════════════ */
+.map-component {
+  max-width: 420px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════════════
+   PHASE SELECTOR ROW
+═══════════════════════════════════════════════════ */
+.phase-row {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+  align-items: center;
+}
+
+.phase-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.16em;
+  color: var(--t4);
+  text-transform: uppercase;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.phase-btn {
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid;
+  cursor: pointer;
+  background: transparent;
+  transition: background 160ms ease-out, color 160ms ease-out, box-shadow 160ms ease-out;
+  touch-action: manipulation;
+  position: relative;
+}
+.phase-btn:focus-visible { outline: 2px solid var(--phase-accent); outline-offset: 2px; }
+
+.phase-btn.pre { color: var(--t3); border-color: oklch(28% 0.018 240 / 0.7); }
+.phase-btn.pre.active { background: oklch(22% 0.01 240 / 0.7); color: var(--t2); }
+
+.phase-btn.shock { color: var(--red-2); border-color: var(--red-border); }
+.phase-btn.shock.active { background: oklch(42% 0.18 27 / 0.2); box-shadow: 0 0 8px oklch(52% 0.20 27 / 0.18); }
+
+.phase-btn.reopen { color: var(--teal); border-color: oklch(52% 0.10 175 / 0.4); }
+.phase-btn.reopen.active { background: oklch(65% 0.12 175 / 0.14); }
+
+.phase-btn.correction { color: var(--amber); border-color: var(--amber-border); }
+.phase-btn.correction.active { background: oklch(68% 0.14 70 / 0.16); box-shadow: 0 0 8px oklch(68% 0.14 70 / 0.2); }
+
+.phase-btn.diplomacy { color: var(--steel); border-color: var(--steel-border); }
+.phase-btn.diplomacy.active { background: oklch(55% 0.10 240 / 0.16); }
+
+.phase-btn { transition: background 160ms ease-out, color 160ms ease-out, box-shadow 160ms ease-out, transform 120ms ease-out; }
+.phase-btn:active { transform: scale(0.94); }
+@media (hover: hover) and (pointer: fine) {
+  .phase-btn:hover:not(.active) { background: oklch(100% 0 0 / 0.04); }
+}
+
+/* ─── STORY-MODE PLAY BUTTON ─── */
+.play-btn {
+  margin-left: auto;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1px solid oklch(32% 0.02 240 / 0.8);
+  background: oklch(16% 0.014 240 / 0.6);
+  color: var(--t3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 160ms ease-out, border-color 160ms ease-out, transform 120ms ease-out, background 160ms ease-out;
+}
+.play-btn:hover { color: var(--phase-accent); border-color: var(--phase-accent); background: oklch(20% 0.016 240 / 0.7); }
+.play-btn:active { transform: scale(0.9); }
+.play-btn:focus-visible { outline: 2px solid var(--phase-accent); outline-offset: 2px; }
+.play-btn .pause-icon { display: none; }
+.play-btn[aria-pressed="true"] .play-icon  { display: none; }
+.play-btn[aria-pressed="true"] .pause-icon { display: block; }
+.play-btn[aria-pressed="true"] { color: var(--phase-accent); border-color: var(--phase-accent); }
+
+/* ─── STORY RAIL — auto-advance progress, only visible while playing ─── */
+.story-rail {
+  height: 2px;
+  border-radius: 2px;
+  background: oklch(22% 0.016 240 / 0.5);
+  margin: 0.45rem 0 0.55rem;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 240ms var(--ease-out-quart), opacity 200ms ease-out, margin 240ms var(--ease-out-quart);
+}
+.story-rail.is-active { max-height: 2px; opacity: 1; }
+.story-rail-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--phase-accent);
+  border-radius: 2px;
+  transition: background 400ms ease-out;
+}
+.story-rail-fill.ticking { transition: width linear; }
+@media (prefers-reduced-motion: reduce) {
+  .phase-btn:active, .play-btn:active { transform: none; }
+}
+
+/* ─── CHAPTER DOTS — permanent "N of 5" position, independent of story mode ─── */
+.chapter-dots {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin: -0.15rem 0 0.65rem;
+}
+.chapter-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: oklch(28% 0.016 240 / 0.9);
+  transition: background 300ms ease-out, transform 300ms var(--ease-out-strong), width 300ms var(--ease-out-strong);
+}
+.chapter-dot.is-current {
+  background: var(--phase-accent);
+  width: 12px;
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════════
+   MAP CARD
+═══════════════════════════════════════════════════ */
+.map-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid oklch(22% 0.018 240 / 0.8);
+  transition: border-color 600ms var(--ease-out-quart);
+}
+
+.map-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 10px;
+  pointer-events: none;
+  /* vignette */
+  background: radial-gradient(ellipse 90% 80% at 50% 50%, transparent 55%, oklch(6% 0.01 240 / 0.55) 100%);
+}
+
+/* scanline texture overlay */
+.map-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    oklch(0% 0 0 / 0.04) 2px,
+    oklch(0% 0 0 / 0.04) 3px
+  );
+  border-radius: 10px;
+}
+
+.map-svg-wrap {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.strait-map {
+  width: 100%;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════
+   AMBIENT PHASE GLOW (behind card — visible through border-radius)
+═══════════════════════════════════════════════════ */
+.map-glow {
+  position: absolute;
+  inset: -20px;
+  z-index: -1;
+  border-radius: 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out-quart), background 700ms var(--ease-out-quart);
+}
+.map-glow.shock      { background: radial-gradient(ellipse 80% 60% at 50% 50%, oklch(42% 0.18 27 / 0.12), transparent 70%); }
+.map-glow.correction { background: radial-gradient(ellipse 80% 60% at 50% 50%, oklch(68% 0.14 70 / 0.10), transparent 70%); }
+.map-glow.reopen     { background: radial-gradient(ellipse 80% 60% at 50% 50%, oklch(65% 0.12 175 / 0.08), transparent 70%); }
+.map-glow.diplomacy  { background: radial-gradient(ellipse 80% 60% at 50% 50%, oklch(55% 0.10 240 / 0.07), transparent 70%); }
+.map-glow.is-on      { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════
+   BOTTOM HUD — dual gauge + sparkline + narrative
+═══════════════════════════════════════════════════ */
+.map-hud {
+  margin-top: 0;
+  background: var(--navy-2);
+  border: 1px solid oklch(22% 0.018 240 / 0.8);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 0.75rem 1rem 0.9rem;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* top rail: phase title + date */
+.hud-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.55rem;
+}
+
+.hud-phase-name {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--phase-accent);
+  transition: color 400ms ease-out;
+}
+
+.hud-date {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  color: var(--t4);
+  letter-spacing: 0.08em;
+}
+
+/* dual gauge strip */
+.hud-gauges {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0;
+  margin-bottom: 0.6rem;
+}
+
+.hud-gauge-divider { background: oklch(22% 0.018 240 / 0.6); }
+
+.hud-gauge {
+  padding: 0 0.6rem;
+  position: relative;
+}
+.hud-gauge:first-child { padding-left: 0; }
+.hud-gauge:last-child  { padding-right: 0; }
+
+.hud-gauge-label {
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t4);
+  margin-bottom: 0.2rem;
+}
+
+.hud-gauge-bar-wrap {
+  height: 3px;
+  background: oklch(20% 0.016 240 / 0.8);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.hud-gauge-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0%;
+  transition: width 700ms var(--ease-out-strong), background 600ms ease-out;
+}
+
+.hud-gauge-val {
+  font-family: var(--font-head);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transition: color 400ms ease-out;
+}
+
+.hud-gauge-sub {
+  font-family: var(--font-mono);
+  font-size: 0.44rem;
+  color: var(--t4);
+  letter-spacing: 0.08em;
+  margin-top: 0.15rem;
+}
+
+/* sparkline strip for WTI — toggles between the timeline and the decoupling scatter */
+.hud-spark-wrap {
+  position: relative;
+  height: 28px;
+  margin-bottom: 0.5rem;
+  transition: height 260ms var(--ease-out-quart);
+}
+.hud-spark-wrap[data-view="decoupling"] { height: 108px; }
+
+.hud-spark-tabs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  gap: 9px;
+  z-index: 1;
+}
+.spark-tab {
+  font-family: var(--font-mono);
+  font-size: 0.44rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t4);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 160ms ease-out;
+}
+.spark-tab:hover { color: var(--t3); }
+.spark-tab.active { color: var(--phase-accent); }
+.spark-tab:focus-visible { outline: 2px solid var(--phase-accent); outline-offset: 2px; }
+
+.hud-spark-label-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-family: var(--font-mono);
+  font-size: 0.44rem;
+  letter-spacing: 0.08em;
+  color: var(--t4);
+}
+
+.hud-spark-svg {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 18px;
+  overflow: visible;
+  opacity: 1;
+  transition: opacity 180ms ease-out;
+}
+.hud-spark-svg.view-decoupling { top: 12px; height: 84px; display: none; }
+.hud-spark-wrap[data-view="decoupling"] .view-timeline    { display: none; }
+.hud-spark-wrap[data-view="decoupling"] .view-decoupling  { display: block; }
+
+.scatter-pt { transition: opacity 260ms ease-out; }
+.scatter-pt circle { transition: r 220ms var(--ease-out-strong); }
+.scatter-pt.scatter-current circle { r: 3.6; }
+.hud-spark-wrap[data-view="decoupling"] .scatter-pt:not(.scatter-current) { opacity: 0.55; }
+.scatter-hit { transition: fill 140ms ease-out; }
+
+.spark-hit { transition: fill 140ms ease-out; }
+@media (hover: hover) and (pointer: fine) {
+  .spark-hit:hover { fill: oklch(100% 0 0 / 0.03); }
+  .scatter-hit:hover { fill: oklch(100% 0 0 / 0.05); }
+}
+
+/* narrative sentence */
+.hud-narrative {
+  font-size: 0.7rem;
+  color: var(--t3);
+  line-height: 1.55;
+  border-top: 1px solid oklch(22% 0.018 240 / 0.5);
+  padding-top: 0.5rem;
+  min-height: 2.2em;
+  transition: color 400ms ease-out, filter 180ms ease-out, opacity 180ms ease-out;
+  filter: blur(0);
+  opacity: 1;
+}
+.hud-narrative.is-swapping { filter: blur(3px); opacity: 0; }
+
+.hud-narrative strong {
+  color: var(--phase-accent);
+  transition: color 400ms ease-out;
+}
+
+/* ═══════════════════════════════════════════════════
+   TOOLTIP
+═══════════════════════════════════════════════════ */
+.map-tooltip {
+  position: fixed;
+  z-index: 100;
+  background: var(--navy-3);
+  border: 1px solid oklch(30% 0.022 240 / 0.7);
+  border-radius: 5px;
+  padding: 0.45rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--t2);
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 140ms ease-out, transform 140ms ease-out;
+  white-space: nowrap;
+  max-width: 200px;
+  white-space: normal;
+  box-shadow: 0 8px 24px oklch(0% 0 0 / 0.4);
+}
+.map-tooltip.visible { opacity: 1; transform: translateY(0); }
+.map-tooltip-title {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--phase-accent);
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════
+   SVG ANIMATIONS
+═══════════════════════════════════════════════════ */
+
+/* ship transit */
+@keyframes sailE  { 0%{transform:translate(-18px,0);opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{transform:translate(68px,0);opacity:0} }
+@keyframes sailW  { 0%{transform:translate(18px,0);opacity:0}  10%{opacity:1} 90%{opacity:1} 100%{transform:translate(-68px,0);opacity:0} }
+@keyframes bob    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(1.8px)} }
+@keyframes bobHeavy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+
+/* lane flow */
+@keyframes flowE  { to { stroke-dashoffset: -30; } }
+@keyframes flowW  { to { stroke-dashoffset:  30; } }
+
+/* capacity arc breathe — now a subtle opacity pulse only; the fill length
+   itself is owned by JS (tweenRing), not by this keyframe, since there's
+   one continuous ring instead of five swapped-in arcs */
+@keyframes arcBreathe {
+  0%,100% { opacity: 0.88; }
+  50%     { opacity: 1.0; }
+}
+
+/* paradox pulse — amber wave expands outward from strait center */
+@keyframes paradoxWave {
+  0%   { r: 22;  stroke-opacity: 0.55; stroke-width: 2; }
+  100% { r: 55;  stroke-opacity: 0;    stroke-width: 0.5; }
+}
+
+/* tension flicker for shock phase */
+@keyframes tensionFlicker {
+  0%,100% { opacity: 0.35; }
+  35%     { opacity: 0.7; }
+  55%     { opacity: 0.25; }
+  80%     { opacity: 0.6; }
+}
+
+/* particle drift */
+@keyframes drift1 { 0%{transform:translate(0,0);opacity:0} 15%{opacity:0.6} 85%{opacity:0.6} 100%{transform:translate(-8px,-12px);opacity:0} }
+@keyframes drift2 { 0%{transform:translate(0,0);opacity:0} 15%{opacity:0.4} 85%{opacity:0.4} 100%{transform:translate(6px,-10px);opacity:0} }
+@keyframes drift3 { 0%{transform:translate(0,0);opacity:0} 15%{opacity:0.5} 85%{opacity:0.5} 100%{transform:translate(-4px,-14px);opacity:0} }
+
+/* scanline sweep */
+@keyframes scanSweep {
+  0%  { transform: translateY(-100%); }
+  100%{ transform: translateY(100%); }
+}
+
+/* sparkline draw */
+@keyframes drawLine {
+  from { stroke-dashoffset: 300; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* event pin pulse */
+@keyframes pinPulse {
+  0%,100% { r: 2.5; opacity: 1; }
+  50%     { r: 4;   opacity: 0.7; }
+}
+
+/* diplomatic wave */
+@keyframes diploWave {
+  0%   { r: 5;  stroke-opacity: 0.5; }
+  100% { r: 30; stroke-opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════
+   SVG ELEMENT CLASSES
+═══════════════════════════════════════════════════ */
+.ship-e  { animation: sailE var(--dur,7s) linear var(--delay,0s) infinite; }
+.ship-w  { animation: sailW var(--dur,9s) linear var(--delay,0s) infinite; }
+.ship-bob { animation: bob 2.5s ease-in-out var(--delay,0s) infinite; }
+.ship-bob-h { animation: bobHeavy 3s ease-in-out var(--delay,0s) infinite; }
+
+.flow-e { animation: flowE var(--fdur,2.4s) linear infinite; }
+.flow-w { animation: flowW var(--fdur,3.2s) linear infinite; }
+
+.arc-breathe { animation: arcBreathe var(--abdur,5.5s) ease-in-out infinite; }
+#capacityRing { transition: stroke 400ms ease-out; }
+#capacityLabelVal, #capacityLabelSub { transition: fill 400ms ease-out; }
+#capacityLabelSub { fill-opacity: 0.68; }
+
+.paradox-ring { animation: paradoxWave 2.4s ease-out infinite; }
+.paradox-ring:nth-child(2) { animation-delay: 0.8s; }
+.paradox-ring:nth-child(3) { animation-delay: 1.6s; }
+
+.tension-flicker { animation: tensionFlicker 1.4s ease-in-out infinite; }
+.tension-flicker:nth-child(2) { animation-delay: 0.3s; }
+.tension-flicker:nth-child(3) { animation-delay: 0.7s; }
+
+.particle-1 { animation: drift1 4.5s ease-out infinite; }
+.particle-2 { animation: drift2 5.2s ease-out 1.2s infinite; }
+.particle-3 { animation: drift3 3.8s ease-out 2.4s infinite; }
+
+.pin-pulse { animation: pinPulse 2s ease-in-out infinite; }
+.diplo-wave { animation: diploWave 3s ease-out infinite; }
+.diplo-wave:nth-child(2) { animation-delay: 1s; }
+
+/* pin ↔ phase sync — the pin matching the live phase reads as "you are here";
+   others recede so the rail always shows one clear position in the story */
+.pin-group { transition: opacity 260ms ease-out, transform 260ms var(--ease-out-strong); transform-origin: 10px center; }
+.pin-group:focus-visible { outline: 2px solid var(--phase-accent); outline-offset: 3px; border-radius: 3px; }
+.pin-group text { transition: fill 260ms ease-out; }
+.map-component:not([data-active="pre"]) .pin-group:not(.pin-current) { opacity: 0.42; }
+.pin-group.pin-current { transform: scale(1.14); }
+
+.spark-line { animation: drawLine 0.9s var(--ease-out-quart) forwards; stroke-dasharray: 300; stroke-dashoffset: 300; }
+
+/* ─── phase visibility ─── */
+/* default = pre */
+.ph-shock, .ph-reopen, .ph-correction, .ph-diplomacy { display: none; }
+.ph-pre { display: block; }
+
+[data-active="shock"]      .ph-pre,    [data-active="shock"]      .ph-reopen, [data-active="shock"]      .ph-correction, [data-active="shock"]      .ph-diplomacy { display: none; }
+[data-active="shock"]      .ph-shock      { display: block; }
+[data-active="reopen"]     .ph-pre,    [data-active="reopen"]     .ph-shock,  [data-active="reopen"]     .ph-correction, [data-active="reopen"]     .ph-diplomacy { display: none; }
+[data-active="reopen"]     .ph-reopen     { display: block; }
+[data-active="correction"] .ph-pre,    [data-active="correction"] .ph-shock,  [data-active="correction"] .ph-reopen,     [data-active="correction"] .ph-diplomacy { display: none; }
+[data-active="correction"] .ph-correction { display: block; }
+[data-active="diplomacy"]  .ph-pre,    [data-active="diplomacy"]  .ph-shock,  [data-active="diplomacy"]  .ph-reopen,     [data-active="diplomacy"]  .ph-correction { display: none; }
+[data-active="diplomacy"]  .ph-diplomacy  { display: block; }
+
+/* scanline sweep — only on shock/correction for tension */
+.scan-sweep {
+  position: absolute;
+  left: 0; right: 0;
+  height: 30px;
+  background: linear-gradient(180deg, transparent, oklch(100% 0 0 / 0.025), transparent);
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+  animation: scanSweep 4s linear infinite;
+  top: 0;
+}
+[data-active="shock"] .scan-sweep,
+[data-active="correction"] .scan-sweep { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .ship-e, .ship-w, .ship-bob, .ship-bob-h,
+  .flow-e, .flow-w, .arc-breathe,
+  .paradox-ring, .tension-flicker,
+  .particle-1, .particle-2, .particle-3,
+  .pin-pulse, .diplo-wave, .spark-line,
+  .scan-sweep { animation: none !important; }
+  .spark-line { stroke-dashoffset: 0; }
+  .hud-gauge-fill, .hud-phase-name, .hud-gauge-val,
+  .hud-narrative strong, .map-glow { transition: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════
+   DEMO LABEL
+═══════════════════════════════════════════════════ */
+.demo-note {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--t4);
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-top: 1.25rem;
+  opacity: 0.55;
+}
+</style>
+</head>
+<body>
+
+<div class="map-component" id="mapComponent" data-active="pre">
+
+  <!-- ── AMBIENT GLOW (behind card) ── -->
+  <div class="map-glow shock"      id="glowShock"></div>
+  <div class="map-glow correction" id="glowCorrection"></div>
+  <div class="map-glow reopen"     id="glowReopen"></div>
+  <div class="map-glow diplomacy"  id="glowDiplo"></div>
+
+  <!-- ── PHASE SELECTOR ── -->
+  <div class="phase-row" role="group" aria-label="Select crisis phase">
+    <span class="phase-label">Phase</span>
+    <button class="phase-btn pre active"        onclick="setPhase('pre')"        aria-pressed="true">Pre</button>
+    <button class="phase-btn shock"             onclick="setPhase('shock')"      aria-pressed="false">Shock</button>
+    <button class="phase-btn reopen"            onclick="setPhase('reopen')"     aria-pressed="false">Reopen</button>
+    <button class="phase-btn correction"        onclick="setPhase('correction')" aria-pressed="false">Correction</button>
+    <button class="phase-btn diplomacy"         onclick="setPhase('diplomacy')"  aria-pressed="false">Diplomacy</button>
+    <button class="play-btn" id="playBtn" type="button" onclick="toggleStory()" aria-label="Play crisis timeline" aria-pressed="false" title="Play the timeline">
+      <svg class="play-icon" width="8" height="9" viewBox="0 0 8 9"><path d="M0 0.5 L8 4.5 L0 8.5 Z" fill="currentColor"/></svg>
+      <svg class="pause-icon" width="8" height="9" viewBox="0 0 8 9"><rect x="0" y="0.5" width="2.6" height="8" fill="currentColor"/><rect x="5.4" y="0.5" width="2.6" height="8" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <div class="story-rail" id="storyRail" aria-hidden="true"><div class="story-rail-fill" id="storyRailFill"></div></div>
+  <div class="chapter-dots" id="chapterDots" aria-hidden="true">
+    <span class="chapter-dot" data-phase="pre"></span>
+    <span class="chapter-dot" data-phase="shock"></span>
+    <span class="chapter-dot" data-phase="reopen"></span>
+    <span class="chapter-dot" data-phase="correction"></span>
+    <span class="chapter-dot" data-phase="diplomacy"></span>
+  </div>
+
+  <!-- ── MAP CARD ── -->
+  <div class="map-card" id="mapCard">
+    <div class="scan-sweep"></div>
+
+    <div class="map-svg-wrap">
+
+      <!-- ══════════════════════════════════════════════════════
+           SVG MAP  viewBox 340 × 225
+           Strait center: x=248, y=122
+           Iran coast: top arc
+           UAE/Oman/Musandam: bottom arc
+           Persian Gulf: left water body
+           Gulf of Oman: bottom-right
+      ══════════════════════════════════════════════════════ -->
+      <svg class="strait-map" viewBox="0 0 340 225" fill="none"
+           xmlns="http://www.w3.org/2000/svg"
+           role="img" id="straitSvg"
+           aria-label="Strait of Hormuz interactive crisis map">
+        <title>Strait of Hormuz Crisis Map</title>
+        <desc>Interactive map showing the Strait of Hormuz, shipping lanes, transit capacity, and crisis phase state for the 2026 blockade study.</desc>
+
+        <defs>
+          <!-- water gradient -->
+          <linearGradient id="wg" x1="0" y1="0" x2="0.4" y2="1">
+            <stop offset="0%"   stop-color="oklch(15% 0.042 225)"/>
+            <stop offset="100%" stop-color="oklch(11% 0.028 215)"/>
+          </linearGradient>
+
+          <!-- shock water tint -->
+          <linearGradient id="wg-shock" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stop-color="oklch(13% 0.055 25)"/>
+            <stop offset="100%" stop-color="oklch(10% 0.025 215)"/>
+          </linearGradient>
+
+          <!-- correction water tint -->
+          <linearGradient id="wg-correction" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stop-color="oklch(13% 0.04 60)"/>
+            <stop offset="100%" stop-color="oklch(11% 0.025 215)"/>
+          </linearGradient>
+
+          <!-- lane pattern — flowing dots outbound (red, E) -->
+          <pattern id="dotE" x="0" y="0" width="18" height="1" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+            <circle cx="5" cy="0.5" r="1.1" fill="oklch(58% 0.20 27 / 0.7)"/>
+          </pattern>
+          <!-- lane pattern — flowing dots inbound (teal, W) -->
+          <pattern id="dotW" x="0" y="0" width="18" height="1" patternUnits="userSpaceOnUse">
+            <circle cx="5" cy="0.5" r="1.1" fill="oklch(62% 0.12 175 / 0.65)"/>
+          </pattern>
+          <!-- blocked lane pattern -->
+          <pattern id="dotBlock" x="0" y="0" width="10" height="1" patternUnits="userSpaceOnUse">
+            <circle cx="3" cy="0.5" r="0.9" fill="oklch(42% 0.18 27 / 0.28)"/>
+          </pattern>
+          <!-- diplomacy pattern — steel dots, sparse -->
+          <pattern id="dotDiplo" x="0" y="0" width="22" height="1" patternUnits="userSpaceOnUse">
+            <circle cx="5" cy="0.5" r="0.9" fill="oklch(52% 0.10 240 / 0.5)"/>
+          </pattern>
+
+          <!-- clip for water region -->
+          <clipPath id="waterClip">
+            <rect width="340" height="225" rx="0"/>
+          </clipPath>
+
+          <!-- ship symbols -->
+          <symbol id="tanker" viewBox="0 0 16 6">
+            <path d="M1.5 5.5 L3 2 L13 2 L14.5 5.5 Z" fill="currentColor"/>
+            <rect x="3.5" y="0.5" width="9" height="1.8" rx="0.4" fill="currentColor" opacity="0.3"/>
+            <rect x="7" y="0" width="2" height="2.5" rx="0.3" fill="currentColor" opacity="0.8"/>
+          </symbol>
+          <symbol id="ship-sm" viewBox="0 0 11 5">
+            <path d="M1 4.5 L2.5 1.5 L8.5 1.5 L10 4.5 Z" fill="currentColor"/>
+            <rect x="4.5" y="0.2" width="1.5" height="2" rx="0.3" fill="currentColor" opacity="0.8"/>
+          </symbol>
+        </defs>
+
+        <!-- ── WATER BODY ── -->
+        <rect width="340" height="225" fill="url(#wg)" rx="0"/>
+
+        <!-- phase-tinted water overlays -->
+        <rect class="ph-shock"      width="340" height="225" fill="url(#wg-shock)"      opacity="0.6"/>
+        <rect class="ph-correction" width="340" height="225" fill="url(#wg-correction)" opacity="0.5"/>
+
+        <!-- ── SUBTLE GRID ── -->
+        <g opacity="0.028" clip-path="url(#waterClip)">
+          <defs>
+            <pattern id="mg" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="oklch(70% 0.05 240)" stroke-width="0.4"/>
+            </pattern>
+          </defs>
+          <rect width="340" height="225" fill="url(#mg)"/>
+        </g>
+
+        <!-- ══════════════════════════════════════════════
+             IRAN — NORTH COAST
+             Proper shape: NW→SE curve, kink to strait narrows
+        ══════════════════════════════════════════════ -->
+        <path d="
+          M 0 42
+          Q 30 36, 62 32
+          Q 98 27, 130 24
+          Q 158 21, 180 26
+          Q 196 30, 205 38
+          Q 215 46, 222 54
+          Q 230 62, 236 70
+          Q 240 76, 244 82
+          Q 248 87, 250 84
+          Q 260 78, 272 70
+          Q 285 62, 298 56
+          Q 314 49, 330 45
+          L 340 43
+          L 340 0
+          L 0 0
+          Z"
+          fill="oklch(19% 0.028 218)"
+          stroke="oklch(28% 0.036 218)"
+          stroke-width="0.5"/>
+
+        <!-- Qeshm Island — large, right inside the strait -->
+        <path d="
+          M 188 56
+          Q 198 51, 212 54
+          Q 222 57, 224 65
+          Q 222 73, 212 76
+          Q 200 78, 190 73
+          Q 183 68, 188 56
+          Z"
+          fill="oklch(21% 0.03 216)"
+          stroke="oklch(29% 0.034 216)"
+          stroke-width="0.4"/>
+
+        <!-- Hormuz Island — small, in the narrows -->
+        <path d="
+          M 244 87
+          Q 250 84, 256 87
+          Q 259 92, 255 96
+          Q 249 98, 244 95
+          Q 241 91, 244 87
+          Z"
+          fill="oklch(21% 0.03 216)"
+          stroke="oklch(29% 0.034 216)"
+          stroke-width="0.35"/>
+
+        <!-- ══════════════════════════════════════════════
+             UAE / OMAN — SOUTH COAST + MUSANDAM
+        ══════════════════════════════════════════════ -->
+        <path d="
+          M 0 195
+          Q 22 192, 44 188
+          Q 58 185, 68 180
+          Q 78 175, 88 172
+          Q 100 170, 112 172
+          Q 120 175, 118 183
+          Q 116 191, 124 194
+          Q 134 197, 148 192
+          Q 160 186, 170 180
+          Q 182 175, 196 172
+          Q 210 170, 222 165
+          Q 234 160, 244 152
+          Q 252 145, 257 136
+          Q 263 127, 267 118
+          Q 272 108, 276 100
+          Q 280 92, 284 84
+          Q 287 77, 292 70
+          Q 298 62, 308 58
+          Q 318 54, 328 57
+          Q 335 60, 340 65
+          L 340 225
+          L 0 225
+          Z"
+          fill="oklch(19% 0.028 218)"
+          stroke="oklch(28% 0.036 218)"
+          stroke-width="0.5"/>
+
+        <!-- Qatar stub — north coast jut -->
+        <path d="
+          M 60 172
+          Q 66 162, 74 156
+          Q 80 150, 87 157
+          Q 90 165, 84 174
+          Q 77 180, 68 178
+          Z"
+          fill="oklch(20% 0.03 217)"
+          stroke="oklch(28% 0.034 217)"
+          stroke-width="0.35"/>
+
+        <!-- Abu Dhabi coast refinement -->
+        <path d="
+          M 44 188
+          Q 50 183, 58 180
+          Q 65 177, 68 180"
+          fill="none"
+          stroke="oklch(26% 0.032 218)"
+          stroke-width="0.4"/>
+
+        <!-- ══════════════════════════════════════════════
+             TSS SHIPPING LANES
+             Inbound (W-bound into Gulf): y 98–114
+             Sep zone: y 114–117
+             Outbound (E-bound, Gulf→Oman): y 117–133
+             Lane width varies at narrows (x 100–248)
+        ══════════════════════════════════════════════ -->
+
+        <!-- ─── PRE: both lanes active, full flow ─── -->
+        <g class="ph-pre">
+          <!-- inbound lane fill -->
+          <rect x="96" y="98" width="148" height="15" rx="2"
+                fill="oklch(62% 0.12 175 / 0.1)"/>
+          <!-- sep zone -->
+          <rect x="96" y="113" width="148" height="3"
+                fill="oklch(50% 0.05 240 / 0.07)"/>
+          <!-- outbound lane fill -->
+          <rect x="96" y="116" width="148" height="15" rx="2"
+                fill="oklch(52% 0.20 27 / 0.08)"/>
+
+          <!-- flow dots — inbound, animated W -->
+          <g clip-path="url(#waterClip)">
+            <rect class="flow-w" style="--fdur:3s" x="96" y="103.5" width="148" height="1.2"
+                  fill="url(#dotW)"/>
+          </g>
+          <!-- flow dots — outbound, animated E -->
+          <g clip-path="url(#waterClip)">
+            <rect class="flow-e" style="--fdur:2.5s" x="96" y="122.5" width="148" height="1.2"
+                  fill="url(#dotE)"/>
+          </g>
+
+          <!-- direction indicators -->
+          <!-- inbound W arrow -->
+          <polyline points="106,105.5 100,107.5 106,109.5"
+                    stroke="oklch(58% 0.10 175 / 0.5)" stroke-width="1"
+                    fill="none" stroke-linecap="round"/>
+          <!-- outbound E arrow -->
+          <polyline points="240,120 246,122 240,124"
+                    stroke="oklch(55% 0.16 27 / 0.5)" stroke-width="1"
+                    fill="none" stroke-linecap="round"/>
+
+          <!-- ships — 3 tankers outbound, 2 inbound -->
+          <g class="ship-e" style="--dur:7s;--delay:0s;color:oklch(60% 0.16 27)">
+            <use href="#tanker" x="108" y="119" width="16" height="6"/>
+          </g>
+          <g class="ship-e" style="--dur:7s;--delay:2.3s;color:oklch(58% 0.14 27)">
+            <use href="#tanker" x="108" y="119" width="16" height="6"/>
+          </g>
+          <g class="ship-e" style="--dur:7s;--delay:4.7s;color:oklch(56% 0.12 27)">
+            <use href="#tanker" x="108" y="119" width="16" height="6"/>
+          </g>
+          <!-- inbound — W flipped -->
+          <g class="ship-w" style="--dur:9s;--delay:1s;color:oklch(56% 0.10 180)">
+            <g transform="scale(-1,1) translate(-352,0)">
+              <use href="#ship-sm" x="108" y="100" width="11" height="5"/>
+            </g>
+          </g>
+          <g class="ship-w" style="--dur:9s;--delay:5s;color:oklch(54% 0.09 176)">
+            <g transform="scale(-1,1) translate(-352,0)">
+              <use href="#ship-sm" x="108" y="100" width="11" height="5"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- ─── SHOCK: lanes blocked ─── -->
+        <g class="ph-shock">
+          <!-- blocked lane overlay -->
+          <rect x="96" y="98" width="148" height="33" rx="2"
+                fill="oklch(42% 0.18 27 / 0.07)"/>
+          <rect class="tension-flicker" x="96" y="98" width="148" height="33"
+                fill="url(#dotBlock)" rx="2" clip-path="url(#waterClip)"/>
+          <rect class="tension-flicker" x="96" y="98" width="148" height="33" rx="2"
+                fill="url(#dotBlock)" clip-path="url(#waterClip)"/>
+
+          <!-- tension particles near blockade point -->
+          <circle class="particle-1" cx="200" cy="115" r="1.5"
+                  fill="oklch(62% 0.20 27 / 0.6)"/>
+          <circle class="particle-2" cx="218" cy="108" r="1.2"
+                  fill="oklch(58% 0.18 27 / 0.5)"/>
+          <circle class="particle-3" cx="192" cy="120" r="1"
+                  fill="oklch(64% 0.22 27 / 0.5)"/>
+
+          <!-- BLOCKADE X at choke-point -->
+          <g opacity="0.75">
+            <line x1="156" y1="104" x2="174" y2="120"
+                  stroke="oklch(62% 0.22 27)" stroke-width="2"
+                  stroke-linecap="round"/>
+            <line x1="174" y1="104" x2="156" y2="120"
+                  stroke="oklch(62% 0.22 27)" stroke-width="2"
+                  stroke-linecap="round"/>
+          </g>
+
+          <!-- queued tankers — bobbing in Gulf -->
+          <g class="ship-bob" style="--delay:0s;color:oklch(42% 0.14 27 / 0.75)">
+            <use href="#tanker" x="103" y="119" width="16" height="6"/>
+          </g>
+          <g class="ship-bob" style="--delay:0.35s;color:oklch(42% 0.14 27 / 0.7)">
+            <use href="#tanker" x="120" y="119" width="16" height="6"/>
+          </g>
+          <g class="ship-bob" style="--delay:0.7s;color:oklch(40% 0.12 27 / 0.6)">
+            <use href="#tanker" x="137" y="119" width="16" height="6"/>
+          </g>
+          <g class="ship-bob-h" style="--delay:0.2s;color:oklch(40% 0.12 27 / 0.5)">
+            <use href="#tanker" x="103" y="107" width="16" height="6"/>
+          </g>
+          <g class="ship-bob" style="--delay:0.55s;color:oklch(38% 0.10 27 / 0.4)">
+            <use href="#tanker" x="120" y="107" width="16" height="6"/>
+          </g>
+        </g>
+
+        <!-- ─── REOPEN: tentative inbound, outbound still restricted ─── -->
+        <g class="ph-reopen">
+          <!-- inbound partially active -->
+          <rect x="96" y="98" width="148" height="15" rx="2"
+                fill="oklch(62% 0.12 175 / 0.08)"/>
+          <g clip-path="url(#waterClip)">
+            <rect class="flow-w" style="--fdur:4s" x="96" y="103.5" width="148" height="1"
+                  fill="url(#dotW)" opacity="0.5"/>
+          </g>
+          <!-- outbound still dim -->
+          <rect x="96" y="116" width="148" height="15" rx="2"
+                fill="oklch(42% 0.18 27 / 0.05)"/>
+          <rect x="96" y="116" width="148" height="15"
+                fill="url(#dotBlock)" rx="2" clip-path="url(#waterClip)"/>
+
+          <!-- one cautious ship heading in -->
+          <g class="ship-w" style="--dur:11s;--delay:0s;color:oklch(54% 0.10 178)">
+            <g transform="scale(-1,1) translate(-352,0)">
+              <use href="#ship-sm" x="108" y="100" width="11" height="5"/>
+            </g>
+          </g>
+          <!-- still waiting tanker -->
+          <g class="ship-bob" style="--delay:0s;color:oklch(42% 0.12 27 / 0.55)">
+            <use href="#tanker" x="105" y="119" width="16" height="6"/>
+          </g>
+        </g>
+
+        <!-- ─── CORRECTION: physical stasis, paradox ambiance ─── -->
+        <g class="ph-correction">
+          <!-- lanes dim — still blocked physically -->
+          <rect x="96" y="98" width="148" height="33" rx="2"
+                fill="oklch(65% 0.12 70 / 0.05)"/>
+          <rect x="96" y="98" width="148" height="33"
+                fill="url(#dotBlock)" rx="2" clip-path="url(#waterClip)" opacity="0.7"/>
+
+          <!-- PARADOX PULSE — 3 rings expanding from strait center -->
+          <circle class="paradox-ring"
+                  cx="248" cy="122" r="22"
+                  fill="none"
+                  stroke="oklch(68% 0.14 70 / 0.5)"
+                  stroke-width="2"/>
+          <circle class="paradox-ring"
+                  cx="248" cy="122" r="22"
+                  fill="none"
+                  stroke="oklch(68% 0.14 70 / 0.4)"
+                  stroke-width="1.5"/>
+          <circle class="paradox-ring"
+                  cx="248" cy="122" r="22"
+                  fill="none"
+                  stroke="oklch(68% 0.14 70 / 0.3)"
+                  stroke-width="1"/>
+
+          <!-- still-queued tankers, amber tinted -->
+          <g class="ship-bob-h" style="--delay:0s;color:oklch(50% 0.10 70 / 0.55)">
+            <use href="#tanker" x="103" y="119" width="16" height="6"/>
+          </g>
+          <g class="ship-bob" style="--delay:0.4s;color:oklch(48% 0.09 70 / 0.45)">
+            <use href="#tanker" x="120" y="119" width="16" height="6"/>
+          </g>
+        </g>
+
+        <!-- ─── DIPLOMACY: cautious resumption ─── -->
+        <g class="ph-diplomacy">
+          <!-- both lanes faintly active, steel-colored -->
+          <rect x="96" y="98" width="148" height="15" rx="2"
+                fill="oklch(55% 0.10 240 / 0.08)"/>
+          <rect x="96" y="116" width="148" height="15" rx="2"
+                fill="oklch(55% 0.10 240 / 0.07)"/>
+          <g clip-path="url(#waterClip)">
+            <rect class="flow-w" style="--fdur:4.5s" x="96" y="103.5" width="148" height="1"
+                  fill="url(#dotDiplo)" opacity="0.6"/>
+            <rect class="flow-e" style="--fdur:5s" x="96" y="122.5" width="148" height="1"
+                  fill="url(#dotDiplo)" opacity="0.5"/>
+          </g>
+
+          <!-- diplomatic ripples from strait center -->
+          <circle class="diplo-wave" cx="248" cy="122" r="5"
+                  fill="none"
+                  stroke="oklch(55% 0.10 240 / 0.45)"
+                  stroke-width="1.2"/>
+          <circle class="diplo-wave" cx="248" cy="122" r="5"
+                  fill="none"
+                  stroke="oklch(55% 0.10 240 / 0.35)"
+                  stroke-width="1"/>
+
+          <!-- slow cautious tanker -->
+          <g class="ship-e" style="--dur:11s;--delay:0s;color:oklch(48% 0.08 240)">
+            <use href="#tanker" x="108" y="119" width="16" height="6"/>
+          </g>
+          <g class="ship-w" style="--dur:14s;--delay:5s;color:oklch(46% 0.07 238)">
+            <g transform="scale(-1,1) translate(-352,0)">
+              <use href="#ship-sm" x="108" y="100" width="11" height="5"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- ══════════════════════════════════════════════
+             CAPACITY GAUGE — ring at strait center (248, 122)
+             r=20, circumference=125.664
+             ONE ring, driven by JS (see tweenRing below) —
+             a capacity gauge tracking one continuous variable
+             should look like one instrument, not five that take turns.
+        ══════════════════════════════════════════════ -->
+
+        <!-- gauge track ring -->
+        <circle cx="248" cy="122" r="20"
+                stroke="oklch(26% 0.04 240 / 0.7)"
+                stroke-width="2.5"
+                fill="oklch(10% 0.02 230 / 0.75)"/>
+
+        <!-- live capacity arc — stroke-dasharray + stroke color set/tweened by JS -->
+        <circle id="capacityRing" class="arc-breathe"
+                style="--abdur:5s"
+                cx="248" cy="122" r="20"
+                stroke="oklch(55% 0.16 27)"
+                stroke-dasharray="37.7 87.96"
+                stroke-width="2.5" stroke-linecap="round"
+                transform="rotate(-90 248 122)"/>
+
+        <!-- CENTER: capacity % label — one live text node, tweened like the HUD gauges -->
+        <text id="capacityLabelVal" x="248" y="119" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="7" font-weight="500"
+              fill="oklch(60% 0.16 27)">~30%</text>
+        <text id="capacityLabelSub" x="248" y="127" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="5"
+              fill="oklch(40% 0.09 27)" letter-spacing="0.06em">CAP</text>
+
+        <!-- ══════════════════════════════════════════════
+             PHASE STATE BADGE — top-right
+        ══════════════════════════════════════════════ -->
+        <g class="ph-pre">
+          <rect x="264" y="6" width="68" height="14" rx="7"
+                fill="oklch(18% 0.015 240 / 0.85)" stroke="oklch(28% 0.018 240)" stroke-width="0.5"/>
+          <text x="298" y="14.8" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="5.5" letter-spacing="0.12em"
+                fill="oklch(44% 0.010 240)">PRE-EVENT</text>
+        </g>
+        <g class="ph-shock">
+          <rect x="264" y="6" width="68" height="14" rx="7"
+                fill="oklch(18% 0.06 27 / 0.9)" stroke="oklch(38% 0.14 27 / 0.8)" stroke-width="0.5"/>
+          <text x="298" y="14.8" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="5.5" letter-spacing="0.12em"
+                fill="oklch(62% 0.20 27)">BLOCKADE</text>
+        </g>
+        <g class="ph-reopen">
+          <rect x="264" y="6" width="68" height="14" rx="7"
+                fill="oklch(14% 0.03 175 / 0.85)" stroke="oklch(38% 0.10 175 / 0.6)" stroke-width="0.5"/>
+          <text x="298" y="14.8" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="5.5" letter-spacing="0.12em"
+                fill="oklch(58% 0.12 175)">PARTIAL</text>
+        </g>
+        <g class="ph-correction">
+          <rect x="256" y="6" width="76" height="14" rx="7"
+                fill="oklch(16% 0.05 70 / 0.88)" stroke="oklch(38% 0.11 70 / 0.7)" stroke-width="0.5"/>
+          <text x="294" y="14.8" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="5.5" letter-spacing="0.10em"
+                fill="oklch(65% 0.13 70)">MAY PARADOX</text>
+        </g>
+        <g class="ph-diplomacy">
+          <rect x="264" y="6" width="68" height="14" rx="7"
+                fill="oklch(14% 0.04 240 / 0.85)" stroke="oklch(34% 0.09 240 / 0.6)" stroke-width="0.5"/>
+          <text x="298" y="14.8" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="5.5" letter-spacing="0.10em"
+                fill="oklch(54% 0.10 240)">DIPLOMACY</text>
+        </g>
+
+        <!-- ══════════════════════════════════════════════
+             GEOGRAPHY LABELS
+        ══════════════════════════════════════════════ -->
+        <!-- Persian Gulf -->
+        <text x="68" y="130" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="6.5" letter-spacing="0.1em"
+              fill="oklch(34% 0.055 220)" transform="rotate(-5 68 130)">PERSIAN GULF</text>
+
+        <!-- Gulf of Oman -->
+        <text x="306" y="185" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="5.5" letter-spacing="0.08em"
+              fill="oklch(28% 0.045 215)">GULF OF OMAN</text>
+
+        <!-- Iran coast label -->
+        <text x="118" y="16" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="6" letter-spacing="0.12em"
+              fill="oklch(36% 0.048 222)">IRAN</text>
+
+        <!-- Bandar Abbas -->
+        <circle cx="190" cy="36" r="2" fill="oklch(44% 0.08 218)" stroke="oklch(26% 0.04 218)" stroke-width="0.4"/>
+        <text x="196" y="40" font-family="DM Mono,monospace" font-size="5"
+              fill="oklch(38% 0.065 218)" letter-spacing="0.04em">Bandar Abbas</text>
+
+        <!-- UAE/Oman coast label -->
+        <text x="50" y="168" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="5.5" letter-spacing="0.07em"
+              fill="oklch(32% 0.045 218)">UAE / OMAN</text>
+
+        <!-- Muscat -->
+        <circle cx="314" cy="144" r="1.8" fill="oklch(40% 0.07 218)" stroke="oklch(26% 0.04 218)" stroke-width="0.4"/>
+        <text x="309" y="154" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="5"
+              fill="oklch(34% 0.055 218)" letter-spacing="0.04em">Muscat</text>
+
+        <!-- Qeshm -->
+        <text x="206" y="68" text-anchor="middle"
+              font-family="DM Mono,monospace" font-size="4.5"
+              fill="oklch(30% 0.038 216)">Qeshm</text>
+
+        <!-- ══════════════════════════════════════════════
+             EVENT PINS — key dates on map edge (left rail)
+        ══════════════════════════════════════════════ -->
+        <!-- each pin = dot + date + line -->
+
+        <!-- Feb 28 — Shock start -->
+        <g id="pin-shock" class="pin-group"
+           style="cursor:pointer" data-phase="shock" tabindex="0" role="button"
+           aria-label="Jump to Feb 28, Shock phase"
+           data-tooltip-title="Feb 28 — Shock"
+           data-tooltip-body="Strait closes. WTI +32.9% over window. Freight +71.1%. Three simultaneous regimes."
+           onmouseenter="showTooltip(event,this)" onmouseleave="hideTooltip()">
+          <circle class="pin-pulse" cx="10" cy="80" r="2.5"
+                  fill="var(--red-2, oklch(52% 0.20 27))"
+                  stroke="oklch(42% 0.18 27 / 0.5)" stroke-width="4"/>
+          <line x1="12" y1="80" x2="94" y2="112"
+                stroke="oklch(42% 0.18 27 / 0.25)" stroke-width="0.6" stroke-dasharray="3 3"/>
+          <text x="14" y="78" font-family="DM Mono,monospace" font-size="4.5"
+                fill="oklch(48% 0.16 27)">Feb 28</text>
+        </g>
+
+        <!-- Apr 17 — Reopen/False dawn -->
+        <g id="pin-reopen" class="pin-group"
+           style="cursor:pointer" data-phase="reopen" tabindex="0" role="button"
+           aria-label="Jump to Apr 17, Reopen phase"
+           data-tooltip-title="Apr 17 — False dawn"
+           data-tooltip-body="WTI −11.5% day-one. Iran re-closes Apr 18. Airlines did not recover."
+           onmouseenter="showTooltip(event,this)" onmouseleave="hideTooltip()">
+          <circle class="pin-pulse" cx="10" cy="118" r="2.5"
+                  fill="oklch(52% 0.10 175)"
+                  stroke="oklch(42% 0.10 175 / 0.5)" stroke-width="4"/>
+          <line x1="12" y1="118" x2="94" y2="117"
+                stroke="oklch(42% 0.10 175 / 0.22)" stroke-width="0.6" stroke-dasharray="3 3"/>
+          <text x="14" y="116" font-family="DM Mono,monospace" font-size="4.5"
+                fill="oklch(44% 0.09 175)">Apr 17</text>
+        </g>
+
+        <!-- May 1 — May Paradox -->
+        <g id="pin-paradox" class="pin-group"
+           style="cursor:pointer" data-phase="correction" tabindex="0" role="button"
+           aria-label="Jump to May 1, May Paradox phase"
+           data-tooltip-title="May 1 — The Paradox"
+           data-tooltip-body="WTI −~20% while strait held at ~2% capacity. Forward expectations overrode physical reality."
+           onmouseenter="showTooltip(event,this)" onmouseleave="hideTooltip()">
+          <circle class="pin-pulse" cx="10" cy="155" r="2.5"
+                  fill="var(--amber, oklch(68% 0.14 70))"
+                  stroke="oklch(55% 0.11 70 / 0.5)" stroke-width="4"/>
+          <line x1="12" y1="155" x2="94" y2="124"
+                stroke="oklch(55% 0.11 70 / 0.22)" stroke-width="0.6" stroke-dasharray="3 3"/>
+          <text x="14" y="153" font-family="DM Mono,monospace" font-size="4.5"
+                fill="oklch(50% 0.10 70)">May 1</text>
+        </g>
+
+        <!-- Jun 10 — Re-escalation -->
+        <g id="pin-jun" class="pin-group"
+           style="cursor:pointer" data-phase="diplomacy" tabindex="0" role="button"
+           aria-label="Jump to Jun 10, Diplomacy phase"
+           data-tooltip-title="Jun 10 — Re-escalation"
+           data-tooltip-body="Second shock. Muted WTI response vs Feb 28. Market learning: playbook existed."
+           onmouseenter="showTooltip(event,this)" onmouseleave="hideTooltip()">
+          <circle class="pin-pulse" cx="10" cy="190" r="2.5"
+                  fill="oklch(52% 0.10 240)"
+                  stroke="oklch(42% 0.08 240 / 0.5)" stroke-width="4"/>
+          <line x1="12" y1="190" x2="94" y2="130"
+                stroke="oklch(42% 0.08 240 / 0.22)" stroke-width="0.6" stroke-dasharray="3 3"/>
+          <text x="14" y="188" font-family="DM Mono,monospace" font-size="4.5"
+                fill="oklch(44% 0.08 240)">Jun 10</text>
+        </g>
+
+        <!-- ══════════════════════════════════════════════
+             ASSET IMPACT ICONS — correction phase
+             Right-side mini panel: WTI↓  BWET→(locked)  Gold↓
+        ══════════════════════════════════════════════ -->
+        <g class="ph-correction" opacity="0.9">
+          <!-- faint container -->
+          <rect x="274" y="56" width="58" height="54" rx="4"
+                fill="oklch(14% 0.04 70 / 0.8)"
+                stroke="oklch(32% 0.09 70 / 0.55)" stroke-width="0.5"/>
+          <text x="303" y="66" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="4.5" letter-spacing="0.1em"
+                fill="oklch(40% 0.08 70)">PRICE ACTION</text>
+
+          <!-- WTI down -->
+          <text x="280" y="77" font-family="DM Mono,monospace" font-size="4.5"
+                fill="oklch(44% 0.09 70)">WTI</text>
+          <text x="310" y="77" text-anchor="end" font-family="DM Mono,monospace" font-size="6" font-weight="500"
+                fill="oklch(65% 0.14 70)">−20%</text>
+          <polyline points="303,72 303,74" stroke="oklch(65% 0.14 70)" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- down arrow -->
+          <polyline points="300,74 303,77 306,74" fill="none" stroke="oklch(65% 0.14 70)" stroke-width="1" stroke-linecap="round"/>
+
+          <!-- Gold down -->
+          <text x="280" y="89" font-family="DM Mono,monospace" font-size="4.5"
+                fill="oklch(44% 0.09 70)">GOLD</text>
+          <text x="310" y="89" text-anchor="end" font-family="DM Mono,monospace" font-size="6" font-weight="500"
+                fill="oklch(52% 0.10 70)">−9.6%</text>
+
+          <!-- strait still blocked label -->
+          <rect x="276" y="93" width="54" height="11" rx="2"
+                fill="oklch(32% 0.09 70 / 0.35)"/>
+          <text x="303" y="100.5" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="4.5" letter-spacing="0.06em"
+                fill="oklch(55% 0.11 70)">STRAIT: ~2% CAP</text>
+        </g>
+
+        <!-- ASSET IMPACT — shock phase: WTI↑, BWET↑↑ -->
+        <g class="ph-shock" opacity="0.9">
+          <rect x="274" y="56" width="58" height="54" rx="4"
+                fill="oklch(16% 0.045 27 / 0.8)"
+                stroke="oklch(32% 0.10 27 / 0.55)" stroke-width="0.5"/>
+          <text x="303" y="66" text-anchor="middle"
+                font-family="DM Mono,monospace" font-size="4.5" letter-spacing="0.1em"
+                fill="oklch(40% 0.10 27)">PRICE ACTION</text>
+          <text x="280" y="77" font-family="DM Mono,monospace" font-size="4.5" fill="oklch(44% 0.12 27)">WTI</text>
+          <text x="310" y="77" text-anchor="end" font-family="DM Mono,monospace" font-size="6" font-weight="500"
+                fill="oklch(62% 0.20 27)">+32.9%</text>
+          <text x="280" y="89" font-family="DM Mono,monospace" font-size="4.5" fill="oklch(44% 0.12 27)">BWET</text>
+          <text x="310" y="89" text-anchor="end" font-family="DM Mono,monospace" font-size="6" font-weight="500"
+                fill="oklch(58% 0.14 27)">+71.1%</text>
+          <text x="280" y="100" font-family="DM Mono,monospace" font-size="4.5" fill="oklch(40% 0.10 27)">XOM</text>
+          <text x="310" y="100" text-anchor="end" font-family="DM Mono,monospace" font-size="5.5" font-weight="500"
+                fill="oklch(46% 0.12 27)">−1.4%</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       HUD — dual gauge + sparkline + narrative
+  ══════════════════════════════════════════════ -->
+  <div class="map-hud" id="mapHud">
+
+    <div class="hud-header">
+      <span class="hud-phase-name" id="hudPhaseName">Pre-Event</span>
+      <span class="hud-date" id="hudDate">Jan 1 – Feb 27, 2026</span>
+    </div>
+
+    <!-- dual gauge: Capacity | WTI Move -->
+    <div class="hud-gauges">
+      <div class="hud-gauge">
+        <div class="hud-gauge-label">Transit Capacity</div>
+        <div class="hud-gauge-bar-wrap">
+          <div class="hud-gauge-fill" id="gaugeCap" style="background: oklch(55% 0.16 27)"></div>
+        </div>
+        <div class="hud-gauge-val" id="gaugeCapVal" style="color: oklch(55% 0.16 27)">~30%</div>
+        <div class="hud-gauge-sub">of normal strait flow</div>
+      </div>
+      <div class="hud-gauge-divider"></div>
+      <div class="hud-gauge">
+        <div class="hud-gauge-label">WTI Move (window)</div>
+        <div class="hud-gauge-bar-wrap">
+          <div class="hud-gauge-fill" id="gaugeWti" style="background: oklch(55% 0.16 27)"></div>
+        </div>
+        <div class="hud-gauge-val" id="gaugeWtiVal" style="color: oklch(55% 0.16 27)">+16.9%</div>
+        <div class="hud-gauge-sub">cumulative price return</div>
+      </div>
+    </div>
+
+    <!-- WTI sparkline — 5-phase arc, highlight cursor — OR the decoupling scatter, toggled by tab -->
+    <div class="hud-spark-wrap" id="sparkWrap" data-view="timeline">
+      <div class="hud-spark-tabs" role="tablist" aria-label="Chart view">
+        <button class="spark-tab active" id="tabTimeline" role="tab" aria-selected="true"
+                onclick="setSparkView('timeline')">Timeline</button>
+        <button class="spark-tab" id="tabDecoupling" role="tab" aria-selected="false"
+                onclick="setSparkView('decoupling')">Decoupling</button>
+      </div>
+      <span class="hud-spark-label-right" id="sparkNote"></span>
+
+      <svg class="hud-spark-svg view-timeline" id="timelineSvg" viewBox="0 0 380 18" preserveAspectRatio="none"
+           aria-hidden="true" overflow="visible">
+        <defs>
+          <marker id="sparkArrow" viewBox="0 0 6 6" refX="5" refY="3"
+                  markerWidth="4" markerHeight="4" orient="auto">
+            <path d="M1 1L5 3L1 5" fill="none" stroke="context-stroke"
+                  stroke-width="1.2" stroke-linecap="round"/>
+          </marker>
+        </defs>
+
+        <!-- baseline zero line -->
+        <line x1="0" y1="14" x2="380" y2="14"
+              stroke="oklch(28% 0.018 240 / 0.5)" stroke-width="0.5"/>
+
+        <!-- phase region backgrounds -->
+        <!-- pre: x 0–90 -->
+        <rect x="0" y="0" width="90" height="18" fill="oklch(22% 0.01 240 / 0.2)"/>
+        <!-- shock: x 90–185 -->
+        <rect x="90" y="0" width="95" height="18" fill="oklch(42% 0.18 27 / 0.08)"/>
+        <!-- reopen: x 185–215 -->
+        <rect x="185" y="0" width="30" height="18" fill="oklch(42% 0.12 175 / 0.08)"/>
+        <!-- correction: x 215–280 -->
+        <rect x="215" y="0" width="65" height="18" fill="oklch(55% 0.11 70 / 0.08)"/>
+        <!-- diplomacy: x 280–380 -->
+        <rect x="280" y="0" width="100" height="18" fill="oklch(44% 0.08 240 / 0.08)"/>
+
+        <!-- phase dividers -->
+        <line x1="90" y1="0" x2="90" y2="18" stroke="oklch(28% 0.018 240 / 0.35)" stroke-width="0.5"/>
+        <line x1="185" y1="0" x2="185" y2="18" stroke="oklch(28% 0.018 240 / 0.35)" stroke-width="0.5"/>
+        <line x1="215" y1="0" x2="215" y2="18" stroke="oklch(28% 0.018 240 / 0.35)" stroke-width="0.5"/>
+        <line x1="280" y1="0" x2="280" y2="18" stroke="oklch(28% 0.018 240 / 0.35)" stroke-width="0.5"/>
+
+        <!-- WTI sparkline path
+             Rough 5-phase shape:
+             pre: starts 14 → rises to ~10 (WTI +17% going into shock)
+             shock: spikes to ~2 (WTI +33% peak)
+             reopen: drops sharply to ~7 then bounces to ~5
+             correction: descends from ~5 to ~11 (WTI −20%, price falls)
+             diplomacy: flat/slight recovery ~10–11 -->
+        <polyline class="spark-line"
+                  points="0,14 15,13.5 30,13 50,12 70,11 88,10
+                          90,10 105,7 130,3 155,2.5 180,4 183,3.8
+                          185,3.8 190,6 200,5.5 205,5 212,5
+                          215,5 225,7 238,9 250,11 265,11.5 278,12
+                          280,12 295,11 310,11.5 330,11 355,11.5 380,11"
+                  fill="none"
+                  stroke="oklch(58% 0.16 27)"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+
+        <!-- highlight cursor — moves on phase change, or under a drag -->
+        <circle id="sparkCursor" cx="45" cy="11.5" r="3"
+                fill="oklch(58% 0.16 27)"
+                stroke="oklch(18% 0.025 240)" stroke-width="1.5"
+                style="transition: cx 500ms cubic-bezier(0.23,1,0.32,1), cy 500ms cubic-bezier(0.23,1,0.32,1), fill 400ms ease-out"/>
+
+        <!-- tiny phase labels below the line -->
+        <text x="45"  y="17.5" text-anchor="middle" font-family="DM Mono,monospace" font-size="4" fill="oklch(32% 0.01 240)">Pre</text>
+        <text x="137" y="17.5" text-anchor="middle" font-family="DM Mono,monospace" font-size="4" fill="oklch(38% 0.12 27)">Shock</text>
+        <text x="200" y="17.5" text-anchor="middle" font-family="DM Mono,monospace" font-size="4" fill="oklch(36% 0.09 175)">Reopen</text>
+        <text x="247" y="17.5" text-anchor="middle" font-family="DM Mono,monospace" font-size="4" fill="oklch(40% 0.10 70)">Correction</text>
+        <text x="330" y="17.5" text-anchor="middle" font-family="DM Mono,monospace" font-size="4" fill="oklch(36% 0.08 240)">Diplo</text>
+
+        <!-- click/drag-to-scrub hit zone — one full-width rect now, since dragging
+             needs continuous pointer tracking rather than five discrete buttons.
+             Keyboard/SR users already reach every phase via the buttons above,
+             so this stays presentation-only (pointer convenience, not a duplicate control). -->
+        <rect class="spark-hit" id="sparkHit" x="0" y="0" width="380" height="18" fill="transparent" style="cursor:pointer"/>
+      </svg>
+
+      <!-- DECOUPLING SCATTER — capacity % (x) vs cumulative WTI move (y), all 5 phases.
+           Shock and Correction sit at nearly the same x (~2% capacity) but opposite
+           ends of y — that's the thesis of the piece, shown as geometry instead of prose. -->
+      <svg class="hud-spark-svg view-decoupling" id="scatterSvg" viewBox="0 0 380 96" preserveAspectRatio="none"
+           aria-hidden="true" overflow="visible">
+        <!-- axes -->
+        <line x1="34" y1="8" x2="34" y2="76" stroke="oklch(30% 0.02 240 / 0.6)" stroke-width="0.6"/>
+        <line x1="34" y1="76" x2="370" y2="76" stroke="oklch(30% 0.02 240 / 0.6)" stroke-width="0.6"/>
+        <!-- zero price-move guide -->
+        <line x1="34" y1="47.7" x2="370" y2="47.7" stroke="oklch(30% 0.02 240 / 0.4)" stroke-width="0.5" stroke-dasharray="2 2"/>
+        <text x="368" y="45.8" text-anchor="end" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(42% 0.02 240)">0% move</text>
+
+        <!-- axis ticks -->
+        <text x="34"  y="86" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(42% 0.02 240)">0%</text>
+        <text x="178" y="86" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(42% 0.02 240)">15%</text>
+        <text x="322" y="86" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(42% 0.02 240)">30%</text>
+        <text x="202" y="93.5" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.4" letter-spacing="0.08em" fill="oklch(46% 0.02 240)">TRANSIT CAPACITY</text>
+
+        <!-- the decoupling callout: Shock and Correction share ~2% capacity
+             but sit at opposite price extremes -->
+        <line x1="53.2" y1="10.4" x2="53.2" y2="70.3" stroke="oklch(60% 0.14 70 / 0.55)" stroke-width="0.6" stroke-dasharray="1.5 1.8"/>
+        <text x="58" y="40" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(58% 0.12 70 / 0.85)">same ~2% capacity,</text>
+        <text x="58" y="45.5" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(58% 0.12 70 / 0.85)">opposite price move</text>
+
+        <!-- points -->
+        <g class="scatter-pt" id="scatter-pre" data-phase="pre">
+          <circle cx="322" cy="28.5" r="2.6" fill="oklch(55% 0.10 240)"/>
+          <text x="322" y="24.5" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(58% 0.03 240)">Pre</text>
+        </g>
+        <g class="scatter-pt" id="scatter-shock" data-phase="shock">
+          <circle cx="53.2" cy="10.4" r="2.6" fill="oklch(64% 0.22 27)"/>
+          <text x="53.2" y="6.6" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(66% 0.18 27)">Shock</text>
+        </g>
+        <g class="scatter-pt" id="scatter-reopen" data-phase="reopen">
+          <circle cx="178" cy="60.7" r="2.6" fill="oklch(62% 0.12 175)"/>
+          <text x="178" y="56.9" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(60% 0.10 175)">Reopen</text>
+        </g>
+        <g class="scatter-pt" id="scatter-correction" data-phase="correction">
+          <circle cx="53.2" cy="70.3" r="2.6" fill="oklch(68% 0.14 70)"/>
+          <text x="53.2" y="78.8" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(64% 0.12 70)">Correction</text>
+        </g>
+        <g class="scatter-pt" id="scatter-diplomacy" data-phase="diplomacy">
+          <circle cx="110.8" cy="47.7" r="2.6" fill="oklch(55% 0.10 240)"/>
+          <text x="110.8" y="43.9" text-anchor="middle" font-family="DM Mono,monospace" font-size="4.2" fill="oklch(58% 0.08 240)">Diplo</text>
+        </g>
+
+        <!-- same click-to-jump convenience as the timeline points -->
+        <circle class="scatter-hit" cx="322"   cy="28.5" r="6" fill="transparent" style="cursor:pointer" onclick="setPhase('pre')"/>
+        <circle class="scatter-hit" cx="53.2"  cy="10.4" r="6" fill="transparent" style="cursor:pointer" onclick="setPhase('shock')"/>
+        <circle class="scatter-hit" cx="178"   cy="60.7" r="6" fill="transparent" style="cursor:pointer" onclick="setPhase('reopen')"/>
+        <circle class="scatter-hit" cx="53.2"  cy="70.3" r="6" fill="transparent" style="cursor:pointer" onclick="setPhase('correction')"/>
+        <circle class="scatter-hit" cx="110.8" cy="47.7" r="6" fill="transparent" style="cursor:pointer" onclick="setPhase('diplomacy')"/>
+      </svg>
+    </div>
+
+    <!-- narrative -->
+    <div class="hud-narrative" id="hudNarrative" aria-live="polite">
+      Rising tension. Traders positioned for a <strong>financial crisis</strong>, not a supply disruption — the pre-event playbook was about to be exactly wrong.
+    </div>
+
+  </div>
+</div>
+
+<!-- ── TOOLTIP ── -->
+<div class="map-tooltip" id="mapTooltip" role="tooltip">
+  <div class="map-tooltip-title" id="tipTitle"></div>
+  <div id="tipBody"></div>
+</div>
+
+<p class="demo-note">Drop-in component for .hero-visual · all design tokens inherited from :root · click/drag the timeline, click pins, or use ▸ to play · toggle Decoupling for the capacity-vs-price scatter · ←/→ to step · state is shareable via #phase=</p>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   PHASE DATA
+═══════════════════════════════════════════════════ */
+const PHASES = {
+  pre: {
+    name:      'Pre-Event',
+    date:      'Jan 1 – Feb 27, 2026',
+    accent:    'oklch(52% 0.010 240)',
+    capPct:    30,
+    capColor:  'oklch(55% 0.16 27)',
+    capVal:    '~30%',
+    wtiPct:    28,   /* gauge fill, not real % */
+    wtiColor:  'oklch(55% 0.16 27)',
+    wtiVal:    '+16.9%',
+    sparkCx:   45,   sparkCy: 11.5,
+    sparkFill: 'oklch(55% 0.16 27)',
+    sparkNote: '',
+    border:    'oklch(22% 0.018 240 / 0.8)',
+    narrative: 'Rising tension. Traders positioned for a <strong>financial crisis</strong>, not a supply disruption — the pre-event playbook was about to be exactly wrong.',
+    glows:     [],
+  },
+  shock: {
+    name:      'Shock — Blockade',
+    date:      'Feb 28 – Apr 16, 2026',
+    accent:    'oklch(58% 0.20 27)',
+    capPct:    2,
+    capColor:  'oklch(64% 0.22 27)',
+    capVal:    '~2%',
+    wtiPct:    60,
+    wtiColor:  'oklch(62% 0.20 27)',
+    wtiVal:    '+32.9%',
+    sparkCx:   137,  sparkCy: 2.5,
+    sparkFill: 'oklch(62% 0.20 27)',
+    sparkNote: 'peak',
+    border:    'oklch(35% 0.12 27 / 0.7)',
+    narrative: '<strong>Three simultaneous regimes</strong> — WTI +32.9%, XOM −1.4%, Gold −9.6%. Freight (BWET) +71.1%. The strait is at ~2% capacity. The pair trade window opens.',
+    glows:     ['glowShock'],
+  },
+  reopen: {
+    name:      'Reopen — False Dawn',
+    date:      'Apr 17 – Apr 30, 2026',
+    accent:    'oklch(55% 0.10 175)',
+    capPct:    15,
+    capColor:  'oklch(62% 0.12 175)',
+    capVal:    '~15%',
+    wtiPct:    45,
+    wtiColor:  'oklch(55% 0.10 175)',
+    wtiVal:    '−11.5%',
+    sparkCx:   200,  sparkCy: 5.5,
+    sparkFill: 'oklch(55% 0.10 175)',
+    sparkNote: 'day-one drop',
+    border:    'oklch(28% 0.08 175 / 0.6)',
+    narrative: 'WTI fell <strong>−11.5% on Apr 17 alone</strong>. Iran re-closed Apr 18. Airlines did not recover. The "reopening" was a negotiation signal, not resolution.',
+    glows:     ['glowReopen'],
+  },
+  correction: {
+    name:      'May Paradox',
+    date:      'May 1 – May 29, 2026',
+    accent:    'oklch(65% 0.13 70)',
+    capPct:    2,
+    capColor:  'oklch(68% 0.14 70)',
+    capVal:    '~2%',
+    wtiPct:    18,
+    wtiColor:  'oklch(65% 0.13 70)',
+    wtiVal:    '−~20%',
+    sparkCx:   247,  sparkCy: 11,
+    sparkFill: 'oklch(65% 0.13 70)',
+    sparkNote: 'paradox zone',
+    border:    'oklch(35% 0.10 70 / 0.65)',
+    narrative: 'The <strong>May Paradox</strong>: strait held at ~2% capacity, yet WTI fell ~20%. Forward expectations — diplomatic resolution priced in — overrode physical scarcity. The market started living in the future.',
+    glows:     ['glowCorrection'],
+  },
+  diplomacy: {
+    name:      'Diplomacy',
+    date:      'May 30 – Jun 13, 2026',
+    accent:    'oklch(52% 0.10 240)',
+    capPct:    8,
+    capColor:  'oklch(55% 0.10 240)',
+    capVal:    '~8%',
+    wtiPct:    22,
+    wtiColor:  'oklch(52% 0.10 240)',
+    wtiVal:    'flat',
+    sparkCx:   330,  sparkCy: 11.5,
+    sparkFill: 'oklch(52% 0.10 240)',
+    sparkNote: 'market learning',
+    border:    'oklch(28% 0.07 240 / 0.6)',
+    narrative: 'Jun 10 re-escalation produced a <strong>smaller day-one WTI move</strong> than Feb 28 — market learning. The playbook existed. ITA +8.9%, BWET +20.5%. Cutoff pre-ceasefire.',
+    glows:     ['glowDiplo'],
+  },
+};
+
+const ALL_GLOWS = ['glowShock','glowCorrection','glowReopen','glowDiplo'];
+const PHASE_ORDER = ['pre','shock','reopen','correction','diplomacy'];
+let currentPhase = 'pre';
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ═══════════════════════════════════════════════════
+   NUMBER TWEEN — turns "+16.9%" / "~30%" / "flat" into a
+   short ticking count instead of a hard cut. Skips itself
+   for non-numeric values ("flat") and under reduced motion.
+═══════════════════════════════════════════════════ */
+function tweenValue(el, toText, duration = 550) {
+  const parse = s => { const m = String(s).match(/-?\d+(\.\d+)?/); return m ? parseFloat(m[0]) : null; };
+  const from = parse(el.textContent);
+  const to   = parse(toText);
+  if (from === null || to === null || reduceMotion) { el.textContent = toText; return; }
+  const prefix = toText.match(/^[^\d-]*/)[0];
+  const suffix = toText.match(/[^\d]*$/)[0];
+  const decimals = (toText.match(/\.(\d+)/) || [,''])[1].length;
+  const start = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 3); /* strong ease-out */
+  cancelAnimationFrame(el._tweenRaf);
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const val = from + (to - from) * ease(t);
+    el.textContent = prefix + val.toFixed(decimals) + suffix;
+    if (t < 1) el._tweenRaf = requestAnimationFrame(step);
+    else el.textContent = toText;
+  }
+  el._tweenRaf = requestAnimationFrame(step);
+}
+
+/* ═══════════════════════════════════════════════════
+   RING TWEEN — the strait-capacity ring is one continuous
+   instrument now, not five arcs taking turns. This animates
+   its stroke-dasharray the same way tweenValue animates text.
+═══════════════════════════════════════════════════ */
+const RING_R = 20;
+const RING_C = 2 * Math.PI * RING_R; // 125.6637...
+
+function setRingDash(el, pct) {
+  const filled = (Math.max(pct, 1.5) / 100) * RING_C;
+  el.setAttribute('stroke-dasharray', filled.toFixed(2) + ' ' + (RING_C - filled).toFixed(2));
+}
+
+function tweenRing(el, toPct, duration = 650) {
+  const da = el.getAttribute('stroke-dasharray');
+  const from = (parseFloat(da) / RING_C) * 100;
+  if (reduceMotion) { setRingDash(el, toPct); return; }
+  const start = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  cancelAnimationFrame(el._ringRaf);
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    setRingDash(el, from + (toPct - from) * ease(t));
+    if (t < 1) el._ringRaf = requestAnimationFrame(step);
+    else setRingDash(el, toPct);
+  }
+  el._ringRaf = requestAnimationFrame(step);
+}
+
+/* ═══════════════════════════════════════════════════
+   PHASE SWITCH
+═══════════════════════════════════════════════════ */
+function setPhase(phase, opts = {}) {
+  const p = PHASES[phase];
+  if (!p) return;
+  currentPhase = phase;
+
+  /* data-active attribute drives all SVG display: rules */
+  const comp = document.getElementById('mapComponent');
+  comp.dataset.active = phase;
+
+  /* phase buttons */
+  document.querySelectorAll('.phase-btn').forEach(b => {
+    const active = b.classList.contains(phase);
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+
+  /* ambient glow */
+  ALL_GLOWS.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.toggle('is-on', p.glows.includes(id));
+  });
+
+  /* CSS phase accent var */
+  document.documentElement.style.setProperty('--phase-accent', p.accent);
+
+  /* map card border */
+  document.getElementById('mapCard').style.borderColor = p.border;
+
+  /* HUD: header */
+  document.getElementById('hudPhaseName').textContent = p.name;
+  document.getElementById('hudDate').textContent = p.date;
+
+  /* HUD: capacity gauge */
+  const capFill = document.getElementById('gaugeCap');
+  capFill.style.width = Math.max(p.capPct, 1.5) + '%';
+  capFill.style.background = p.capColor;
+  const capVal = document.getElementById('gaugeCapVal');
+  tweenValue(capVal, p.capVal);
+  capVal.style.color = p.capColor;
+
+  /* MAP: the live capacity ring — one instrument, tweened, not swapped */
+  const ring = document.getElementById('capacityRing');
+  tweenRing(ring, p.capPct);
+  ring.style.stroke = p.capColor;
+  const ringLabelVal = document.getElementById('capacityLabelVal');
+  tweenValue(ringLabelVal, p.capVal);
+  ringLabelVal.style.fill = p.capColor;
+  document.getElementById('capacityLabelSub').style.fill = p.capColor;
+
+  /* HUD: WTI gauge */
+  const wtiFill = document.getElementById('gaugeWti');
+  wtiFill.style.width = Math.max(p.wtiPct, 1) + '%';
+  wtiFill.style.background = p.wtiColor;
+  const wtiVal = document.getElementById('gaugeWtiVal');
+  tweenValue(wtiVal, p.wtiVal);
+  wtiVal.style.color = p.wtiColor;
+
+  /* sparkline cursor */
+  const cursor = document.getElementById('sparkCursor');
+  cursor.setAttribute('cx', p.sparkCx);
+  cursor.setAttribute('cy', p.sparkCy);
+  cursor.setAttribute('fill', p.sparkFill);
+  document.getElementById('sparkNote').textContent = p.sparkNote;
+  document.getElementById('sparkNote').style.color = p.accent;
+
+  /* narrative — brief blur-crossfade so the sentence swap doesn't hard-cut */
+  const narrative = document.getElementById('hudNarrative');
+  if (reduceMotion) {
+    narrative.innerHTML = p.narrative;
+  } else {
+    narrative.classList.add('is-swapping');
+    clearTimeout(narrative._swapTimer);
+    narrative._swapTimer = setTimeout(() => {
+      narrative.innerHTML = p.narrative;
+      narrative.classList.remove('is-swapping');
+    }, 160);
+  }
+
+  /* event pins — the one matching the live phase reads as "you are here" */
+  document.querySelectorAll('.pin-group').forEach(pin => {
+    pin.classList.toggle('pin-current', pin.dataset.phase === phase);
+  });
+
+  /* chapter dots — permanent position indicator, separate from story-mode rail */
+  document.querySelectorAll('.chapter-dot').forEach(dot => {
+    dot.classList.toggle('is-current', dot.dataset.phase === phase);
+  });
+
+  /* decoupling scatter — same "you are here" treatment as the pins */
+  document.querySelectorAll('.scatter-pt').forEach(pt => {
+    pt.classList.toggle('scatter-current', pt.dataset.phase === phase);
+  });
+
+  /* story rail — reset progress on manual jump; toggleStory() drives it while playing */
+  if (!opts.fromAutoplay) resetStoryRail();
+
+  /* shareable state — a link to "#phase=correction" should open on that exact
+     moment. replaceState (not pushState) so autoplay/scrubbing doesn't spam
+     browser history with a back-button entry per phase. */
+  if (!opts.skipHash && history.replaceState) {
+    history.replaceState(null, '', '#phase=' + phase);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   TOOLTIP SYSTEM
+═══════════════════════════════════════════════════ */
+const tooltip = document.getElementById('mapTooltip');
+let tipTimeout;
+
+function showTooltip(event, el) {
+  clearTimeout(tipTimeout);
+  document.getElementById('tipTitle').textContent = el.dataset.tooltipTitle || '';
+  document.getElementById('tipBody').textContent = el.dataset.tooltipBody || '';
+
+  /* position near mouse, keep in viewport */
+  const x = event.clientX + 12;
+  const y = event.clientY - 10;
+  tooltip.style.left = Math.min(x, window.innerWidth - 210) + 'px';
+  tooltip.style.top  = Math.max(y, 8) + 'px';
+  tooltip.classList.add('visible');
+}
+
+function hideTooltip() {
+  tipTimeout = setTimeout(() => tooltip.classList.remove('visible'), 80);
+}
+
+/* follow mouse while inside */
+document.querySelectorAll('.pin-group').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    tooltip.style.left = Math.min(e.clientX + 12, window.innerWidth - 210) + 'px';
+    tooltip.style.top  = Math.max(e.clientY - 10, 8) + 'px';
+  });
+  /* click/tap: show the tooltip AND jump the whole HUD to that moment —
+     pins stop being decorative labels and become a second way into the story */
+  el.addEventListener('click', e => {
+    showTooltip(e, el);
+    clearTimeout(tipTimeout);
+    setTimeout(hideTooltip, 3000);
+    if (el.dataset.phase) { stopStory(); setPhase(el.dataset.phase); }
+  });
+  /* keyboard: Enter/Space activates a focused pin the same way */
+  el.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && el.dataset.phase) {
+      e.preventDefault();
+      stopStory();
+      setPhase(el.dataset.phase);
+      showTooltip({clientX: window.innerWidth/2, clientY: 60}, el);
+      clearTimeout(tipTimeout);
+      setTimeout(hideTooltip, 3000);
+    }
+  });
+});
+
+/* also allow clicking gauge to show tooltip with data */
+document.getElementById('gaugeCap').closest('.hud-gauge').setAttribute('title','Strait transit capacity — percentage of normal tanker flow through the TSS corridor');
+
+/* ═══════════════════════════════════════════════════
+   STORY MODE — auto-advances through the five phases so
+   the map can narrate the crisis without being touched.
+   Dwell time is weighted: the pivotal Shock and paradoxical
+   Correction phases get more screen time than the quieter
+   Reopen window, because that's where the reader needs to
+   actually read the narrative sentence, not just watch it flash by.
+═══════════════════════════════════════════════════ */
+const DWELL_MS = { pre: 3600, shock: 5200, reopen: 3400, correction: 5200, diplomacy: 4200 };
+let storyTimer = null, storyRafId = null, storyPlaying = false;
+
+function resetStoryRail() {
+  const fill = document.getElementById('storyRailFill');
+  fill.classList.remove('ticking');
+  fill.style.width = '0%';
+}
+
+function tickStoryRail(duration) {
+  const fill = document.getElementById('storyRailFill');
+  fill.classList.remove('ticking');
+  fill.style.width = '0%';
+  // force reflow so the width:0 takes effect before animating to 100%
+  void fill.offsetWidth;
+  fill.style.transitionDuration = duration + 'ms';
+  fill.classList.add('ticking');
+  requestAnimationFrame(() => { fill.style.width = '100%'; });
+}
+
+function advanceStory() {
+  const idx = PHASE_ORDER.indexOf(currentPhase);
+  const next = PHASE_ORDER[(idx + 1) % PHASE_ORDER.length];
+  setPhase(next, { fromAutoplay: true });
+  tickStoryRail(DWELL_MS[next]);
+  storyTimer = setTimeout(advanceStory, DWELL_MS[next]);
+}
+
+function toggleStory() { storyPlaying ? stopStory() : startStory(); }
+
+function startStory() {
+  storyPlaying = true;
+  const btn = document.getElementById('playBtn');
+  btn.setAttribute('aria-pressed', 'true');
+  btn.setAttribute('aria-label', 'Pause the timeline');
+  document.getElementById('storyRail').classList.add('is-active');
+  tickStoryRail(DWELL_MS[currentPhase]);
+  storyTimer = setTimeout(advanceStory, DWELL_MS[currentPhase]);
+}
+
+function stopStory() {
+  storyPlaying = false;
+  clearTimeout(storyTimer);
+  const btn = document.getElementById('playBtn');
+  btn.setAttribute('aria-pressed', 'false');
+  btn.setAttribute('aria-label', 'Play the timeline');
+  document.getElementById('storyRail').classList.remove('is-active');
+  resetStoryRail();
+}
+
+/* manual phase-button clicks interrupt story mode */
+document.querySelectorAll('.phase-btn').forEach(btn => {
+  btn.addEventListener('click', () => { if (storyPlaying) stopStory(); });
+});
+
+/* keyboard: ←/→ step through phases when focus is inside the component
+   (skips form fields/links so it never hijacks page-wide arrow scrolling) */
+document.getElementById('mapComponent').addEventListener('keydown', e => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  e.preventDefault();
+  stopStory();
+  const idx = PHASE_ORDER.indexOf(currentPhase);
+  const dir = e.key === 'ArrowRight' ? 1 : -1;
+  setPhase(PHASE_ORDER[(idx + dir + PHASE_ORDER.length) % PHASE_ORDER.length]);
+});
+
+/* pause story mode when the tab isn't visible — don't burn the reader's
+   place in the story while they're in another tab (Sonner-style edge case) */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && storyPlaying) stopStory();
+});
+
+/* ═══════════════════════════════════════════════════
+   SPARK VIEW TOGGLE — Timeline vs Decoupling scatter.
+   Independent of phase state; the reader can be looking
+   at the scatter while stepping through phases.
+═══════════════════════════════════════════════════ */
+function setSparkView(view) {
+  document.getElementById('sparkWrap').dataset.view = view;
+  document.getElementById('tabTimeline').classList.toggle('active', view === 'timeline');
+  document.getElementById('tabTimeline').setAttribute('aria-selected', view === 'timeline');
+  document.getElementById('tabDecoupling').classList.toggle('active', view === 'decoupling');
+  document.getElementById('tabDecoupling').setAttribute('aria-selected', view === 'decoupling');
+}
+
+/* ═══════════════════════════════════════════════════
+   DRAGGABLE SPARKLINE — the timeline chart is a real
+   scrubber, not just five click zones: press and drag
+   anywhere across it to time-travel continuously.
+   Region boundaries mirror the phase-background rects.
+═══════════════════════════════════════════════════ */
+const SPARK_REGIONS = [
+  { max: 90,  phase: 'pre' },
+  { max: 185, phase: 'shock' },
+  { max: 215, phase: 'reopen' },
+  { max: 280, phase: 'correction' },
+  { max: 380, phase: 'diplomacy' },
+];
+function phaseAtSparkX(x) {
+  for (const r of SPARK_REGIONS) if (x <= r.max) return r.phase;
+  return 'diplomacy';
+}
+(function setupSparkDrag() {
+  const svg = document.getElementById('timelineSvg');
+  const hit = document.getElementById('sparkHit');
+  let dragging = false;
+
+  function xFromEvent(e) {
+    const rect = svg.getBoundingClientRect();
+    const frac = (e.clientX - rect.left) / rect.width;
+    return Math.max(0, Math.min(380, frac * 380));
+  }
+  function handleMove(e) {
+    if (!dragging) return;
+    const phase = phaseAtSparkX(xFromEvent(e));
+    if (phase !== currentPhase) setPhase(phase);
+  }
+  hit.addEventListener('pointerdown', e => {
+    dragging = true;
+    stopStory();
+    hit.setPointerCapture(e.pointerId);
+    handleMove(e);
+  });
+  hit.addEventListener('pointermove', handleMove);
+  hit.addEventListener('pointerup',   () => { dragging = false; });
+  hit.addEventListener('pointercancel', () => { dragging = false; });
+  /* plain click (no drag) still jumps to that point — handles touch taps */
+  hit.addEventListener('click', e => { stopStory(); setPhase(phaseAtSparkX(xFromEvent(e))); });
+})();
+
+/* init — honor a #phase=xxx deep link so a specific moment in the crisis
+   is linkable/embeddable, falling back to Pre-Event */
+const hashPhase = (location.hash.match(/phase=(\w+)/) || [])[1];
+setPhase(PHASES[hashPhase] ? hashPhase : 'pre', { force: true });
+</script>
+</body>
+</html>
