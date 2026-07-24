@@ -162,72 +162,28 @@
     #ambient-glow .glow-diplomacy  { background: radial-gradient(ellipse 70% 50% at 50% 0%, oklch(55% 0.10 240 / 0.05), transparent 70%); }
     #ambient-glow .is-on { opacity: 1; }
 
+    /* Ambient WebGL flow field (js/three/ambient-field.js). Sits behind
+       #ambient-glow in the same fixed full-viewport layer; soft-light
+       blend means it only ever lightens/textures the navy background
+       it's drawn against, never introduces a color of its own — the
+       phase color language stays fully owned by #ambient-glow above.
+       Safe to leave in the DOM unconditionally: if the script never
+       mounts (no WebGL, reduced motion), the canvas simply stays
+       transparent and the blend mode has nothing to do. */
+    #ambient-field-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+    }
+
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--navy-2); }
     ::-webkit-scrollbar-thumb { background: var(--red-dim); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--red); }
 
     ::selection { background: oklch(42% 0.18 27 / 0.35); color: var(--t1); }
-
-    /* =====================================================================
-       READING PROGRESS
-    ===================================================================== */
-    /* Reading progress, rebuilt as a 5-segment phase rail.
-       Segment widths are proportional to each phase's real duration
-       (58 / 48 / 14 / 29 / 15 days of the 164-day event window), not
-       equal fifths — the rail's shape itself is a small piece of data.
-       Colors reuse the exact phase-badge palette (pre/shock/open/
-       correction/diplomacy) so this reads as the same story already
-       told in the Timeline section, not a new color language.
-       Each segment fills left-to-right with scroll progress; once a
-       segment is behind the reader it stays fully lit, so by Mandates
-       the whole rail is lit end-to-end — a visual "story so far." */
-    #progress {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      z-index: 2000;
-      display: flex;
-      opacity: 0;
-      transition: opacity 240ms ease-out;
-      pointer-events: none;
-    }
-    #progress.visible { opacity: 1; }
-    #progress .seg {
-      position: relative;
-      height: 100%;
-      background: var(--b1);
-      overflow: hidden;
-    }
-    #progress .seg::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      width: var(--fill, 0%);
-      background: var(--seg-color, var(--red));
-      transition: width 0.1s linear;
-    }
-    #progress .seg.pre        { --seg-color: var(--t3); }
-    #progress .seg.shock      { --seg-color: var(--red-2); }
-    #progress .seg.open       { --seg-color: var(--teal); }
-    #progress .seg.correction { --seg-color: var(--amber); }
-    #progress .seg.diplomacy  { --seg-color: var(--steel); }
-
-    /* Active segment — the phase currently centered in the viewport while
-       scrolling through #timeline gets a brighter, slightly taller fill so
-       the bar communicates "you are here," not just "this much has played." */
-    #progress .seg.is-active::after {
-      filter: brightness(1.35);
-    }
-    #progress .seg.is-active {
-      height: 100%;
-      transform: scaleY(1.8);
-      transform-origin: top;
-      transition: transform 180ms var(--ease-out-strong);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      #progress .seg.is-active { transition: none; }
-    }
 
     /* =====================================================================
        TOP NAV
@@ -309,7 +265,7 @@
 
     .nav-links {
       display: flex;
-      gap: 0;
+      gap: 2px;
       list-style: none;
     }
 
@@ -321,12 +277,17 @@
       letter-spacing: 0.04em;
       padding: 0.3rem 0.65rem;
       border-radius: 3px;
-      transition: color 180ms ease-out, background 180ms ease-out;
+      /* Background hover removed on purpose — see .nav-indicator below.
+         A per-link background and a sliding pill both reacting to the
+         same hover is what caused the double, pop-in feel: two systems
+         indicating the same state a frame apart. Only color transitions
+         here now; position/highlight is owned entirely by the pill. */
+      transition: color 160ms ease;
     }
 
-    .nav-links a:hover { color: var(--t1); background: oklch(22% 0.018 240 / 0.6); }
+    .nav-links a:hover { color: var(--t1); }
     .nav-links a:active { transform: scale(0.97); }
-    .nav-links a.active { color: var(--red-2); }
+    .nav-links a.active { color: var(--t1); }
 
     .nav-cta { display: flex; gap: 0.4rem; }
 
@@ -2284,19 +2245,20 @@
       50%       { opacity: 0.82; transform: scale(0.97); }
     }
 
-    /* Strait capacity arc — animates stroke-dasharray's "on" length between
-       roughly 1.5% and 2.5% of the ring's circumference (r=18 → circumference
-       ≈113.1), fixed at 12 o'clock. Slow and small on purpose. */
+    /* Strait capacity gauge — the red sliver breathes very slightly in
+       thickness and glow. Communicates "this number is small and still
+       moving," not a literal live feed. The "2%" numeral itself never
+       moves; only this thin fill does. */
     @keyframes capacityBreathe {
-      0%, 100% { stroke-dasharray: 1.7 111.4; }
-      50%       { stroke-dasharray: 2.83 110.27; }
+      0%, 100% { stroke-width: 3.6; filter: none; }
+      50%       { stroke-width: 4.1; filter: drop-shadow(0 0 2px oklch(58% 0.20 27 / 0.6)); }
     }
     .capacity-arc {
-      stroke-dasharray: 1.7 111.4;
       animation: capacityBreathe 5.5s ease-in-out infinite;
+      transform-origin: -20px 0px;
     }
     @media (prefers-reduced-motion: reduce) {
-      .capacity-arc { animation: none; stroke-dasharray: 2 111.1; }
+      .capacity-arc { animation: none; }
     }
 
     @keyframes exitPulse {
@@ -2438,23 +2400,398 @@
       .hero-kpi-cell:nth-child(5),
       .hero-kpi-cell:nth-child(7) { border-top: 1px solid var(--b-red); }
     }
+
+    /* =====================================================================
+       BUILD LAYER — additions on top of the original design
+       Scroll progress · sliding nav indicator · cursor-tilt depth on
+       chart tiles and the hero map · animated KPI counters · an
+       origin-aware ("FLIP") open for the primary lightbox. Everything
+       here is additive: it doesn't touch an existing rule, only adds
+       new ones, and every motion effect degrades cleanly under
+       prefers-reduced-motion or on touch/coarse pointers.
+    ===================================================================== */
+
+    /* Reading-progress line. Deliberately thin and quiet — a wayfinding
+       cue, not a decoration — so it reads as infrastructure rather than
+       chrome competing with the phase-color language elsewhere. */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--red-2), var(--gold), var(--teal));
+      z-index: 1200;
+      pointer-events: none;
+    }
+
+    /* Sliding active-link indicator. Tracks the active nav link and, on
+       fine-pointer devices, previews under whichever link the cursor is
+       over before snapping back on mouseleave — the same "spatial
+       consistency" pattern a good tab bar uses so the eye never loses
+       the thread. Timing: 220ms, not the ~380ms a first pass reached
+       for — this fires on essentially every hover in a 7-item menu, so
+       it sits with dropdowns/selects on the duration scale (150–250ms),
+       not with a modal. --ease-out-strong is the same punchy
+       cubic-bezier(0.23,1,0.32,1) used for hero entrances elsewhere on
+       the page, kept here for one consistent "snap" across the site
+       rather than inventing a second curve. */
+    .nav-links { position: relative; }
+    .nav-links li a { position: relative; z-index: 1; }
+    .nav-indicator {
+      position: absolute;
+      top: 2px; left: 0;
+      height: calc(100% - 4px);
+      width: 0;
+      border-radius: 4px;
+      background: oklch(24% 0.05 27 / 0.55);
+      border: 1px solid var(--b-red);
+      box-shadow: 0 0 10px oklch(42% 0.18 27 / 0.14);
+      opacity: 0;
+      transform: translateX(0);
+      transition: transform 220ms var(--ease-out-strong),
+                  width 220ms var(--ease-out-strong),
+                  opacity 160ms ease-out;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .nav-indicator.is-active { opacity: 1; }
+    /* A one-pixel accent trim rather than a full glow ring — reads as a
+       terminal underscore, stays inside the "near-imperceptible unless
+       you look" register the rest of the page's accents use. */
+    .nav-indicator::after {
+      content: '';
+      position: absolute;
+      left: 12%; right: 12%;
+      bottom: -1px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red-2), transparent);
+      opacity: 0.9;
+    }
+
+    /* Chart-tab underline — the same sliding mechanism as the nav pill,
+       applied to the one other place on the page with the identical
+       shape (a row of active/inactive text controls). Only differs in
+       being a 2px underline instead of a pill, matching the border-bottom
+       cue .tab-btn already used before this existed. Disabled the moment
+       the tabs wrap to a second line (see JS) — a horizontal slide
+       across two rows reads as broken, not smooth, so it falls back to
+       .tab-btn's own color/border-color transition instead, which
+       already works correctly regardless of wrap. */
+    .chart-tabs { position: relative; }
+    .chart-tabs-indicator {
+      position: absolute;
+      bottom: -1px; left: 0;
+      height: 2px;
+      width: 0;
+      background: var(--red);
+      opacity: 0;
+      transform: translateX(0);
+      transition: transform 220ms var(--ease-out-strong),
+                  width 220ms var(--ease-out-strong),
+                  opacity 160ms ease-out,
+                  background 160ms ease-out;
+      pointer-events: none;
+    }
+    .chart-tabs-indicator.is-active { opacity: 1; }
+    .chart-tabs-indicator.is-u2 { background: var(--amber); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .chart-tabs-indicator { transition: none; }
+    }
+
+    /* Shared perspective/transition for anything the cursor tilts.
+       Transform itself is written per-frame by JS; this transition is
+       what turns raw mouse coordinates into a damped, springy-feeling
+       return to rest rather than a 1:1 mechanical follow. */
+    .tilt-target {
+      transition: transform 280ms var(--ease-out-strong);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* Locks digit width during the KPI count-up so the surrounding
+       label/sublabel never visibly reflow as the value ticks up. */
+    .hero-kpi-val { font-variant-numeric: tabular-nums; }
+
+    @media (hover: none), (pointer: coarse) {
+      .tilt-target { transform: none !important; }
+      .nav-indicator { opacity: 0 !important; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #scroll-progress { display: none; }
+      .nav-indicator { transition: none; }
+      .tilt-target { transition: none; transform: none !important; }
+    }
+
+    /* =====================================================================
+       THREE.JS SCENE CARDS — Phase Landscape (Timeline) & Asset Galaxy
+       (Findings). Same card language as .trade-card (bg/border/radius),
+       so these read as native to the page rather than bolted on.
+    ===================================================================== */
+    .landscape-3d-wrap, .galaxy-3d-wrap {
+      background: oklch(14% 0.018 240 / 0.7);
+      border: 1px solid oklch(30% 0.022 240 / 0.5);
+      border-radius: 10px;
+      padding: 2rem;
+      margin-top: 2.5rem;
+    }
+    /* .galaxy-3d-wrap lives inside .findings-wrap, a 2-column grid
+       (3fr 2fr) — without this it would collapse into a single column
+       track instead of sitting full-width like .fragmentation-box
+       above it. */
+    .galaxy-3d-wrap { grid-column: 1 / -1; }
+    .landscape-3d-head { max-width: 60ch; margin-bottom: 1.25rem; }
+    .landscape-3d-eyebrow {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--red-2);
+      background: var(--red-bg);
+      border: 1px solid var(--b-red);
+      border-radius: 4px;
+      padding: 0.2rem 0.55rem;
+      margin-bottom: 0.6rem;
+    }
+    .landscape-3d-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 600; color: var(--t1); margin-bottom: 0.4rem; }
+    .landscape-3d-desc { font-size: 0.85rem; color: var(--t3); line-height: 1.55; }
+
+    .landscape-3d-canvas-wrap, .galaxy-3d-canvas-wrap {
+      position: relative;
+      height: 420px;
+      border-radius: 8px;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, oklch(20% 0.02 240 / 0.5), transparent 75%);
+      overflow: hidden;
+    }
+    /* The forking-ribbon timeline is a wider, longer composition than a
+       clustered bar/scatter scene (it reads left-to-right across five
+       phases rather than orbiting a compact cluster), so it gets a
+       taller stage to avoid feeling cramped or forcing the camera too
+       close to frame the whole path. */
+    .landscape-3d-canvas-wrap--timeline { height: 480px; }
+    @media (min-width: 900px) {
+      .landscape-3d-canvas-wrap--timeline { height: 540px; }
+    }
+    /* Same [hidden]-vs-author-display precedence issue as
+       .scene-3d-fallback below, fixed the same way: an unconditional
+       `display: block` here would have kept these canvases visible even
+       when main.js sets canvas.hidden = true on the no-WebGL path,
+       silently defeating the fallback text meant to replace them. Never
+       triggered in testing that had working WebGL, but real. */
+    #phase-landscape-canvas, #asset-galaxy-canvas {
+      display: none;
+      width: 100%;
+      height: 100%;
+      touch-action: none; /* let OrbitControls own drag/pinch on the canvas itself; page scroll is untouched everywhere else */
+      cursor: grab;
+    }
+    #phase-landscape-canvas:not([hidden]), #asset-galaxy-canvas:not([hidden]) { display: block; }
+    #phase-landscape-canvas:active, #asset-galaxy-canvas:active { cursor: grabbing; }
+
+    .landscape-3d-label-layer { position: absolute; inset: 0; pointer-events: none; }
+    .landscape-3d-label {
+      position: absolute;
+      top: 0; left: 0;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      color: var(--t2);
+      background: oklch(10% 0.015 240 / 0.55);
+      border: 1px solid var(--b1);
+      border-radius: 3px;
+      padding: 0.15rem 0.5rem;
+      white-space: nowrap;
+      will-change: transform;
+    }
+    /* Annotation callouts (shock spotlight, "if correlated" reference) —
+       quieter and slightly smaller than the phase-name labels, so they
+       read as footnotes to the scene rather than competing with the
+       primary axis/phase labeling. */
+    .landscape-3d-label--callout {
+      font-size: 0.64rem;
+      color: var(--t3);
+      border-color: var(--b1);
+      font-style: italic;
+      letter-spacing: 0.02em;
+    }
+    /* Ratio-signal peak callout — carries the one hard number in that
+       layer (+47%, peaked Apr 7), so it gets the amber accent instead
+       of the neutral label treatment. */
+    .landscape-3d-label--ratio {
+      font-size: 0.66rem;
+      color: var(--amber);
+      border-color: var(--amber-border);
+      background: oklch(14% 0.04 70 / 0.6);
+    }
+    /* Strait-capacity callout — the May Paradox label, sitting near the
+       floor. Neutral/steel rather than amber or red since this line is
+       explicitly the "nothing physical changed" counterpoint to the
+       price ribbons around it. */
+    .landscape-3d-label--capacity {
+      font-size: 0.64rem;
+      color: var(--t2);
+      border-color: var(--steel-border);
+      background: oklch(13% 0.03 240 / 0.6);
+    }
+    /* Regime-hub labels in the Asset Galaxy — small color chip baked in
+       via the --regime-color custom property set inline per hub. */
+    .galaxy-3d-regime-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.66rem;
+    }
+    .galaxy-3d-regime-label::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--regime-color, var(--t3));
+      flex-shrink: 0;
+    }
+
+    /* display:flex must NOT be unconditional here. An author-origin rule
+       beats the browser's own [hidden]{display:none} rule regardless of
+       specificity or source order — origin outranks both in the cascade —
+       so an unconditional `display: flex` on this class made the fallback
+       permanently visible whether or not JS ever set the `hidden`
+       attribute. That, combined with this element covering the full
+       canvas via inset:0 with no pointer-events rule, was silently
+       swallowing every mouse event meant for OrbitControls underneath it:
+       the actual explanation for "canvas renders but nothing responds to
+       drag" and "fallback text shows even though WebGL works" being the
+       same bug, not two. Scoped to :not([hidden]) now, and pointer-events
+       is set explicitly rather than left to default — this is inert
+       status text, it should never intercept input even when it is
+       legitimately shown. */
+    .scene-3d-fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.82rem;
+      color: var(--t3);
+      line-height: 1.6;
+      pointer-events: none;
+    }
+    .scene-3d-fallback:not([hidden]) { display: flex; }
+
+    .landscape-3d-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin-top: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--t2);
+    }
+    .landscape-3d-legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+    .legend-swatch { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+    .axis-swatch { border-radius: 50%; }
+
+    .galaxy-tooltip {
+      position: absolute;
+      top: 0; left: 0;
+      transform: translate(14px, -50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      background: oklch(10% 0.015 240 / 0.92);
+      border: 1px solid oklch(35% 0.03 240 / 0.7);
+      border-radius: 6px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.72rem;
+      color: var(--t2);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 120ms ease-out;
+      z-index: 2;
+      max-width: 220px;
+    }
+    .galaxy-tooltip.is-visible { opacity: 1; }
+    .galaxy-tooltip strong { color: var(--t1); font-family: var(--font-head); font-size: 0.8rem; }
+    .galaxy-tooltip-cls { color: var(--red-2); font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .galaxy-tooltip-regime {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.15rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--b1);
+      font-size: 0.66rem;
+      color: var(--t2);
+    }
+    .galaxy-tooltip-regime::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--regime-color, var(--t3));
+      flex-shrink: 0;
+    }
+
+    .galaxy-3d-legend--regime { margin-top: 0.5rem; }
+    .galaxy-3d-legend-note {
+      width: 100%;
+      color: var(--t4);
+      font-style: italic;
+      font-size: 0.66rem;
+    }
+
+    @media (max-width: 768px) {
+      .landscape-3d-wrap, .galaxy-3d-wrap { padding: 1.4rem; }
+      .landscape-3d-canvas-wrap, .galaxy-3d-canvas-wrap { height: 320px; }
+      .landscape-3d-canvas-wrap--timeline { height: 380px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #phase-landscape-canvas, #asset-galaxy-canvas { cursor: default; }
+    }
   </style>
+
+  <!-- ===================================================================
+       THREE.JS DEPENDENCY MAP
+       Loaded via CDN as native ES modules — no build step, works as a
+       static file. Pinned to a specific version rather than "latest" so
+       the page doesn't silently change behavior on a future three.js
+       release. See js/three/ for the scenes themselves and README.md
+       for what's implemented and why.
+  =================================================================== -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Scroll progress — thin gradient line tracking read position down
+       the page. Sits above the nav (z-index 1200) so it stays visible
+       even while the nav's own translucent bar is scrolled under it. -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Ambient WebGL flow field — see js/three/ambient-field.js. Purely
+       atmospheric motion/grain, blended under the CSS glow below via
+       mix-blend-mode; owns no color of its own. Hidden automatically by
+       main.js if WebGL is unavailable or prefers-reduced-motion is on;
+       the CSS glow beneath keeps working regardless. -->
+  <canvas id="ambient-field-canvas" aria-hidden="true"></canvas>
+
   <div id="ambient-glow" aria-hidden="true">
     <div class="glow-pre"></div>
     <div class="glow-shock"></div>
     <div class="glow-open"></div>
     <div class="glow-correction"></div>
     <div class="glow-diplomacy"></div>
-  </div>
-  <div id="progress" role="progressbar" aria-label="Story progress through the 5-phase event timeline" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5" aria-valuetext="Not yet reached the timeline">
-    <div class="seg pre"        style="flex-basis:35.4%"></div>
-    <div class="seg shock"      style="flex-basis:29.3%"></div>
-    <div class="seg open"       style="flex-basis:8.5%"></div>
-    <div class="seg correction" style="flex-basis:17.7%"></div>
-    <div class="seg diplomacy"  style="flex-basis:9.1%"></div>
   </div>
 
   <!-- LIGHTBOX -->
@@ -2472,6 +2809,7 @@
       </a>
 
       <ul class="nav-links" role="list">
+        <li id="nav-indicator" class="nav-indicator" aria-hidden="true"></li>
         <li><a href="#timeline">Timeline</a></li>
         <li><a href="#findings">Findings</a></li>
         <li><a href="#charts">Charts</a></li>
@@ -2641,65 +2979,184 @@
     <div class="hero-visual" aria-hidden="true">
 
       <!-- Strait of Hormuz SVG schematic -->
-      <svg class="strait-map" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stylized map of the Strait of Hormuz">
-        <rect width="340" height="220" fill="oklch(11% 0.02 230)" rx="8"/>
-        <path d="M10 180 Q40 160 90 155 Q140 150 180 160 Q220 170 260 155 Q290 145 320 140 L330 180 L10 200Z"
-              fill="oklch(18% 0.06 220)" opacity="0.8"/>
-        <path d="M200 100 Q240 90 280 85 Q310 82 330 85 L330 220 L200 220Z"
-              fill="oklch(18% 0.06 220)" opacity="0.6"/>
-        <path d="M120 0 Q160 10 210 15 Q260 20 310 25 L330 0Z"
-              fill="oklch(22% 0.022 240)"/>
-        <path d="M190 160 Q210 140 240 130 Q265 125 280 140 Q270 160 250 165 Q220 170 190 160Z"
-              fill="oklch(22% 0.022 240)"/>
-        <path d="M280 85 Q298 80 315 90 Q310 105 295 108 Q280 110 275 100 Q276 90 280 85Z"
-              fill="oklch(22% 0.022 240)"/>
-        <line x1="240" y1="95" x2="270" y2="150" stroke="oklch(42% 0.18 27)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>
-        <circle cx="252" cy="120" r="16" stroke="oklch(42% 0.18 27)" stroke-width="1.5" fill="oklch(42% 0.18 27 / 0.12)" opacity="0.9"/>
-        <!-- Capacity arc — a thin ring segment whose length breathes between
-             ~1.5% and ~2.5% of the full circumference, fixed at 12 o'clock.
-             Communicates "this number is small and still moving slightly,"
-             not "this number is exactly 2.000%." Kept to a barely-readable
-             motion; the point is texture, not a literal live data feed. -->
-        <circle class="capacity-arc" cx="252" cy="120" r="18"
-                stroke="oklch(58% 0.20 27)" stroke-width="2" stroke-linecap="round"
-                transform="rotate(-90 252 120)" opacity="0.85"/>
-        <text x="252" y="124" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="oklch(52% 0.20 27)" letter-spacing="0">~2%</text>
-        <g opacity="0.5">
-          <rect x="218" y="152" width="18" height="7" rx="2" fill="oklch(52% 0.10 240)"/>
-          <path d="M215 155 L218 152" stroke="oklch(52% 0.10 240)" stroke-width="1"/>
-        </g>
-        <g opacity="0.35">
-          <rect x="225" y="162" width="14" height="6" rx="2" fill="oklch(52% 0.10 240)"/>
-        </g>
-        <text x="80" y="145" font-family="DM Mono, monospace" font-size="7" fill="oklch(52% 0.10 240)" letter-spacing="0.08em">Persian Gulf</text>
-        <text x="298" y="175" font-family="DM Mono, monospace" font-size="6" fill="oklch(45% 0.08 240)" letter-spacing="0.06em">Gulf of Oman</text>
-        <text x="155" y="30" font-family="DM Mono, monospace" font-size="7" fill="oklch(45% 0.08 240)" letter-spacing="0.06em">Iran</text>
-        <text x="215" y="185" font-family="DM Mono, monospace" font-size="6" fill="oklch(40% 0.07 240)">UAE / Oman</text>
-        <rect x="224" y="106" width="42" height="14" rx="2" fill="oklch(42% 0.18 27 / 0.25)" stroke="oklch(42% 0.18 27)" stroke-width="0.5"/>
-        <text x="245" y="116" text-anchor="middle" font-family="DM Mono, monospace" font-size="6.5" fill="oklch(52% 0.20 27)" letter-spacing="0.12em">CLOSED</text>
-        <path d="M170 145 L210 128" stroke="oklch(42% 0.18 27)" stroke-width="1" marker-end="url(#arrRed)" opacity="0.6"/>
-        <path d="M295 120 L268 128" stroke="oklch(65% 0.12 175)" stroke-width="1" marker-end="url(#arrTeal)" opacity="0.6" stroke-dasharray="3 2"/>
+      <svg class="strait-map" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" role="img" font-family="DM Mono, monospace"
+           aria-label="Map of the Strait of Hormuz: the chokepoint between Iran and the Musandam Peninsula is shown blockaded, transit capacity at approximately 2 percent of normal flow, with the Habshan to Fujairah pipeline shown as the only active bypass route">
         <defs>
-          <marker id="arrRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="oklch(42% 0.18 27)" stroke-width="1.5" stroke-linecap="round"/>
+          <marker id="arrDim" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+            <path d="M1,1 L8,5 L1,9" fill="none" stroke="oklch(40% 0.03 240)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </marker>
-          <marker id="arrTeal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="oklch(65% 0.12 175)" stroke-width="1.5" stroke-linecap="round"/>
-          </marker>
+          <radialGradient id="gulfShade" cx="35%" cy="35%" r="75%">
+            <stop offset="0%" stop-color="oklch(15% 0.03 235)"/>
+            <stop offset="100%" stop-color="oklch(9% 0.018 230)"/>
+          </radialGradient>
+          <radialGradient id="vignette" cx="50%" cy="46%" r="72%">
+            <stop offset="60%" stop-color="black" stop-opacity="0"/>
+            <stop offset="100%" stop-color="black" stop-opacity="0.38"/>
+          </radialGradient>
+          <filter id="softGlowRed" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="1.4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <style>
+            .blockade-pulse { animation: hzPulse 2.6s ease-out infinite; transform-origin: 234px 118px; }
+            @keyframes hzPulse {
+              0%   { r: 7;  opacity: 0.55; }
+              70%  { r: 14; opacity: 0; }
+              100% { r: 14; opacity: 0; }
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .blockade-pulse { animation: none; opacity: 0; }
+            }
+          </style>
         </defs>
+
+        <!-- base water -->
+        <rect width="340" height="220" rx="8" fill="url(#gulfShade)"/>
+
+        <!-- depth contour rings, subtle chart texture -->
+        <g stroke="oklch(28% 0.02 235)" stroke-width="0.6" fill="none" opacity="0.5">
+          <path d="M20,60 Q120,20 260,55 Q320,70 335,110"/>
+          <path d="M10,95 Q130,55 265,90 Q315,105 332,140"/>
+        </g>
+
+        <!-- ===== landmasses ===== -->
+        <!-- Iran (north coast, promontory reaching toward the strait) -->
+        <path d="M-4,-4 L344,-4 L344,52 C 316,58 300,72 281,68 C 264,64 254,82 238,98
+                 C 229,107 220,101 212,88 C 200,70 178,64 150,58 C 116,51 82,46 50,45
+                 C 28,44 8,40 -4,36 Z"
+              fill="oklch(21% 0.028 235)" stroke="oklch(30% 0.04 235)" stroke-width="0.75"/>
+
+        <!-- Arabian coast: UAE, Musandam spur (Oman), toward Gulf of Oman -->
+        <path d="M-4,224 L344,224 L344,156 C 322,148 305,138 289,120 C 278,107 262,98 248,103
+                 C 236,107 234,118 240,130 C 244,138 240,146 231,150 C 219,155 206,146 197,133
+                 C 186,118 168,113 146,118 C 116,125 84,130 56,138 C 32,145 12,154 -4,163 Z"
+              fill="oklch(21% 0.028 235)" stroke="oklch(30% 0.04 235)" stroke-width="0.75"/>
+
+        <!-- Qatar peninsula -->
+        <path d="M8,224 L46,224 C 44,205 36,188 26,178 C 20,172 15,175 13,185 C 10,198 9,211 8,224 Z"
+              fill="oklch(21% 0.028 235)" stroke="oklch(30% 0.04 235)" stroke-width="0.75" opacity="0.95"/>
+
+        <!-- ===== shipping lanes (traffic separation scheme through the narrows) ===== -->
+        <path d="M78,150 Q140,158 178,146 Q206,136 226,120 Q248,124 278,140 Q305,153 322,168"
+              fill="none" stroke="oklch(40% 0.03 240)" stroke-width="4" stroke-linecap="round" opacity="0.30"/>
+        <path d="M78,150 Q140,158 178,146 Q206,136 226,120 Q248,124 278,140 Q305,153 322,168"
+              fill="none" stroke="oklch(58% 0.03 240)" stroke-width="0.9" stroke-dasharray="1 4" stroke-linecap="round" opacity="0.7"
+              marker-end="url(#arrDim)"/>
+        <path d="M320,178 Q298,164 272,150 Q250,138 232,132 Q212,144 184,155 Q146,168 84,161"
+              fill="none" stroke="oklch(40% 0.03 240)" stroke-width="4" stroke-linecap="round" opacity="0.22"/>
+        <path d="M320,178 Q298,164 272,150 Q250,138 232,132 Q212,144 184,155 Q146,168 84,161"
+              fill="none" stroke="oklch(50% 0.03 240)" stroke-width="0.9" stroke-dasharray="1 4" stroke-linecap="round" opacity="0.55"
+              marker-end="url(#arrDim)"/>
+
+        <!-- blockade marker across the narrows -->
+        <line x1="222" y1="98" x2="246" y2="140" stroke="oklch(58% 0.20 27)" stroke-width="1.6" stroke-dasharray="1 3.4" stroke-linecap="round" opacity="0.9"/>
+        <circle class="blockade-pulse" cx="234" cy="118" r="7" fill="none" stroke="oklch(62% 0.20 27)" stroke-width="1.1"/>
+        <g transform="translate(234,118)" filter="url(#softGlowRed)" opacity="0.95">
+          <rect x="-7" y="-7" width="14" height="14" rx="3" fill="oklch(15% 0.03 27)" stroke="oklch(58% 0.20 27)" stroke-width="1"/>
+          <path d="M-3,-1 L-3,-3.2 A3,3 0 0 1 3,-3.2 L3,-1" fill="none" stroke="oklch(72% 0.18 27)" stroke-width="1.1"/>
+          <rect x="-3.6" y="-1" width="7.2" height="5.4" rx="1" fill="oklch(72% 0.18 27)"/>
+        </g>
+
+        <!-- narrowest-point scale callout, real figure -->
+        <g stroke="oklch(48% 0.03 235)" stroke-width="0.6" opacity="0.75">
+          <line x1="252" y1="88" x2="258" y2="82"/>
+          <line x1="264" y1="148" x2="270" y2="154"/>
+          <path d="M256,84 Q262,116 268,152" fill="none" stroke-dasharray="1 2.2"/>
+        </g>
+        <text x="270" y="120" font-size="5.4" fill="oklch(52% 0.03 235)" letter-spacing="0.02em">~21 NMI</text>
+        <text x="270" y="128" font-size="4.6" fill="oklch(42% 0.03 235)" letter-spacing="0.02em">NARROWEST PT.</text>
+
+        <!-- queued tankers, waiting in line in the Persian Gulf -->
+        <g fill="oklch(58% 0.02 240)" opacity="0.68">
+          <g transform="translate(30,152) rotate(-14)">
+            <path d="M-5,1.7 L-5,-1.7 L1.5,-1.7 L5,0 L1.5,1.7 Z"/>
+            <rect x="-4.4" y="-1.1" width="1.8" height="2.2" fill="oklch(15% 0.03 27 / 0.6)"/>
+          </g>
+          <g transform="translate(42,144) rotate(-14)">
+            <path d="M-5,1.7 L-5,-1.7 L1.5,-1.7 L5,0 L1.5,1.7 Z"/>
+            <rect x="-4.4" y="-1.1" width="1.8" height="2.2" fill="oklch(15% 0.03 27 / 0.6)"/>
+          </g>
+          <g transform="translate(54,136) rotate(-14)">
+            <path d="M-5,1.7 L-5,-1.7 L1.5,-1.7 L5,0 L1.5,1.7 Z"/>
+            <rect x="-4.4" y="-1.1" width="1.8" height="2.2" fill="oklch(15% 0.03 27 / 0.6)"/>
+          </g>
+          <g transform="translate(66,128) rotate(-14)">
+            <path d="M-5,1.7 L-5,-1.7 L1.5,-1.7 L5,0 L1.5,1.7 Z"/>
+            <rect x="-4.4" y="-1.1" width="1.8" height="2.2" fill="oklch(15% 0.03 27 / 0.6)"/>
+          </g>
+        </g>
+        <text x="24" y="118" font-size="4.6" letter-spacing="0.05em" fill="oklch(46% 0.02 240)">TANKERS QUEUED</text>
+
+        <!-- the lone tanker still moving: the ~2% -->
+        <g transform="translate(206,128) rotate(-18)" opacity="0.6">
+          <path d="M-5,1.7 L-5,-1.7 L1.5,-1.7 L5,0 L1.5,1.7 Z" fill="oklch(72% 0.18 27)"/>
+          <rect x="-4.4" y="-1.1" width="1.8" height="2.2" fill="oklch(30% 0.1 27 / 0.6)"/>
+        </g>
+
+        <!-- bypass pipeline: ADCOP, Habshan to Fujairah -->
+        <path d="M96,178 Q140,185 170,175 Q200,162 224,148" fill="none"
+              stroke="oklch(65% 0.12 175)" stroke-width="1.6" stroke-dasharray="5 2.4" stroke-linecap="round" opacity="0.85"/>
+        <circle cx="96" cy="178" r="2.2" fill="oklch(65% 0.12 175)"/>
+        <circle cx="224" cy="148" r="2.2" fill="oklch(65% 0.12 175)"/>
+        <text x="82" y="192" font-size="5.6" fill="oklch(65% 0.12 175)" letter-spacing="0.03em">Habshan</text>
+        <text x="182" y="138" font-size="5.6" fill="oklch(65% 0.12 175)" letter-spacing="0.03em">Fujairah</text>
+        <text x="112" y="205" font-size="5.4" fill="oklch(58% 0.10 175)" letter-spacing="0.02em">ADCOP pipeline · bypasses strait · 1.5–1.8M bpd</text>
+
+        <!-- labels -->
+        <text x="10" y="16" font-size="8" font-weight="600" letter-spacing="0.12em" fill="oklch(64% 0.03 235)">IRAN</text>
+        <g transform="translate(28,30)" opacity="0.8">
+          <line x1="0" y1="5" x2="0" y2="-5" stroke="oklch(50% 0.02 235)" stroke-width="0.8"/>
+          <path d="M0,-5 L-1.6,-1.8 L1.6,-1.8 Z" fill="oklch(50% 0.02 235)"/>
+          <text x="0" y="12" text-anchor="middle" font-size="4.4" fill="oklch(46% 0.02 235)">N</text>
+        </g>
+        <circle cx="220" cy="90" r="1.6" fill="oklch(70% 0.02 235)"/>
+        <text x="168" y="76" font-size="6" fill="oklch(58% 0.02 235)">Bandar Abbas</text>
+        <circle cx="70" cy="163" r="1.6" fill="oklch(70% 0.02 235)"/>
+        <text x="8" y="170" font-size="6" fill="oklch(58% 0.02 235)">Abu Dhabi</text>
+        <text x="12" y="190" font-size="6.2" font-weight="600" letter-spacing="0.08em" fill="oklch(60% 0.03 235)">QATAR</text>
+        <text x="196" y="168" font-size="6.2" letter-spacing="0.01em" fill="oklch(58% 0.03 235)">Musandam (OMAN)</text>
+        <text x="20" y="82" font-size="7" letter-spacing="0.12em" fill="oklch(42% 0.03 235)">PERSIAN GULF</text>
+        <text x="246" y="192" font-size="6.2" letter-spacing="0.09em" fill="oklch(42% 0.03 235)">GULF OF OMAN</text>
+        <g transform="translate(296,213)">
+          <text x="0" y="0" font-size="5.6" fill="oklch(46% 0.03 235)" letter-spacing="0.03em">Muscat</text>
+          <path d="M28,-2 L35,-2" stroke="oklch(46% 0.03 235)" stroke-width="0.8" marker-end="url(#arrDim)"/>
+        </g>
+
+        <!-- capacity gauge: the number that matters, made to actually read -->
+        <g transform="translate(270,50)">
+          <path d="M -20,0 A20,20 0 1,1 20,0" fill="none" stroke="oklch(26% 0.02 235)" stroke-width="3.6" stroke-linecap="round"/>
+          <path class="capacity-arc" d="M -20,0 A20,20 0 0,1 -18.7,-4.9" fill="none" stroke="oklch(58% 0.20 27)" stroke-width="3.6" stroke-linecap="round" filter="url(#softGlowRed)"/>
+          <text x="-19" y="11" font-size="4.6" fill="oklch(40% 0.02 235)">0</text>
+          <text x="16" y="11" font-size="4.6" fill="oklch(40% 0.02 235)">100</text>
+          <text x="0" y="-2" text-anchor="middle" font-size="16" font-weight="700" fill="oklch(74% 0.20 27)" letter-spacing="-0.02em">2%</text>
+          <text x="0" y="8" text-anchor="middle" font-size="5" letter-spacing="0.06em" fill="oklch(54% 0.03 235)">OF NORMAL FLOW</text>
+        </g>
+        <text x="270" y="86" text-anchor="middle" font-size="6" letter-spacing="0.12em" fill="oklch(46% 0.03 235)">TRANSIT CAPACITY</text>
+
+        <!-- status badge -->
+        <g transform="translate(10,204)">
+          <rect x="0" y="-9" width="66" height="14" rx="2.5" fill="oklch(42% 0.18 27 / 0.22)" stroke="oklch(52% 0.20 27)" stroke-width="0.75"/>
+          <circle cx="9" cy="-2" r="2.4" fill="oklch(72% 0.20 27)"/>
+          <text x="16" y="0.5" font-size="7" letter-spacing="0.12em" fill="oklch(80% 0.16 27)">CLOSED</text>
+        </g>
+
+        <text x="330" y="11" text-anchor="end" font-size="4.6" letter-spacing="0.03em" fill="oklch(36% 0.02 235)">AS OF JUN 13, 2026 — PRE-CEASEFIRE</text>
+
+        <!-- vignette, final layer -->
+        <rect width="340" height="220" rx="8" fill="url(#vignette)" pointer-events="none"/>
       </svg>
 
       <!-- KPI cluster — 4 KPIs for Update 2 -->
       <div class="hero-kpi-row" aria-label="Key performance indicators">
         <div class="hero-kpi-cell">
           <div class="hero-kpi-label">WTI Shock</div>
-          <div class="hero-kpi-val kv-red">+32.9%</div>
+          <div class="hero-kpi-val kv-red" data-count data-count-to="32.9" data-prefix="+" data-suffix="%">+32.9%</div>
           <div class="hero-kpi-sub">Feb 28 – Apr 16</div>
         </div>
         <div class="hero-kpi-divider" aria-hidden="true"></div>
         <div class="hero-kpi-cell pulse-anim" aria-label="WTI/Gold ratio regime signal: rose sharply during the shock, then reversed in May">
           <div class="hero-kpi-label">WTI/Gold Ratio</div>
-          <div class="hero-kpi-val kv-gold">+47%</div>
+          <div class="hero-kpi-val kv-gold" data-count data-count-to="47" data-prefix="+" data-suffix="%">+47%</div>
           <div class="hero-kpi-sub">Regime signal</div>
           <svg class="kpi-micro-spark" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
             <polyline points="0,13 12,12 24,3 34,3.5 44,5 54,11 64,13"
@@ -2710,7 +3167,7 @@
         <div class="hero-kpi-divider" aria-hidden="true"></div>
         <div class="hero-kpi-cell kpi-paradox" aria-label="May Paradox: WTI fell approximately 20 percent while the strait stayed near 2 percent capacity">
           <div class="hero-kpi-label">May Paradox</div>
-          <div class="hero-kpi-val kv-amber">−~20%</div>
+          <div class="hero-kpi-val kv-amber" data-count data-count-to="20" data-prefix="−~" data-suffix="%">−~20%</div>
           <div class="hero-kpi-sub">WTI, strait ~2% cap.</div>
           <svg class="kpi-micro-spark" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
             <polyline points="0,3 10,5 20,8 32,11 44,13.5 54,15 64,16"
@@ -2721,7 +3178,7 @@
         <div class="hero-kpi-divider" aria-hidden="true"></div>
         <div class="hero-kpi-cell">
           <div class="hero-kpi-label">BWET Freight</div>
-          <div class="hero-kpi-val kv-teal">+71.1%</div>
+          <div class="hero-kpi-val kv-teal" data-count data-count-to="71.1" data-prefix="+" data-suffix="%">+71.1%</div>
           <div class="hero-kpi-sub">Shock window</div>
         </div>
       </div>
@@ -2876,6 +3333,48 @@
           <div class="phase-insight"><strong>Regime:</strong> Market learning &mdash; the playbook exists now, so the shock is smaller.</div>
         </div>
       </div>
+
+      <!-- 3D companion — see js/three/phase-landscape.js. Complements the
+           five cards above rather than replacing them: those carry the
+           narrative text and full context; this is the same five-phase
+           story laid out as two cumulative-return paths braided together
+           through Pre-Event, then forking apart at the Feb 28 hinge —
+           decoupling as a literal fork in the geometry, not a bar-height
+           comparison. Degrades to a text note if WebGL or reduced-motion
+           rules it out — nothing here exists only in 3D. -->
+      <div class="landscape-3d-wrap reveal">
+        <div class="landscape-3d-head">
+          <span class="landscape-3d-eyebrow">Explore in 3D</span>
+          <h3 class="landscape-3d-title">WTI vs. Exxon — Watch the Fork Happen</h3>
+          <p class="landscape-3d-desc">
+            All five phases as two paths, braided together through Pre-Event because the assets
+            really did move together then. At Feb 28 — marked by a red hinge plane — the paths fork:
+            WTI climbs, dips through the May Paradox, and keeps going; XOM bends down, recovers
+            through Reopen, then physically stops, because Table 1 has no XOM figure past that point.
+            A gold thread above traces the WTI/Gold ratio — the exit signal — peaking and rolling over
+            <em>before</em> WTI's own price dips in Correction. A dashed line near the floor holds the
+            Strait's ~2% capacity flat through the same stretch: physical reality barely moving while
+            price falls is the paradox, rendered directly. Drag to orbit; scroll past the phase cards
+            above and a playhead sweeps to match.
+          </p>
+        </div>
+        <div class="landscape-3d-canvas-wrap landscape-3d-canvas-wrap--timeline" id="phase-landscape-container">
+          <canvas id="phase-landscape-canvas"
+                  aria-label="3D timeline of WTI crude oil and Exxon Mobil cumulative returns across all five phases, braided together through Pre-Event and forking apart at the Feb 28 shock boundary. WTI's path continues through Correction (the May Paradox dip, approximately −20%) and Diplomacy (flat); Exxon's path stops after Reopen because no further figure exists in Table 1. A second path overlays the WTI/Gold ratio signal, peaking +47% during Shock (peaked Apr 7) and reversing during Correction ahead of WTI's own price dip — the pair-trade exit signal. A third, near-floor dashed path holds the Strait transit capacity flat near 2% across Shock through Correction. Full figures are in Table 1, Data section."></canvas>
+          <div class="landscape-3d-label-layer" id="phase-landscape-labels" aria-hidden="true"></div>
+          <p class="scene-3d-fallback" id="phase-landscape-fallback" hidden>
+            3D view isn't available in this browser (or motion is reduced in your OS settings) — the same
+            five phases are in the phase cards above, and the exact figures are in Table 1 further down the page.
+          </p>
+        </div>
+        <div class="landscape-3d-legend">
+          <span><i class="legend-swatch" style="background:var(--red-2)" aria-hidden="true"></i>WTI Crude — cumulative return path</span>
+          <span><i class="legend-swatch" style="background:var(--steel)" aria-hidden="true"></i>Exxon / XOM — stops after Reopen (no further data)</span>
+          <span><i class="legend-swatch" style="background:var(--amber)" aria-hidden="true"></i>WTI/Gold ratio signal (floating above)</span>
+          <span><i class="legend-swatch" style="background:var(--t3)" aria-hidden="true"></i>Strait capacity ~2% (dashed, near floor)</span>
+          <span><i class="legend-swatch" style="background:var(--gold)" aria-hidden="true"></i>Playhead — synced to scroll position</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -3005,6 +3504,46 @@
           </div>
         </div>
 
+        <!-- 3D companion — see js/three/asset-galaxy.js. Same fragmentation
+             story as the three regime cells above, as a spatial scatter:
+             axes are Pre-Event / Shock / Correction return, point size is
+             Shock-window volatility. Complements the regime grid rather
+             than replacing it — every value plotted here is already in
+             Table 1/2 in the Data section as ordinary HTML. -->
+        <div class="galaxy-3d-wrap">
+          <div class="landscape-3d-head">
+            <span class="landscape-3d-eyebrow">Explore in 3D</span>
+            <h3 class="landscape-3d-title">The Asset Galaxy</h3>
+            <p class="landscape-3d-desc">
+              Nine assets in three dimensions — Pre-Event return, Shock return, Correction return.
+              Sphere size is Shock-window volatility. Drag to orbit, hover or tap a point for its numbers.
+              If the assets clustered here instead of scattering, that would mean the market treated this
+              as one story. They didn't.
+            </p>
+          </div>
+          <div class="galaxy-3d-canvas-wrap" id="asset-galaxy-container">
+            <canvas id="asset-galaxy-canvas"
+                    aria-label="3D scatter plot of nine assets positioned by Pre-Event, Shock, and Correction window returns, sized by Shock-window volatility, grouped into Scarcity, Stability, and Failure regimes by drop-line color. The identical figures are listed in Table 1 and Table 2 in the Data section as an ordinary table."></canvas>
+            <div class="landscape-3d-label-layer" id="asset-galaxy-labels" aria-hidden="true"></div>
+            <div class="galaxy-tooltip" id="asset-galaxy-tooltip" aria-hidden="true"></div>
+            <p class="scene-3d-fallback" id="asset-galaxy-fallback" hidden>
+              3D view isn't available in this browser (or motion is reduced in your OS settings) — every
+              value plotted here is in Table 1 and Table 2 further down the page.
+            </p>
+          </div>
+          <div class="landscape-3d-legend galaxy-3d-legend">
+            <span><i class="legend-swatch axis-swatch" style="background:var(--t3)" aria-hidden="true"></i>X — Pre-Event return</span>
+            <span><i class="legend-swatch axis-swatch" style="background:var(--red-2)" aria-hidden="true"></i>Y — Shock return</span>
+            <span><i class="legend-swatch axis-swatch" style="background:var(--amber)" aria-hidden="true"></i>Z — Correction return</span>
+          </div>
+          <div class="landscape-3d-legend galaxy-3d-legend galaxy-3d-legend--regime">
+            <span><i class="legend-swatch" style="background:var(--red-2)" aria-hidden="true"></i>Scarcity — physical commodity</span>
+            <span><i class="legend-swatch" style="background:var(--t2)" aria-hidden="true"></i>Stability — equity market</span>
+            <span><i class="legend-swatch" style="background:var(--gold)" aria-hidden="true"></i>Failure — safe havens</span>
+            <span class="galaxy-3d-legend-note">Drop-line color = regime · hub markers = regime centroid</span>
+          </div>
+        </div>
+
         <!-- UPDATE 2 FINDINGS DIVIDER -->
         <div class="findings-u2-divider">
           <span class="findings-u2-divider-label">Update 2 Findings &mdash; Jun 13, 2026</span>
@@ -3125,13 +3664,14 @@
           <button class="tab-btn tab-u2" data-tab="u2hero"  role="tab" aria-selected="false" aria-controls="tab-u2hero">Update 2 Hero</button>
           <button class="tab-btn tab-u2" data-tab="u2new"   role="tab" aria-selected="false" aria-controls="tab-u2new">Update 2 Charts</button>
           <button class="tab-btn" data-tab="all"            role="tab" aria-selected="false" aria-controls="tab-all">All 30 Charts</button>
+          <span class="chart-tabs-indicator" id="chart-tabs-indicator" aria-hidden="true"></span>
         </div>
 
         <!-- Tab: Primary -->
         <div id="tab-main" class="tab-panel active chart-viewer" role="tabpanel">
           <img class="chart-main-img" src="outputs/01_normalised_prices.png"
                alt="Normalised price paths for WTI, S&P 500, Gold, XOM, CVX, and JETS across the three original study phases"
-               loading="eager" onclick="openLightbox(this.src, this.alt)" />
+               loading="eager" onclick="openLightbox(this.src, this.alt, this)" />
           <div class="chart-caption">
             Original normalised price paths (base = 100, Jan 1, 2026). The divergence at Feb 28 is the clearest visual proof of decoupling: WTI separates sharply upward while equities and gold fail to follow.
           </div>
@@ -3142,10 +3682,10 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
             <img class="chart-main-img" src="outputs/06_counterfactual.png"
                  alt="Counterfactual paths showing actual 2026 vs no-shock projection"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:280px;" />
             <img class="chart-main-img" src="outputs/07_sector_portfolio.png"
                  alt="Energy basket vs S&P 500 performance"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:280px;" />
           </div>
           <div class="chart-caption">
             Left: actual vs counterfactual WTI. Right: energy sector basket vs broad market. The sector basket underperformed crude by 34+ points.
@@ -3156,7 +3696,7 @@
         <div id="tab-seasonal" class="tab-panel chart-viewer" role="tabpanel">
           <img class="chart-main-img" src="outputs/update_2/charts/02_seasonal_baseline_u2.png"
                alt="Seasonal baseline (Update 2): Jan-Jun returns by year 2021-2026, 16 assets"
-               loading="lazy" onclick="openLightbox(this.src, this.alt)" />
+               loading="lazy" onclick="openLightbox(this.src, this.alt, this)" />
           <div class="chart-caption">
             Jan–Jun seasonal baseline (2021–2026), updated to 16 assets and full timeline.
             <strong style="color:var(--t3);font-style:normal;">Look for:</strong> 2026's WTI line breaking from the historical band twice — once up at the shock, once down in May — while every prior year stays within a narrow corridor.
@@ -3168,10 +3708,10 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
             <img class="chart-main-img" src="outputs/03_rolling_volatility.png"
                  alt="Rolling volatility across event windows"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:260px;" />
             <img class="chart-main-img" src="outputs/update_2/charts/04_rolling_correlation_u2.png"
                  alt="Rolling correlation (Update 2) — 5 windows"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:260px;" />
           </div>
           <div class="chart-caption">
             Rolling volatility and correlation updated through Jun 13.
@@ -3183,7 +3723,7 @@
         <div id="tab-u2hero" class="tab-panel chart-viewer" role="tabpanel">
           <img class="chart-main-img" src="outputs/update_2/charts/21_five_window_full_timeline.png"
                alt="Five-window full timeline — all 16 assets across 5 phases (Jan 1 – Jun 13, 2026)"
-               loading="eager" onclick="openLightbox(this.src, this.alt)" style="max-height:540px;" />
+               loading="eager" onclick="openLightbox(this.src, this.alt, this)" style="max-height:540px;" />
           <div class="chart-caption">
             Hero chart for Update 2: all 16 assets, normalised, across all 5 event phases.
             <strong style="color:var(--t3);font-style:normal;">Look for:</strong> the amber correction band — WTI bends downward there while the rest of the chart barely moves, the clearest single image of the May Paradox.
@@ -3195,10 +3735,10 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
             <img class="chart-main-img" src="outputs/update_2/charts/28_oil_gold_ratio_full_timeline.png"
                  alt="WTI/Gold ratio across all 5 windows — regime signal full timeline"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:280px;" />
             <img class="chart-main-img" src="outputs/update_2/charts/23_freight_vs_oil_third_decoupling.png"
                  alt="Freight vs Oil: BWET vs WTI — third decoupling layer"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:280px;" />
           </div>
           <div class="chart-caption">
             <strong style="color:var(--t3);font-style:normal;">Left — look for:</strong> the peak around early April, then the sharp downward kink in May. That kink is the exit signal in Mandate VII, weeks before any ceasefire headline.
@@ -3434,10 +3974,10 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);">
             <img class="chart-main-img" src="outputs/19_long_short_wti_xom.png"
                  alt="Long WTI / Short XOM pair trade P&L across the three phases"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:280px;" />
             <img class="chart-main-img" src="outputs/update_2/charts/29_all_pair_trades_pnl.png"
                  alt="All four pair trades P&L comparison — Update 2"
-                 loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:280px;" />
+                 loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:280px;" />
           </div>
           <div class="chart-caption">
             Left: original WTI/XOM pair trade — the green dashed line diverged at Feb 28 and never re-converged during the shock window. Right (U2): all four pair trades compared — the WTI/XLE, WTI/XOM, freight/oil, and regime-signal pairs across all 5 windows.
@@ -3553,10 +4093,10 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:8px;overflow:hidden;">
           <img class="chart-main-img" src="outputs/update_2/charts/04_rolling_correlation_u2.png"
                alt="Rolling correlation (Update 2) — 5 windows"
-               loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
+               loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:260px;" />
           <img class="chart-main-img" src="outputs/update_2/charts/12_lead_lag_ccf_u2.png"
                alt="Lead-lag cross correlation (Update 2)"
-               loading="lazy" onclick="openLightbox(this.src, this.alt)" style="max-height:260px;" />
+               loading="lazy" onclick="openLightbox(this.src, this.alt, this)" style="max-height:260px;" />
         </div>
       </div>
     </div>
@@ -4109,58 +4649,15 @@
        JAVASCRIPT
   =================================================================== -->
   <script>
-    // ── Reading progress — 5-phase segmented rail ────────────────────
-    // The five phase cards sit in a single grid row at every breakpoint
-    // (5 columns desktop, 3 columns down to one row each at tablet) — a
-    // reader never scrolls "through" them one at a time the way they
-    // would a vertical list. So the rail lights as a single trigger when
-    // the Timeline section enters view, not as five separate sequential
-    // triggers. From there it stays fully lit: a "story so far" thread
-    // carried into Findings, Charts, and Trade, which all reference these
-    // same five phases by name and color.
-    const progressBar = document.getElementById('progress');
-    const phaseOrder = ['pre', 'shock', 'open', 'correction', 'diplomacy'];
-    const phaseSegEls = {};
-    progressBar.querySelectorAll('.seg').forEach(seg => {
-      const phase = phaseOrder.find(p => seg.classList.contains(p));
-      if (phase) phaseSegEls[phase] = seg;
-    });
-
-    function lightAllPhases() {
-      const skipStagger = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      phaseOrder.forEach((phase, i) => {
-        const delay = skipStagger ? 0 : i * 110;
-        setTimeout(() => {
-          phaseSegEls[phase]?.style.setProperty('--fill', '100%');
-        }, delay);
-      });
-      progressBar.setAttribute('aria-valuenow', '5');
-      progressBar.setAttribute('aria-valuetext', 'Timeline reached — all 5 phases shown');
-    }
-
-    const timelineSection = document.getElementById('timeline');
-    if (timelineSection) {
-      const timelineObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            lightAllPhases();
-            timelineObserver.disconnect();
-          }
-        });
-      }, { threshold: 0.15 });
-      timelineObserver.observe(timelineSection);
-    }
-
-    // Active-phase tracking — once the timeline has been reached, highlight
-    // whichever phase card sits closest to the viewport's vertical center as
-    // the person scrolls. On wide layouts all 5 cards sit in one row (so
-    // this naturally settles on whichever is nearest center and is purely
-    // cosmetic there); on mobile/narrow layouts where phases stack
-    // vertically, this turns the progress bar into a live "you are here"
-    // marker rather than a one-shot reveal. Distance-to-center is computed
-    // directly rather than via IntersectionObserver ratios, since the five
-    // cards have noticeably different heights and ratio-based intersection
-    // favors short cards over true centering.
+    // ── Ambient phase glow ────────────────────────────────────────────
+    // A faint full-bleed background tint that shifts to match whichever
+    // phase card sits closest to the viewport's vertical center. Purely
+    // atmospheric — reinforces the phase color language from the Timeline
+    // section as the reader scrolls past Findings, Charts, and Trade.
+    // Distance-to-center is computed directly rather than via
+    // IntersectionObserver ratios, since the five cards have noticeably
+    // different heights and ratio-based intersection favors short cards
+    // over true centering.
     const phaseCardEls = Array.from(document.querySelectorAll('.phase-block[data-phase]'));
     const ambientGlowEls = {
       pre: document.querySelector('#ambient-glow .glow-pre'),
@@ -4169,7 +4666,8 @@
       correction: document.querySelector('#ambient-glow .glow-correction'),
       diplomacy: document.querySelector('#ambient-glow .glow-diplomacy'),
     };
-    if (phaseCardEls.length) {
+    const timelineSection = document.getElementById('timeline');
+    if (phaseCardEls.length && timelineSection) {
       let activePhase = null;
       let tracking = false;
       let ticking = false;
@@ -4177,12 +4675,18 @@
       const setActivePhase = (phase) => {
         if (phase === activePhase) return;
         activePhase = phase;
-        Object.entries(phaseSegEls).forEach(([p, seg]) => {
-          seg?.classList.toggle('is-active', p === phase);
-        });
         Object.entries(ambientGlowEls).forEach(([p, glow]) => {
           glow?.classList.toggle('is-on', p === phase);
         });
+        // Optional hook for js/three/main.js: fires the WebGL ambient
+        // field's one-shot ripple on phase change, and syncs the phase
+        // landscape's active-column highlight, if those modules
+        // mounted. Does nothing (array is simply absent) if WebGL is
+        // unavailable, reduced-motion is on, or the module never loaded —
+        // this file has zero hard dependency on the 3D layer. Passes the
+        // phase key itself (not just "something changed") so each hook
+        // can react proportionally to which phase is now active.
+        window.__hormuzPhaseHooks?.forEach(fn => fn(phase));
       };
 
       const clearAmbientGlow = () => {
@@ -4221,9 +4725,7 @@
         requestAnimationFrame(updateActivePhase);
       };
 
-      // Only start tracking once the timeline has actually been reached —
-      // matches lightAllPhases() firing, so the active highlight never
-      // appears before the base "all phases lit" state exists.
+      // Only start tracking once the timeline has actually scrolled into view.
       const trackingObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -4236,12 +4738,6 @@
       }, { threshold: 0.15 });
       trackingObserver.observe(timelineSection);
     }
-
-    function updateProgressVisibility() {
-      progressBar.classList.toggle('visible', window.scrollY > 80);
-    }
-    window.addEventListener('scroll', updateProgressVisibility, { passive: true });
-    updateProgressVisibility();
 
     // ── Scroll to top ────────────────────────────────────────────────
     const scrollTopBtn = document.getElementById('scroll-top');
@@ -4275,13 +4771,37 @@
     const lbImg  = document.getElementById('lightbox-img');
     const lbClose = document.getElementById('lightbox-close');
 
-    function openLightbox(src, alt) {
+    function openLightbox(src, alt, sourceEl) {
       lbImg.src = src;
       lbImg.alt = alt || '';
       lb.style.display = 'flex';
+
+      // Origin-aware open ("FLIP"): when we know which element was
+      // clicked, the enlarged image appears to grow directly out of it
+      // instead of fading in centered — spatial continuity between the
+      // thumbnail and its full-size view. Falls back to the plain
+      // centered scale/fade (still correct on its own) when no source
+      // element is available, e.g. the "All 30 Charts" thumbnail grid.
+      const startRect = (sourceEl && !prefersReducedMotion) ? sourceEl.getBoundingClientRect() : null;
+
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           lb.classList.add('open', 'visible');
+          if (startRect) {
+            const endRect = lbImg.getBoundingClientRect();
+            const scaleX = startRect.width / endRect.width;
+            const scaleY = startRect.height / endRect.height;
+            const dx = (startRect.left + startRect.width / 2) - (endRect.left + endRect.width / 2);
+            const dy = (startRect.top + startRect.height / 2) - (endRect.top + endRect.height / 2);
+            if (isFinite(scaleX) && isFinite(scaleY) && scaleX > 0 && scaleY > 0) {
+              lbImg.style.transition = 'none';
+              lbImg.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+              requestAnimationFrame(() => {
+                lbImg.style.transition = '';
+                lbImg.style.transform = '';
+              });
+            }
+          }
         });
       });
       document.body.style.overflow = 'hidden';
@@ -4305,6 +4825,31 @@
     });
 
     // ── Chart tabs (with brief loading shimmer for polish) ─────────────
+    // Sliding underline lives alongside the existing border-bottom-color
+    // treatment rather than replacing it — the color/border change on
+    // .tab-btn.active still fires every time, so if the underline is
+    // ever suppressed (wrapped tabs, below) the state is still fully
+    // legible without it.
+    const chartTabsEl = document.querySelector('.chart-tabs');
+    const chartTabsIndicator = document.getElementById('chart-tabs-indicator');
+
+    function placeChartTabsIndicator(btn) {
+      if (!chartTabsIndicator || !chartTabsEl || !btn) return;
+      const firstBtn = chartTabsEl.querySelector('.tab-btn');
+      // Tabs wrap to a second row on narrow viewports. A horizontal
+      // slide only makes sense within one row, so once any tab's
+      // offsetTop drifts from the first tab's, bail and let the
+      // existing per-button border-color handle state instead.
+      if (!firstBtn || btn.offsetTop !== firstBtn.offsetTop) {
+        chartTabsIndicator.classList.remove('is-active');
+        return;
+      }
+      chartTabsIndicator.style.width = btn.offsetWidth + 'px';
+      chartTabsIndicator.style.transform = `translateX(${btn.offsetLeft}px)`;
+      chartTabsIndicator.classList.toggle('is-u2', btn.classList.contains('tab-u2'));
+      chartTabsIndicator.classList.add('is-active');
+    }
+
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
@@ -4315,6 +4860,7 @@
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
         btn.setAttribute('aria-selected', 'true');
+        placeChartTabsIndicator(btn);
         const panel = document.getElementById('tab-' + tab);
         if (panel) {
           panel.classList.add('active');
@@ -4325,6 +4871,15 @@
           }
         }
       });
+    });
+
+    window.addEventListener('load', () => {
+      const activeTab = chartTabsEl?.querySelector('.tab-btn.active');
+      if (activeTab) placeChartTabsIndicator(activeTab);
+    });
+    window.addEventListener('resize', () => {
+      const activeTab = chartTabsEl?.querySelector('.tab-btn.active');
+      if (activeTab) placeChartTabsIndicator(activeTab);
     });
 
     // Keyboard on chart thumbnails
@@ -4380,6 +4935,10 @@
 
     // ── Scroll reveal ─────────────────────────────────────────────────
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Gates every cursor-tracked effect below (nav pill, magnetic buttons,
+    // tilt) so touch/coarse-pointer devices never get a hover state stuck
+    // at the last tap coordinate.
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -4409,9 +4968,21 @@
       });
     }
 
-    // ── Nav active state on scroll ────────────────────────────────────
+    // ── Nav active state on scroll, + sliding indicator ────────────────
     const navLinks = document.querySelectorAll('.nav-links a');
-    window.addEventListener('scroll', () => {
+    const navIndicator = document.getElementById('nav-indicator');
+
+    function placeNavIndicator(link) {
+      if (!navIndicator || !link || link.offsetWidth === 0) {
+        navIndicator?.classList.remove('is-active');
+        return;
+      }
+      navIndicator.style.width = link.offsetWidth + 'px';
+      navIndicator.style.transform = `translateX(${link.offsetLeft}px)`;
+      navIndicator.classList.add('is-active');
+    }
+
+    function updateNavActive() {
       const scrollY = window.scrollY + 90;
       tocSections.forEach(id => {
         const el = document.getElementById(id);
@@ -4422,7 +4993,31 @@
           });
         }
       });
-    }, { passive: true });
+      const active = document.querySelector('.nav-links a.active');
+      if (active) placeNavIndicator(active);
+    }
+    window.addEventListener('scroll', updateNavActive, { passive: true });
+    window.addEventListener('resize', updateNavActive);
+    window.addEventListener('load', updateNavActive);
+    updateNavActive();
+
+    // Preview the indicator under whatever link is hovered, then snap
+    // back to whichever section is actually active once the cursor
+    // leaves — same "spatial consistency" idea a good tab bar uses.
+    // Gated to fine pointers: on touch, `mouseenter` fires on tap with
+    // no matching leave until the next tap elsewhere, which would leave
+    // the pill parked on the last-tapped link instead of the active
+    // section. Scroll-driven placement above has no such gate — it
+    // isn't a hover artifact, it's legitimate section tracking.
+    if (finePointer) {
+      navLinks.forEach(a => {
+        a.addEventListener('mouseenter', () => placeNavIndicator(a));
+      });
+      document.querySelector('.nav-links')?.addEventListener('mouseleave', () => {
+        const active = document.querySelector('.nav-links a.active');
+        placeNavIndicator(active);
+      });
+    }
 
     // ── Copy link ─────────────────────────────────────────────────────
     function copyLink(event) {
@@ -4440,23 +5035,117 @@
       });
     }
 
-    // ── Magnetic CTA ─────────────────────────────────────────────────
-    if (!prefersReducedMotion) {
-      const magneticBtn = document.getElementById('magnetic-cta');
-      if (magneticBtn) {
+    // ── Magnetic buttons ────────────────────────────────────────────────
+    // Originally just the primary CTA; extended to every hero button so
+    // the three read as one deliberate family of controls rather than
+    // one "special" button among two plain ones.
+    if (!prefersReducedMotion && finePointer) {
+      document.querySelectorAll('.hero-actions .btn').forEach(magneticBtn => {
+        const pull = magneticBtn.id === 'magnetic-cta' ? 0.22 : 0.16;
         magneticBtn.addEventListener('mousemove', (e) => {
           const rect = magneticBtn.getBoundingClientRect();
           const cx = rect.left + rect.width / 2;
           const cy = rect.top + rect.height / 2;
-          const dx = (e.clientX - cx) * 0.22;
-          const dy = (e.clientY - cy) * 0.22;
+          const dx = (e.clientX - cx) * pull;
+          const dy = (e.clientY - cy) * pull;
           magneticBtn.style.transform = `translate(${dx}px, ${dy}px)`;
         });
         magneticBtn.addEventListener('mouseleave', () => {
           magneticBtn.style.transform = '';
         });
+      });
+    }
+
+    // ── Scroll progress ─────────────────────────────────────────────────
+    const scrollProgressEl = document.getElementById('scroll-progress');
+    function updateScrollProgress() {
+      if (!scrollProgressEl) return;
+      const doc = document.documentElement;
+      const scrollTop = window.scrollY || doc.scrollTop || 0;
+      const scrollable = doc.scrollHeight - doc.clientHeight;
+      const pct = scrollable > 0 ? Math.min(100, (scrollTop / scrollable) * 100) : 0;
+      scrollProgressEl.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    window.addEventListener('resize', updateScrollProgress);
+    updateScrollProgress();
+
+    // ── Cursor-tilt depth: chart thumbnails + the hero strait map ──────
+    // Small, cursor-tracked rotateX/rotateY on a perspective wrapper.
+    // The CSS transition on .tilt-target (not this JS) is what makes it
+    // feel damped instead of glued to the pointer, so no manual
+    // lerp/spring loop is needed here — see .tilt-target in the CSS.
+    if (!prefersReducedMotion && finePointer) {
+      function bindTilt(el, maxDeg) {
+        el.classList.add('tilt-target');
+        el.addEventListener('mousemove', (e) => {
+          const r = el.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          const rx = (0.5 - py) * maxDeg;
+          const ry = (px - 0.5) * maxDeg;
+          el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+      }
+
+      document.querySelectorAll('.chart-thumb').forEach(el => bindTilt(el, 9));
+
+      const straitMap = document.querySelector('.strait-map');
+      const heroEl = document.getElementById('hero');
+      if (straitMap && heroEl) {
+        straitMap.classList.add('tilt-target');
+        heroEl.addEventListener('mousemove', (e) => {
+          const r = heroEl.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          const rx = (0.5 - py) * 5;
+          const ry = (px - 0.5) * 6;
+          straitMap.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+        });
+        heroEl.addEventListener('mouseleave', () => { straitMap.style.transform = ''; });
       }
     }
+
+    // ── Hero KPI count-up ────────────────────────────────────────────────
+    // The four hero numbers tick up from 0 once on load, timed to land
+    // just after their own kpiCellIn fade-in finishes (see the
+    // animation-delay values on .hero-kpi-cell, ~0.75–1.05s). Reads the
+    // target from data-count-to rather than parsing the existing
+    // "+32.9%" text, so formatting quirks (the en-dash/tilde in the May
+    // Paradox cell, decimals elsewhere) can't throw the parser off.
+    if (!prefersReducedMotion) {
+      const countEls = document.querySelectorAll('[data-count]');
+      const countDuration = 1300;
+      function runCount(el) {
+        const to = parseFloat(el.dataset.countTo);
+        if (!isFinite(to)) return;
+        const decimals = (el.dataset.countTo.split('.')[1] || '').length;
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const startTime = performance.now();
+        function tick(now) {
+          const t = Math.min(1, (now - startTime) / countDuration);
+          const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+          const val = to * eased;
+          el.textContent = prefix + val.toFixed(decimals) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+          else el.textContent = prefix + to.toFixed(decimals) + suffix; // exact final value
+        }
+        requestAnimationFrame(tick);
+      }
+      window.addEventListener('load', () => {
+        countEls.forEach((el, i) => {
+          el.textContent = (el.dataset.prefix || '') + (0).toFixed((el.dataset.countTo.split('.')[1] || '').length) + (el.dataset.suffix || '');
+          setTimeout(() => runCount(el), 850 + i * 90);
+        });
+      });
+    }
   </script>
+
+  <!-- Three.js scenes — ambient field, phase landscape, asset galaxy.
+       Deferred by default (type=module), runs after the script above.
+       See js/three/main.js. -->
+  <script type="module" src="js/three/main.js"></script>
 </body>
 </html>
