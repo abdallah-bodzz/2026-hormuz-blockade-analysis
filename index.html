@@ -9,11 +9,11 @@
   <meta property="og:description" content="The May Paradox: WTI −20% while the strait stayed at 2% capacity. Forward expectations overrode physical reality. 16 assets, 5 phases, 113 days." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/" />
-  <meta property="og:image" content="outputs/update_2/charts/21_five_window_full_timeline.png" />
+  <meta property="og:image" content="https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/outputs/update_2/charts/21_five_window_full_timeline.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Hormuz 2026 Update 2 — When Diplomacy Decoupled from Supply" />
   <meta name="twitter:description" content="The May Paradox: WTI −20% while the strait stayed at 2% capacity. 16 assets, 5 phases, 113 days." />
-  <meta name="twitter:image" content="outputs/update_2/charts/21_five_window_full_timeline.png" />
+  <meta name="twitter:image" content="https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/outputs/update_2/charts/21_five_window_full_timeline.png" />
 
   <link rel="canonical" href="https://abdallah-bodzz.github.io/2026-hormuz-blockade-analysis/" />
 
@@ -98,6 +98,8 @@
       scroll-behavior: smooth;
       font-size: 16px;
       -webkit-text-size-adjust: 100%;
+      overflow-x: hidden;
+      width: 100%;
     }
 
     body {
@@ -106,6 +108,17 @@
       font-family: var(--font-body);
       line-height: 1.65;
       overflow-x: hidden;
+      width: 100%;
+    }
+
+    /* Defensive reset: any static image or inline SVG added later is
+       capped to its container width by default, so a missing width:100%
+       rule on some future element can't reopen a horizontal-scroll bug.
+       Canvas/iframe are deliberately excluded — the ambient WebGL canvas
+       is full-bleed via position:fixed + inset:0 and JS-sized elsewhere,
+       so a blanket max-width there would fight that layout. */
+    img, svg {
+      max-width: 100%;
     }
 
     .skip-link {
@@ -243,6 +256,12 @@
     .version-tag .vtag-sep { color: var(--t4); }
     .version-tag .vtag-date { color: var(--t3); }
     .version-tag .vtag-note { color: var(--t4); font-style: italic; }
+
+    .nav-version-bar--compact { display: none; }
+    @media (max-width: 560px) {
+      .nav-version-bar:not(.nav-version-bar--compact) { display: none; }
+      .nav-version-bar--compact { display: flex; }
+    }
 
     .nav-brand {
       font-family: var(--font-mono);
@@ -1341,12 +1360,18 @@
 
     .chart-main-img {
       width: 100%;
+      min-height: 260px;
       max-height: 500px;
       object-fit: contain;
       display: block;
       padding: 1rem;
       cursor: zoom-in;
       transition: filter 220ms ease-out;
+      background: var(--navy-2);
+    }
+
+    @media (max-width: 560px) {
+      .chart-main-img { min-height: 180px; }
     }
 
     .chart-main-img:hover { filter: brightness(1.06); }
@@ -2381,6 +2406,7 @@
       .hero-kpi-cell:nth-child(7) { border-top: 1px solid var(--b-red); }
       .trade-grid { grid-template-columns: 1fr 1fr; }
       .context-strip-inner { gap: 1.25rem 2rem; }
+      .footer-inner { gap: 1.5rem; }
       .nav-links { display: none; }
       #hamburger { display: flex; }
       .cta-buttons { flex-direction: row; flex-wrap: wrap; }
@@ -2399,6 +2425,19 @@
       .hero-kpi-cell:nth-child(3),
       .hero-kpi-cell:nth-child(5),
       .hero-kpi-cell:nth-child(7) { border-top: 1px solid var(--b-red); }
+
+      .hero-kpi-cell { padding: 0.6rem 0.5rem; }
+
+      .tab-btn { font-size: 0.56rem; padding: 0.55rem 0.7rem; }
+
+      .context-strip-inner { gap: 0.85rem 1.5rem; }
+      .context-strip { padding: 1.1rem 1.25rem; }
+
+      .footer-inner { gap: 1.1rem; }
+
+      th, td { font-size: 0.76rem; }
+      th { font-size: 0.56rem; padding: 0.55rem 0.65rem; }
+      td { padding: 0.5rem 0.65rem; }
     }
 
     /* =====================================================================
@@ -2589,6 +2628,53 @@
     }
     #phase-landscape-canvas:not([hidden]), #asset-galaxy-canvas:not([hidden]) { display: block; }
     #phase-landscape-canvas:active, #asset-galaxy-canvas:active { cursor: grabbing; }
+
+    /* Touch veil — see phase-landscape-veil / asset-galaxy-veil markup.
+       Problem: the canvas below has touch-action:none so OrbitControls can
+       own drag-to-orbit and pinch-to-zoom. On a touch device that means a
+       reader's first finger-touch anywhere on the scene — even one meant
+       to keep scrolling past it — gets captured as an orbit gesture and
+       the page stops scrolling. The veil sits on top, allows normal
+       vertical scrolling (touch-action: pan-y), and only steps aside
+       after an explicit tap, so scrolling past the scene stays scrolling
+       until the reader actually wants to interact with it. Desktop/mouse
+       is unaffected — the veil only renders under (hover: none) or
+       (pointer: coarse). */
+    .scene-3d-touch-veil { display: none; }
+    @media (hover: none), (pointer: coarse) {
+      .scene-3d-touch-veil {
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 1rem;
+        touch-action: pan-y;
+      }
+      .scene-3d-touch-veil.is-dismissed { display: none; }
+    }
+    .scene-3d-touch-veil-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--t2);
+      background: oklch(10% 0.015 240 / 0.78);
+      border: 1px solid var(--b2);
+      border-radius: 999px;
+      padding: 0.5rem 0.9rem;
+      pointer-events: none;
+    }
+    /* Never show the veil over a scene that isn't actually rendering
+       (no-WebGL / reduced-motion fallback path — canvas gets [hidden]). */
+    .landscape-3d-canvas-wrap:has(canvas[hidden]) .scene-3d-touch-veil,
+    .galaxy-3d-canvas-wrap:has(canvas[hidden]) .scene-3d-touch-veil {
+      display: none;
+    }
 
     .landscape-3d-label-layer { position: absolute; inset: 0; pointer-events: none; }
     .landscape-3d-label {
@@ -2836,6 +2922,18 @@
         <span class="vtag-date">Jun 13, 2026 cutoff</span>
         <span class="vtag-sep">·</span>
         <span class="vtag-note">Pre-ceasefire snapshot — Update 3 covers resolution</span>
+      </span>
+    </div>
+    <!-- Mobile-only compact banner: same info, none of the wrap. Real
+         content duplicated (not just visually hidden) so screen readers
+         on mobile get the short version too, not the long one read aloud
+         then hidden. -->
+    <div class="nav-version-bar nav-version-bar--compact" role="note" aria-label="Update 2 version information">
+      <span class="version-tag">
+        <span class="vtag-pill">U2</span>
+        <span class="vtag-text">Diplomacy Decoupled</span>
+        <span class="vtag-sep">·</span>
+        <span class="vtag-date">Jun 13, 2026</span>
       </span>
     </div>
   </nav>
@@ -3362,6 +3460,9 @@
           <canvas id="phase-landscape-canvas"
                   aria-label="3D timeline of WTI crude oil and Exxon Mobil cumulative returns across all five phases, braided together through Pre-Event and forking apart at the Feb 28 shock boundary. WTI's path continues through Correction (the May Paradox dip, approximately −20%) and Diplomacy (flat); Exxon's path stops after Reopen because no further figure exists in Table 1. A second path overlays the WTI/Gold ratio signal, peaking +47% during Shock (peaked Apr 7) and reversing during Correction ahead of WTI's own price dip — the pair-trade exit signal. A third, near-floor dashed path holds the Strait transit capacity flat near 2% across Shock through Correction. Full figures are in Table 1, Data section."></canvas>
           <div class="landscape-3d-label-layer" id="phase-landscape-labels" aria-hidden="true"></div>
+          <div class="scene-3d-touch-veil" id="phase-landscape-veil">
+            <span class="scene-3d-touch-veil-pill">Tap to explore in 3D</span>
+          </div>
           <p class="scene-3d-fallback" id="phase-landscape-fallback" hidden>
             3D view isn't available in this browser (or motion is reduced in your OS settings) — the same
             five phases are in the phase cards above, and the exact figures are in Table 1 further down the page.
@@ -3526,6 +3627,9 @@
                     aria-label="3D scatter plot of nine assets positioned by Pre-Event, Shock, and Correction window returns, sized by Shock-window volatility, grouped into Scarcity, Stability, and Failure regimes by drop-line color. The identical figures are listed in Table 1 and Table 2 in the Data section as an ordinary table."></canvas>
             <div class="landscape-3d-label-layer" id="asset-galaxy-labels" aria-hidden="true"></div>
             <div class="galaxy-tooltip" id="asset-galaxy-tooltip" aria-hidden="true"></div>
+            <div class="scene-3d-touch-veil" id="asset-galaxy-veil">
+              <span class="scene-3d-touch-veil-pill">Tap to explore in 3D</span>
+            </div>
             <p class="scene-3d-fallback" id="asset-galaxy-fallback" hidden>
               3D view isn't available in this browser (or motion is reduced in your OS settings) — every
               value plotted here is in Table 1 and Table 2 further down the page.
@@ -5141,6 +5245,35 @@
         });
       });
     }
+  </script>
+
+  <script>
+    // ── 3D scene touch veils ────────────────────────────────────────────
+    // See CSS comment above .scene-3d-touch-veil for why this exists.
+    // Tap dismisses the veil so the canvas underneath (touch-action:none)
+    // takes over drag/pinch. Re-arms via IntersectionObserver once the
+    // scene scrolls fully out of view, so a reader who scrolled past,
+    // comes back later, and just wants to keep scrolling isn't surprised
+    // by a scene that's still "armed" for orbit from last time.
+    (function () {
+      const veilIds = ['phase-landscape-veil', 'asset-galaxy-veil'];
+      veilIds.forEach(function (id) {
+        const veil = document.getElementById(id);
+        if (!veil) return;
+        const wrap = veil.closest('.landscape-3d-canvas-wrap, .galaxy-3d-canvas-wrap');
+        const dismiss = function () { veil.classList.add('is-dismissed'); };
+        veil.addEventListener('click', dismiss);
+        veil.addEventListener('touchend', dismiss, { passive: true });
+        if (wrap && 'IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) veil.classList.remove('is-dismissed');
+            });
+          }, { threshold: 0 });
+          observer.observe(wrap);
+        }
+      });
+    })();
   </script>
 
   <!-- Three.js scenes — ambient field, phase landscape, asset galaxy.
